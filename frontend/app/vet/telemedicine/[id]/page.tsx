@@ -14,7 +14,7 @@ export default function TelemedicineRoom() {
         const initRoom = async () => {
             const token = localStorage.getItem('token');
             try {
-                const res = await fetch('http://localhost:4000/telemedicine/room', {
+                const res = await fetch((process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000') + '/telemedicine/room', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',

@@ -1,41 +1,48 @@
 # Guia de Deploy - VETZ System
 
-Este guia explica como configurar as variáveis de ambiente necessárias para o deploy no Render (Backend) e Vercel (Frontend).
+## 🚀 Configuração Final para o Render (Backend)
 
-## 1. Backend (Render)
+No painel do Render, ao criar o Web Service:
+1.  **Root Directory:** Digite `backend` (Isso é muito importante! Ele precisa saber que o código está nessa pasta).
+2.  Vá em **Environment** e adicione estas variáveis exatas:
 
-Ao criar o Web Service no Render, configure as seguintes variáveis em **Environment**:
+### Copie e Cole (Modo Texto)
 
-| Variável | Valor Exemplo | Descrição |
-| :--- | :--- | :--- |
-| `DATABASE_URL` | `file:./dev.db` | Caminho do banco de dados (SQLite). **Atenção:** SQLite perde dados a cada deploy no Render se não usar um disco persistente. Para produção real, use PostgreSQL. |
-| `JWT_SECRET` | `sua-chave-secreta-super-segura` | Chave para assinar tokens de login. |
-| `PORT` | `4000` | Porta do servidor (Render define isso automaticamente, mas bom ter). |
-| `NODE_ENV` | `production` | Define ambiente de produção. |
+Se o Render tiver a opção "Add from .env" ou para facilitar sua cópia:
 
-**Comando de Build:** `npm install && npm run build`
-**Comando de Start:** `npm run start:prod`
+```env
+DATABASE_URL=postgresql://postgres:lUIZ%401143*@db.wjqiefbuutzacyypagdt.supabase.co:5432/postgres
+JWT_SECRET=vetz-super-secret-key-2025
+PORT=4000
+NODE_ENV=production
+MP_ACCESS_TOKEN=TEST-8609600527449758-121908-62372c39d2d0d7837572486bfda9aa4b-547482652
+MP_PUBLIC_KEY=TEST-ccdd1ef6-0ca9-4179-b7b2-969ac25aa032
+```
+
+> **Nota:** A senha do banco já está formatada corretamente na URL acima (o `@` virou `%40`). Pode copiar sem medo!
 
 ---
 
-## 2. Frontend (Vercel)
+## 🌐 Configuração para o Vercel (Frontend)
 
-Ao importar o projeto no Vercel, configure as seguintes variáveis em **Environment Variables**:
+No painel do Vercel, ao importar o projeto:
+1.  **Root Directory:** Edite e selecione a pasta `frontend`.
+2.  Vá em **Environment Variables** e adicione:
 
-| Variável | Valor Exemplo | Descrição |
-| :--- | :--- | :--- |
-| `NEXT_PUBLIC_API_URL` | `https://seu-backend-no-render.onrender.com` | URL do seu backend no Render (sem a barra final `/`). |
+| Key (Nome) | Value (Valor) |
+| :--- | :--- |
+| `NEXT_PUBLIC_API_URL` | `https://seu-backend-no-render.onrender.com` |
 
-**Importante:**
-1. Primeiro faça o deploy do **Backend** no Render.
-2. Copie a URL gerada pelo Render (ex: `https://vetz-backend.onrender.com`).
-3. Cole essa URL na variável `NEXT_PUBLIC_API_URL` no Vercel.
-4. Faça o deploy do Frontend.
+> **Importante:** Substitua o valor acima pela URL real que o Render vai gerar para você após o deploy do backend.
 
-## 3. Observação sobre Banco de Dados (SQLite)
+---
 
-Como estamos usando SQLite (`file:./dev.db`), o banco de dados é um arquivo local.
-- No **Render**, o sistema de arquivos é efêmero. Isso significa que **toda vez que você fizer um novo deploy, o banco de dados será resetado**.
-- Para evitar isso no Render, você precisaria adicionar um **Persistent Disk** e configurar o caminho do banco para esse disco, OU migrar para um banco PostgreSQL (recomendado para produção).
+## 🛠️ Comandos de Build e Start
 
-Se precisar de ajuda para migrar para PostgreSQL, me avise!
+**Backend (Render):**
+*   **Build Command:** `npm install && npm run build`
+*   **Start Command:** `npm run start:prod`
+
+**Frontend (Vercel):**
+*   **Framework Preset:** Next.js (Automático)
+*   **Build Command:** `next build`

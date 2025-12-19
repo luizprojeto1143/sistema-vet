@@ -16,7 +16,7 @@ export default function NewAppointmentPage() {
         // Fetch Pets for selection
         const fetchPets = async () => {
             const token = localStorage.getItem('token');
-            const res = await fetch('http://localhost:4000/pets', {
+            const res = await fetch((process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000') + '/pets', {
                 headers: { 'Authorization': `Bearer ${token}` }
             });
             if (res.ok) setPets(await res.json());
@@ -29,7 +29,7 @@ export default function NewAppointmentPage() {
         const token = localStorage.getItem('token');
 
         // Create Appointment
-        const res = await fetch('http://localhost:4000/appointments', {
+        const res = await fetch((process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000') + '/appointments', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',

@@ -11,7 +11,7 @@ export default function PatientList() {
         const fetchPets = async () => {
             try {
                 const token = localStorage.getItem('token');
-                const res = await fetch('http://localhost:4000/pets', {
+                const res = await fetch((process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000') + '/pets', {
                     headers: {
                         'Authorization': `Bearer ${token} `
                     }

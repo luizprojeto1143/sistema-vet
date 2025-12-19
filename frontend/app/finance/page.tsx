@@ -18,8 +18,8 @@ export default function FinancePage() {
         const headers = { 'Authorization': `Bearer ${token}` };
 
         const [resTrans, resSum] = await Promise.all([
-            fetch('http://localhost:4000/finance', { headers }),
-            fetch('http://localhost:4000/finance/summary', { headers })
+            fetch((process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000') + '/finance', { headers }),
+            fetch((process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000') + '/finance/summary', { headers })
         ]);
 
         if (resTrans.ok) setTransactions(await resTrans.json());
@@ -34,7 +34,7 @@ export default function FinancePage() {
     const handleCreate = async (e: React.FormEvent) => {
         e.preventDefault();
         const token = localStorage.getItem('token');
-        await fetch('http://localhost:4000/finance', {
+        await fetch((process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000') + '/finance', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
             body: JSON.stringify({ ...newTrans, date: new Date(), paymentMethod: 'CASH', status: 'COMPLETED' })

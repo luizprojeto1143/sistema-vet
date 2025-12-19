@@ -27,7 +27,7 @@ export default function StockPage() {
     const loadProducts = async () => {
         setLoading(true);
         const token = localStorage.getItem('token');
-        const res = await fetch('http://localhost:4000/products', { // Helper endpoint
+        const res = await fetch((process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000') + '/products', { // Helper endpoint
             headers: { 'Authorization': `Bearer ${token}` }
         });
         if (res.ok) {
@@ -54,14 +54,14 @@ export default function StockPage() {
 
         if (data.id) {
             // UDPATE
-            await fetch(`http://localhost:4000/products/${data.id}`, {
+            await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000'}/products/${data.id}`, {
                 method: 'PATCH',
                 headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
                 body: JSON.stringify(data)
             });
         } else {
             // CREATE
-            await fetch('http://localhost:4000/products', {
+            await fetch((process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000') + '/products', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
                 body: JSON.stringify(data)

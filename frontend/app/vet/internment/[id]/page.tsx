@@ -42,7 +42,7 @@ export default function InternmentFolioPage() {
 
     const loadProducts = async () => {
         const token = localStorage.getItem('token');
-        const res = await fetch(`http://localhost:4000/stock/products`, {
+        const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000'}/stock/products`, {
             headers: { 'Authorization': `Bearer ${token}` }
         });
         if (res.ok) {
@@ -52,7 +52,7 @@ export default function InternmentFolioPage() {
 
     const loadData = async () => {
         const token = localStorage.getItem('token');
-        const res = await fetch(`http://localhost:4000/internment/${params.id}`, {
+        const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000'}/internment/${params.id}`, {
             headers: { 'Authorization': `Bearer ${token}` }
         });
         if (res.ok) {
@@ -65,7 +65,7 @@ export default function InternmentFolioPage() {
 
     const handlePrescribe = async () => {
         const token = localStorage.getItem('token');
-        await fetch('http://localhost:4000/internment/prescribe', {
+        await fetch((process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000') + '/internment/prescribe', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
             body: JSON.stringify({

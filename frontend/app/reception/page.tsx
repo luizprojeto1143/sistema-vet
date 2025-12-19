@@ -29,7 +29,7 @@ export default function ReceptionDashboard() {
         const token = localStorage.getItem('token');
 
         // 1. Appointments
-        const resAppt = await fetch('http://localhost:4000/appointments', {
+        const resAppt = await fetch((process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000') + '/appointments', {
             headers: { 'Authorization': `Bearer ${token}` }
         });
         if (resAppt.ok) {
@@ -40,13 +40,13 @@ export default function ReceptionDashboard() {
         }
 
         // 2. Cashier
-        const resCash = await fetch('http://localhost:4000/finance/cashier/status', {
+        const resCash = await fetch((process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000') + '/finance/cashier/status', {
             headers: { 'Authorization': `Bearer ${token}` }
         });
         if (resCash.ok) setCashier(await resCash.json());
 
         // 3. Products (Pre-fetch for speed, or could do search API)
-        const resProd = await fetch('http://localhost:4000/products', {
+        const resProd = await fetch((process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000') + '/products', {
             headers: { 'Authorization': `Bearer ${token}` }
         });
         if (resProd.ok) {
@@ -102,7 +102,7 @@ export default function ReceptionDashboard() {
     const handleCheckIn = async (id: string, name: string) => {
         if (!confirm(`Confirmar chegada de ${name}?`)) return;
         const token = localStorage.getItem('token');
-        await fetch(`http://localhost:4000/appointments/${id}/status`, {
+        await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000'}/appointments/${id}/status`, {
             method: 'PATCH',
             headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
             body: JSON.stringify({ status: 'WAITING' })
@@ -158,7 +158,7 @@ export default function ReceptionDashboard() {
             items: productItems // Send stock deduction request
         };
 
-        const res = await fetch('http://localhost:4000/finance', {
+        const res = await fetch((process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000') + '/finance', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
             body: JSON.stringify(payload)
@@ -166,7 +166,7 @@ export default function ReceptionDashboard() {
 
         if (res.ok) {
             // Also update Appointment to COMPLETED_PAID
-            await fetch(`http://localhost:4000/appointments/${selectedTransaction.id}/status`, {
+            await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000'}/appointments/${selectedTransaction.id}/status`, {
                 method: 'PATCH',
                 headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
                 body: JSON.stringify({ status: 'COMPLETED_PAID' })
@@ -187,7 +187,7 @@ export default function ReceptionDashboard() {
         if (!amount) return;
 
         const token = localStorage.getItem('token');
-        await fetch(`http://localhost:4000/finance/cashier/${action}`, {
+        await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000'}/finance/cashier/${action}`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
             body: JSON.stringify({ amount })

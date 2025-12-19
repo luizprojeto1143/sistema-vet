@@ -26,7 +26,7 @@ export default function NewTutorPage() {
         };
 
         // Create Tutor
-        const res = await fetch('http://localhost:4000/tutors', {
+        const res = await fetch((process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000') + '/tutors', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',

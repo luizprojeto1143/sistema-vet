@@ -11,7 +11,7 @@ export default function TutorDashboard() {
         const fetchMe = async () => {
             try {
                 const token = localStorage.getItem('token');
-                const res = await fetch('http://localhost:4000/tutors/me', {
+                const res = await fetch((process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000') + '/tutors/me', {
                     headers: { 'Authorization': `Bearer ${token}` }
                 });
                 if (res.ok) {

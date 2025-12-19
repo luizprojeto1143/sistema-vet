@@ -29,7 +29,7 @@ export default function PetShopDashboard() {
         // Save checklist/observations to backend (notes field or new json field)
         const notes = `Obs: ${obs} | Checklist: ${checklist.nails ? 'Unha ' : ''}${checklist.ears ? 'Ouvido ' : ''}`;
 
-        await fetch(`http://localhost:4000/appointments/${selectedTask.id}`, {
+        await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000'}/appointments/${selectedTask.id}`, {
             method: 'PATCH',
             headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${localStorage.getItem('token')}` },
             body: JSON.stringify({ notes })
@@ -46,7 +46,7 @@ export default function PetShopDashboard() {
 
     const loadTasks = async () => {
         const token = localStorage.getItem('token');
-        const res = await fetch('http://localhost:4000/appointments?type=BANHO_TOSA', { // Filter by type
+        const res = await fetch((process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000') + '/appointments?type=BANHO_TOSA', { // Filter by type
             headers: { 'Authorization': `Bearer ${token}` }
         });
         if (res.ok) {
@@ -68,7 +68,7 @@ export default function PetShopDashboard() {
         setTasks(prev => prev.map((t: any) => t.id === id ? { ...t, status: nextStage } : t));
 
         const token = localStorage.getItem('token');
-        await fetch(`http://localhost:4000/appointments/${id}/status`, {
+        await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000'}/appointments/${id}/status`, {
             method: 'PATCH',
             headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
             body: JSON.stringify({ status: nextStage })

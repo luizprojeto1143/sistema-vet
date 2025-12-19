@@ -10,7 +10,7 @@ export default function CashierHistoryPage() {
     useEffect(() => {
         const fetchHistory = async () => {
             const token = localStorage.getItem('token');
-            const res = await fetch('http://localhost:4000/finance/cashier/history', {
+            const res = await fetch((process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000') + '/finance/cashier/history', {
                 headers: { 'Authorization': `Bearer ${token}` }
             });
             if (res.ok) {

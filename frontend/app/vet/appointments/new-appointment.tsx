@@ -53,7 +53,7 @@ export function NewAppointmentModal({ onClose, onSuccess }: { onClose: () => voi
             // the backend might throw Foreign Key Error. 
             // For this "UI First" approach, we will try to submit.
 
-            const res = await fetch('http://localhost:4000/appointments', {
+            const res = await fetch((process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000') + '/appointments', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

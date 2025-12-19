@@ -10,7 +10,7 @@ export default function AnalisaVetPage() {
         setLoading(true);
         const token = localStorage.getItem('token');
         try {
-            const res = await fetch('http://localhost:4000/analisavet/analyze', {
+            const res = await fetch((process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000') + '/analisavet/analyze', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -53,7 +53,7 @@ export default function AnalisaVetPage() {
 
                                         try {
                                             const token = localStorage.getItem('token');
-                                            const res = await fetch('http://localhost:4000/analisavet/upload', {
+                                            const res = await fetch((process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000') + '/analisavet/upload', {
                                                 method: 'POST',
                                                 headers: { 'Authorization': `Bearer ${token}` }, // Content-Type is auto-set with FormData
                                                 body: formData

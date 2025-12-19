@@ -20,9 +20,9 @@ export default function Home() {
       // fetching from our existing endpoints.
 
       const [resApt, resFin, resProd] = await Promise.all([
-        fetch('http://localhost:4000/appointments', { headers: { 'Authorization': `Bearer ${token}` } }),
-        fetch('http://localhost:4000/finance', { headers: { 'Authorization': `Bearer ${token}` } }),
-        fetch('http://localhost:4000/products', { headers: { 'Authorization': `Bearer ${token}` } })
+        fetch((process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000') + '/appointments', { headers: { 'Authorization': `Bearer ${token}` } }),
+        fetch((process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000') + '/finance', { headers: { 'Authorization': `Bearer ${token}` } }),
+        fetch((process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000') + '/products', { headers: { 'Authorization': `Bearer ${token}` } })
       ]);
 
       let appointmentsToday = 0;

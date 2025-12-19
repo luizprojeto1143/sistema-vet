@@ -35,7 +35,7 @@ export default function SmartAgendaPage() {
                 const user = userStr ? JSON.parse(userStr) : {};
 
                 // If backend supports filtering by clinic, it usually gets it from token or query
-                const res = await fetch(`http://localhost:4000/appointments?clinicId=${user.clinicId || ''}`, {
+                const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000'}/appointments?clinicId=${user.clinicId || ''}`, {
                     headers: { 'Authorization': `Bearer ${token}` }
                 });
 
@@ -90,7 +90,7 @@ export default function SmartAgendaPage() {
                     const user = userStr ? JSON.parse(userStr) : {};
 
                     // If backend supports filtering by clinic, it usually gets it from token or query
-                    const res = await fetch(`http://localhost:4000/appointments?clinicId=${user.clinicId || ''}`, {
+                    const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000'}/appointments?clinicId=${user.clinicId || ''}`, {
                         headers: { 'Authorization': `Bearer ${token}` }
                     });
 

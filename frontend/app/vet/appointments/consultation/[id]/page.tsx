@@ -43,13 +43,13 @@ export default function ConsultationPage({ params }: { params: { id: string } })
             const token = localStorage.getItem('token');
             // Assuming we have an endpoint to get detailed appointment info for consultation context
             // Ideally: GET /appointments/:id with includes
-            const res = await fetch(`http://localhost:4000/appointments?id=${params.id}`, { // Fallback to list filter if specific endpoint missing
+            const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000'}/appointments?id=${params.id}`, { // Fallback to list filter if specific endpoint missing
                headers: { 'Authorization': `Bearer ${token}` }
             });
             // Or better, GET /appointments/:id if supported. For now, filter list.
             // Actually, let's try direct fetch if supported or list.
             // Using a specific endpoint is better practice. Let's assume standard REST.
-            const resSpecific = await fetch(`http://localhost:4000/appointments/${params.id}`, {
+            const resSpecific = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000'}/appointments/${params.id}`, {
                headers: { 'Authorization': `Bearer ${token}` }
             });
 
@@ -87,7 +87,7 @@ export default function ConsultationPage({ params }: { params: { id: string } })
             // Prescription could be saved separately or as part of treatment
          };
 
-         const res = await fetch('http://localhost:4000/medical-records', {
+         const res = await fetch((process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000') + '/medical-records', {
             method: 'POST',
             headers: {
                'Content-Type': 'application/json',
@@ -98,7 +98,7 @@ export default function ConsultationPage({ params }: { params: { id: string } })
 
          if (res.ok) {
             // Update appointment status to COMPLETED
-            await fetch(`http://localhost:4000/appointments/${appointment.id}/status`, {
+            await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000'}/appointments/${appointment.id}/status`, {
                method: 'PATCH',
                headers: {
                   'Content-Type': 'application/json',

@@ -9,7 +9,7 @@ export default function AuditPage() {
     useEffect(() => {
         const fetchLogs = async () => {
             const token = localStorage.getItem('token');
-            const res = await fetch('http://localhost:4000/audit?limit=100', {
+            const res = await fetch((process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000') + '/audit?limit=100', {
                 headers: { 'Authorization': `Bearer ${token}` }
             });
             if (res.ok) {

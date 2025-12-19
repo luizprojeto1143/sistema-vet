@@ -27,7 +27,7 @@ export default function InternmentFolio() {
 
     const fetchDetails = async () => {
         const token = localStorage.getItem('token');
-        const res = await fetch(`http://localhost:4000/internment/${id}`, {
+        const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000'}/internment/${id}`, {
             headers: { 'Authorization': `Bearer ${token}` }
         });
         if (res.ok) {
@@ -43,7 +43,7 @@ export default function InternmentFolio() {
     const handlePrescribe = async (e: React.FormEvent) => {
         e.preventDefault();
         const token = localStorage.getItem('token');
-        await fetch('http://localhost:4000/internment/prescribe', {
+        await fetch((process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000') + '/internment/prescribe', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
             body: JSON.stringify({
@@ -63,7 +63,7 @@ export default function InternmentFolio() {
         const token = localStorage.getItem('token');
         if (!confirm('Confirmar aplicação da medicação? Isso baixará do estoque.')) return;
 
-        await fetch('http://localhost:4000/internment/execute-medication', {
+        await fetch((process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000') + '/internment/execute-medication', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
             body: JSON.stringify({
@@ -78,7 +78,7 @@ export default function InternmentFolio() {
     const handleVitalSign = async (e: React.FormEvent) => {
         e.preventDefault();
         const token = localStorage.getItem('token');
-        await fetch('http://localhost:4000/internment/vital-sign', {
+        await fetch((process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000') + '/internment/vital-sign', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
             body: JSON.stringify({
@@ -96,7 +96,7 @@ export default function InternmentFolio() {
 
     const handleDailyRecord = async () => {
         const token = localStorage.getItem('token');
-        await fetch('http://localhost:4000/internment/daily-record', {
+        await fetch((process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000') + '/internment/daily-record', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
             body: JSON.stringify({
@@ -114,7 +114,7 @@ export default function InternmentFolio() {
     const handleDischarge = async () => {
         if (!confirm('Tem certeza que deseja dar ALTA a este paciente?')) return;
         const token = localStorage.getItem('token');
-        await fetch(`http://localhost:4000/internment/${id}/discharge`, {
+        await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000'}/internment/${id}/discharge`, {
             method: 'PUT',
             headers: { 'Authorization': `Bearer ${token}` }
         });

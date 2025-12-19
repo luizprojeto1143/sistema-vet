@@ -37,13 +37,13 @@ export default function NewAppointmentPage() {
         const token = localStorage.getItem('token'); // Tutor Token
 
         // 1. Fetch Pets
-        const resPets = await fetch('http://localhost:4000/tutors/me/pets', {
+        const resPets = await fetch((process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000') + '/tutors/me/pets', {
             headers: { 'Authorization': `Bearer ${token}` }
         });
         if (resPets.ok) setPets(await resPets.json());
 
         // 2. Fetch Services
-        const resServ = await fetch('http://localhost:4000/services', {
+        const resServ = await fetch((process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000') + '/services', {
             headers: { 'Authorization': `Bearer ${token}` }
         });
         if (resServ.ok) setServices(await resServ.json());
@@ -57,7 +57,7 @@ export default function NewAppointmentPage() {
         // Assuming Clinic ID 1 or passed via context. For Tutor, maybe linked to their clinic?
         // Using 'clinic-1' as fallback or ideally getting from Tutor profile.
         // But let's assume 'clinic-1' for MVP.
-        const res = await fetch(`http://localhost:4000/appointments/slots?clinicId=clinic-1&date=${date}&serviceId=${selectedService?.id}`, {
+        const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000'}/appointments/slots?clinicId=clinic-1&date=${date}&serviceId=${selectedService?.id}`, {
             headers: { 'Authorization': `Bearer ${token}` }
         });
         if (res.ok) {
@@ -78,7 +78,7 @@ export default function NewAppointmentPage() {
         const token = localStorage.getItem('token');
         const dateTime = `${selectedDate}T${selectedSlot}:00`; // Simple ISO construction
 
-        const res = await fetch('http://localhost:4000/appointments', {
+        const res = await fetch((process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000') + '/appointments', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',

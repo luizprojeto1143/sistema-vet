@@ -17,7 +17,7 @@ export default function NewPatientPage() {
         // Fetch Tutors for selection
         const fetchTutors = async () => {
             const token = localStorage.getItem('token');
-            const res = await fetch('http://localhost:4000/tutors', {
+            const res = await fetch((process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000') + '/tutors', {
                 headers: { 'Authorization': `Bearer ${token}` }
             });
             if (res.ok) {
@@ -32,7 +32,7 @@ export default function NewPatientPage() {
         const token = localStorage.getItem('token');
 
         // Create Pet
-        const res = await fetch('http://localhost:4000/pets', {
+        const res = await fetch((process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000') + '/pets', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',

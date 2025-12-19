@@ -13,7 +13,7 @@ export default function ProductsPage() {
 
     const loadProducts = async () => {
         const token = localStorage.getItem('token');
-        const res = await fetch('http://localhost:4000/products', {
+        const res = await fetch((process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000') + '/products', {
             headers: { 'Authorization': `Bearer ${token}` }
         });
         if (res.ok) setProducts(await res.json());
@@ -27,7 +27,7 @@ export default function ProductsPage() {
 
     const handleSave = async () => {
         const token = localStorage.getItem('token');
-        const res = await fetch(`http://localhost:4000/products/${editingId}`, {
+        const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000'}/products/${editingId}`, {
             method: 'PATCH',
             headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
             body: JSON.stringify({

@@ -17,7 +17,7 @@ export default function TutorCheckin() {
 
             // In a real app, the user would log in and we would have their ID.
             // Here we simulate fetching the list "publicly" (or with a kiosk token)
-            const res = await fetch('http://localhost:4000/appointments?clinicId=clinic-1'); // Public endpoint? Needs guard fix or token.
+            const res = await fetch((process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000') + '/appointments?clinicId=clinic-1'); // Public endpoint? Needs guard fix or token.
             // Actually, the endpoint is protected. 
             // We need a solution for "Public Kiosk" or "Tutor App Login".
             // User asked for "Real Gears". Real gears imply Auth.
@@ -48,7 +48,7 @@ export default function TutorCheckin() {
                 // Let's Mock the backend call explicitly here stating "Would call PATCH /appointments/:id"
                 // OR I quickly add PATCH /:id to Appointments Controller. I SHOULD DO THAT.
 
-                await fetch(`http://localhost:4000/appointments/${apt.id}/details`, { // New Endpoint
+                await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000'}/appointments/${apt.id}/details`, { // New Endpoint
                     method: 'PATCH',
                     headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
                     body: JSON.stringify({

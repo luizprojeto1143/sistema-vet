@@ -13,7 +13,7 @@ export default function ServicesManagement() {
     const loadServices = async () => {
         const token = localStorage.getItem('token');
         // Filter products by category 'SERVICE'
-        const res = await fetch('http://localhost:4000/products?category=SERVICE', {
+        const res = await fetch((process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000') + '/products?category=SERVICE', {
             headers: { 'Authorization': `Bearer ${token}` }
         });
         if (res.ok) {
@@ -26,7 +26,7 @@ export default function ServicesManagement() {
 
     const handleCreate = async () => {
         const token = localStorage.getItem('token');
-        await fetch('http://localhost:4000/products', {
+        await fetch((process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000') + '/products', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
             body: JSON.stringify({

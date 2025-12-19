@@ -18,7 +18,7 @@ export default function TVPanel() {
                 const token = localStorage.getItem('token');
                 if (!token) return;
 
-                const res = await fetch('http://localhost:4000/internment/active', {
+                const res = await fetch((process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000') + '/internment/active', {
                     headers: { 'Authorization': `Bearer ${token}` }
                 });
                 if (res.ok) {

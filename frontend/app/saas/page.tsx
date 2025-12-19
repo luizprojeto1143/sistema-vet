@@ -35,7 +35,7 @@ export default function SaasDashboard() {
 
     const fetchMetrics = async () => {
         const token = localStorage.getItem('token');
-        const res = await fetch('http://localhost:4000/saas/dashboard', {
+        const res = await fetch((process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000') + '/saas/dashboard', {
             headers: { 'Authorization': `Bearer ${token}` }
         });
         if (res.ok) setMetrics(await res.json());

@@ -22,8 +22,8 @@ export default function InvitePage() {
 
         try {
             const [resCode, resStats] = await Promise.all([
-                fetch('http://localhost:4000/growth/referral-code', { headers: { 'Authorization': `Bearer ${token}` } }),
-                fetch('http://localhost:4000/growth/stats', { headers: { 'Authorization': `Bearer ${token}` } })
+                fetch((process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000') + '/growth/referral-code', { headers: { 'Authorization': `Bearer ${token}` } }),
+                fetch((process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000') + '/growth/stats', { headers: { 'Authorization': `Bearer ${token}` } })
             ]);
 
             if (resCode.ok) setReferralData(await resCode.json());

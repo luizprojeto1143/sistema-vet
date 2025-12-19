@@ -1,0 +1,4841 @@
+Hospital + petshop é eu quero um painel para o cliente
+Perfeito. Vou te entregar um desenho completo do sistema no nível Hospital Veterinário + Petshop, COM painel do cliente (tutor) — pensado para escalar, vender e competir direto com Dvet, Sispet, VetManager, etc.
+Vou organizar como se fosse documento de produto + técnico, exatamente do jeito que desenvolvedor entende.
+
+???? SISTEMA VETERINÁRIO
+Hospital Veterinário + Petshop + Painel do Cliente
+
+1?? VISÃO GERAL DO SISTEMA
+Um ecossistema completo, com 4 grandes frentes:
+1. Painel Administrativo (Hospital + Petshop)
+2. Painel Profissional (Veterinários, auxiliares, banho/tosa)
+3. Painel Financeiro/Fiscal
+4. Painel do Cliente (Tutor do Pet) ? seu diferencial
+Tudo multi-clínica (multi-tenant), com permissões finas.
+
+2?? PAINÉIS DO SISTEMA
+
+????? 1. PAINEL ADMINISTRATIVO (CLÍNICA / HOSPITAL)
+?? Usuários e Permissões
+* Administrador geral
+* Veterinário
+* Auxiliar/enfermagem
+* Banho e tosa
+* Financeiro
+* Recepção
+Permissões por:
+* módulo
+* ação (ver, criar, editar, excluir)
+
+??? Cadastros
+* Tutores (clientes)
+* Pets (espécie, raça, peso, histórico)
+* Profissionais
+* Serviços (consulta, cirurgia, banho, internação)
+* Produtos (ração, medicamento, acessórios)
+* Vacinas
+* Salas, leitos, alas
+* Convênios/parcerias
+
+?? Agenda Inteligente
+* Agenda por:
+o profissional
+o sala
+o tipo de serviço
+* Status:
+o agendado
+o confirmado
+o em atendimento
+o finalizado
+o faltou
+* Confirmação automática por WhatsApp
+* Retornos automáticos
+* Banho/tosa recorrente
+
+?? Prontuário Eletrônico (Hospital)
+* Anamnese estruturada
+* Exame físico
+* Diagnóstico
+* Conduta
+* Evolução clínica
+* Prescrições
+* Solicitação de exames
+* Upload de:
+o imagens
+o PDFs
+o laudos
+* Histórico completo do pet (linha do tempo)
+?? Auditoria total (quem alterou, quando, o quê)
+
+?? Internação (Hospital)
+* Controle de:
+o leitos
+o alas
+o status do paciente
+* Prescrição por horário
+* Sinais vitais
+* Evolução por turno
+* Checklists de enfermagem
+* Alta médica
+* Relatório automático de internação (PDF)
+
+?? Petshop (Banho & Tosa)
+* Agenda própria
+* Pacotes (mensal, quinzenal)
+* Check-in / Check-out
+* Observações (machucado, pulga, comportamento)
+* Fotos antes/depois
+* Histórico do pet
+
+?? 2. FINANCEIRO + PDV
+?? PDV
+* Venda de:
+o serviços
+o produtos
+* Orçamento ? vira venda
+* Desconto autorizado
+* Múltiplas formas de pagamento:
+o Pix
+o cartão
+o dinheiro
+o link
+
+?? Pagamentos & Comissões
+* Comissão por:
+o profissional
+o serviço
+* Percentual ou valor fixo
+* Split interno (sem depender de maquininha específica)
+* Relatório de repasses
+
+?? Financeiro
+* Contas a pagar
+* Contas a receber
+* Fluxo de caixa
+* DRE
+* Faturamento:
+o por período
+o por profissional
+o por serviço
+* Inadimplência
+
+?? 3. FISCAL (Opcional / Premium)
+* Emissão:
+o NFS-e
+o NFC-e
+o NF-e
+* Integração com contador
+* Relatórios fiscais
+* Exportação XML/PDF
+
+?? 4. INTELIGÊNCIA ARTIFICIAL (DIFERENCIAL)
+IA Clínica
+* Áudio da consulta ? texto no prontuário
+* Sugestão de textos padrão (não diagnóstico)
+* Resumo automático do caso
+* Alertas:
+o retorno esquecido
+o vacina atrasada
+o exame sem resultado
+IA Operacional
+* Previsão de estoque
+* Serviços mais rentáveis
+* Horários ociosos
+
+?? 5?? PAINEL DO CLIENTE (TUTOR) ??????
+Esse é o grande diferencial.
+?? Acesso
+* Web e/ou app
+* Login por CPF + WhatsApp
+* Cada tutor vê apenas seus pets
+
+?? Visão do Pet
+* Foto
+* Dados básicos
+* Carteira de vacinação digital
+* Histórico de consultas
+* Histórico de internações
+* Exames e laudos (PDF)
+* Receitas médicas
+
+?? Agendamentos
+* Agendar:
+o consulta
+o banho/tosa
+* Ver agenda futura
+* Cancelar/reagendar
+* Confirmar presença
+
+?? Internação (Transparência total)
+* Status em tempo real
+* Evolução diária (texto liberado pelo vet)
+* Fotos/vídeos (opcional)
+* Previsão de alta
+
+?? Financeiro do Cliente
+* Orçamentos
+* Faturas
+* Pagamento online (Pix/link)
+* Histórico de pagamentos
+* Parcelas
+
+?? Notificações
+* Vacina atrasada
+* Retorno
+* Banho/tosa agendado
+* Alta hospitalar
+* Promoções do petshop
+
+? Acessibilidade (SEU DNA)
+* Alto contraste
+* Fonte ajustável
+* Textos simples
+* Vídeos explicativos (Libras)
+* Fluxos guiados
+
+6?? ARQUITETURA TÉCNICA (RESUMO)
+* Frontend Admin: React / Next.js
+* Frontend Cliente: React / Expo
+* Backend: NestJS + TypeScript
+* Banco: PostgreSQL + Prisma
+* Fila: Redis (WhatsApp, lembretes)
+* Storage: S3/R2
+* Multi-tenant real
+* Logs e auditoria
+
+7?? MODELO DE NEGÓCIO (SUGESTÃO)
+* Plano Hospital
+* Plano Hospital + Petshop
+* Plano com Painel do Cliente
+* Add-ons:
+o Fiscal
+o IA
+o WhatsApp
+o App white-label
+
+?? Próximo passo (escolhe um):
+1?? Quer que eu crie a lista completa de endpoints do backend
+2?? Quer o modelo de banco (Prisma)
+3?? Quer os fluxos de tela do painel do cliente
+4?? Quer documento pronto pra desenvolvedor / investidor
+Me diz qual que eu sigo.
+analisavet_nova_atualizado (3).zip
+Arquivo zip
+Integre esse sistema no sistema que vamos fazer 
+Perfeito. Vou considerar o seguinte contexto consolidado (sem ambiguidades):
+“Integrar esse sistema (baseado no Dvet) ao sistema que vamos fazer”
+?? Ou seja: o sistema Hospital Veterinário + Petshop + Painel do Cliente que já desenhamos vai absorver e integrar TODAS as funcionalidades do Dvet, sem copiar marca, mas copiando lógica, fluxo e módulos, e expandindo.
+Abaixo está a integração técnica e funcional completa, como se fosse um documento oficial de arquitetura do produto.
+
+?? INTEGRAÇÃO DO “MODELO DVET”
+NO NOSSO SISTEMA (Hospital + Petshop + Cliente)
+
+1?? O QUE SIGNIFICA “INTEGRAR” (na prática)
+Não é API externa nem dependência do Dvet.
+É:
+* Replicar todos os módulos essenciais
+* Melhorar os fluxos
+* Unificar tudo em um único core
+* Tornar multi-tenant, escalável e acessível
+* Adicionar Painel do Cliente (que o Dvet não explora bem)
+
+2?? MAPEAMENTO: DVET ? NOSSO SISTEMA
+?? Visão Geral de Integração
+DvetNosso SistemaGestão ClínicaMódulo HospitalPetshopMódulo PetshopProntuárioProntuário Hospitalar AvançadoInternaçãoInternação + EnfermagemPDVPDV UnificadoFinanceiroFinanceiro + DRESplit pagamentoMotor de ComissõesComunicaçãoCentral WhatsApp + Painel ClienteIA ProntuárioIA Clínica Expandida(Não tem)Painel do Cliente
+3?? CORE UNIFICADO (INTEGRAÇÃO REAL)
+?? CORE DO SISTEMA (Back-end)
+Todos os módulos abaixo conversam entre si:
+CORE
+??? Identidade (usuários, permissões)
+??? Clínica (tenant)
+??? Pet / Tutor
+??? Agenda
+??? Atendimento
+??? Prontuário
+??? Internação
+??? Petshop
+??? PDV
+??? Financeiro
+??? Comissões
+??? Fiscal
+??? Comunicação
+??? IA
+??? Painel do Cliente
+?? Nada é isolado (erro comum de sistemas vet).
+
+4?? INTEGRAÇÃO FUNCIONAL DETALHADA
+
+?? PRONTUÁRIO (Dvet ? Nosso)
+Integração lógica:
+* Atendimento ? cria prontuário
+* Prontuário ? pode gerar:
+o prescrição
+o exames
+o internação
+o orçamento
+o cobrança
+Upgrade nosso:
+* Linha do tempo visual
+* Auditoria completa
+* IA resumindo caso
+* Liberação seletiva de informações para o tutor
+
+?? INTERNAÇÃO (Upgrade forte)
+No Dvet:
+* Internação é um módulo
+No nosso sistema:
+* Internação = mini-sistema hospitalar
+Integração:
+* Prontuário ? internação
+* Internação ? consumo de estoque
+* Internação ? cobrança automática
+* Internação ? painel do cliente (status)
+
+?? PETSHOP (Banho & Tosa integrado)
+No Dvet:
+* Petshop separado do hospital
+No nosso:
+* Mesmo pet
+* Mesmo tutor
+* Mesmo histórico
+* Mesmo financeiro
+Exemplo:
+Pet faz cirurgia ? 15 dias depois banho ? tudo no mesmo histórico
+
+?? PDV + FINANCEIRO (nível acima do Dvet)
+Integração real:
+* Atendimento ? gera orçamento
+* Orçamento ? vira venda
+* Venda ? gera:
+o pagamento
+o comissão
+o nota
+o histórico do tutor
+Motor de comissão (inspirado no Dvet, mas melhor):
+* Por profissional
+* Por serviço
+* Por turno
+* Por tipo (consulta, cirurgia, banho)
+
+?? COMUNICAÇÃO (integração transversal)
+Tudo gera comunicação:
+* Agenda ? lembrete
+* Vacina ? alerta
+* Internação ? status diário
+* Petshop ? fotos
+Tudo centralizado:
+* WhatsApp
+* Notificação app
+* Email (opcional)
+
+?? PAINEL DO CLIENTE (O GRANDE DIFERENCIAL)
+Integração com TODOS os módulos:
+MóduloO que o cliente vêProntuárioResumo liberadoVacinasCarteira digitalInternaçãoStatus, fotosPetshopHistóricoFinanceiroFaturasAgendaAgendamento?? Nenhum retrabalho para o staff.
+
+?? IA (INTEGRAÇÃO TOTAL)
+IA consome:
+* Prontuário
+* Internação
+* Agenda
+* Financeiro
+IA entrega:
+* Resumo clínico
+* Alertas de risco
+* Sugestão de retorno
+* Insights de faturamento
+
+5?? INTEGRAÇÃO TÉCNICA (COMO FAZER)
+Back-end
+* NestJS modular
+* Cada módulo isolado, mas integrado via eventos
+Exemplo:
+ProntuarioFinalizado ? 
+  geraCobrança ?
+    atualizaFinanceiro ?
+      notificaCliente
+
+Banco (conceito)
+* Todas as tabelas ligadas ao tenant_id
+* Pet é o centro do sistema
+* Tutor acessa apenas seus pets
+
+6?? RESULTADO FINAL
+Você terá:
+? Tudo que o Dvet tem
+? Hospital veterinário real
+? Petshop integrado
+? Painel do cliente completo
+? IA útil
+? Acessibilidade real
+? Produto vendável para clínicas grandes
+
+?? Próximo passo (me diga qual)
+1?? Gerar modelo de banco (Prisma) já integrado
+2?? Criar endpoints completos do backend
+3?? Desenhar fluxos do painel do cliente
+4?? Criar documento técnico para dev / investidor
+?? Fala qual que eu executo agora.
+Análise o arquivo que te mandei 
+Perfeito, agora sim deu para analisar de verdade ??
+Vou te passar uma análise técnica e funcional completa do arquivo que você enviou (analisavet_nova_atualizado.zip), falando o que ele já tem, o que falta, problemas, e como integrar isso ao sistema Hospital + Petshop + Painel do Cliente que estamos desenhando.
+
+?? VISÃO GERAL DO ARQUIVO
+O projeto analisavet_nova é um sistema híbrido (Node.js + Python) focado principalmente em:
+* Usuários
+* Sistema de créditos
+* Autenticação
+* Transações
+* Backend base já funcional
+?? Ele NÃO é ainda um sistema hospitalar/petshop, mas sim um core de plataforma que pode (e deve) ser reaproveitado.
+
+?? STACK IDENTIFICADA
+Backend
+* Node.js
+* Express
+* JWT
+* Python (scripts administrativos)
+* Banco de dados relacional (provavelmente PostgreSQL ou MySQL)
+Arquivos-chave
+* server.js ? servidor principal
+* package.json ? backend Node
+* requirements.txt ? backend Python
+* Scripts administrativos em Python
+* Documentações em .md
+
+?? O QUE JÁ EXISTE (BEM FEITO)
+1?? Sistema de Usuários
+Arquivos como:
+* check_user.py
+* create_user.py
+* reset_password.py
+* check_admin_user.py
+?? Já existe:
+* Cadastro de usuário
+* Verificação de admin
+* Reset de senha
+* Controle de permissões básicas
+?? Ótimo para reaproveitar no painel administrativo, profissional e cliente
+
+2?? Sistema de Créditos ??
+Arquivos:
+* add_credits.py
+* add_credits_to_user.py
+* check_credits.py
+* check_credits_admin.py
+* create_transactions_table.py
+?? Isso indica:
+* Sistema de créditos por usuário
+* Registro de transações
+* Controle administrativo de saldo
+?? Isso é um ativo valioso
+Podemos reaproveitar como:
+* Créditos para exames
+* Créditos de IA
+* Créditos de WhatsApp
+* Créditos de consultas online
+* Carteira do cliente
+
+3?? Sistema de Transações
+* create_transactions_table.py
+* Estrutura de histórico financeiro básico
+?? Base perfeita para:
+* Pagamentos
+* Faturas
+* Histórico do cliente
+* Comissões
+
+4?? Organização e Documentação (ponto forte)
+Arquivos como:
+* CONFIGURACAO_PRODUCAO.md
+* RESUMO_CONFIGURACAO.md
+* RELATORIO_CORRECOES.md
+* DOCUMENTACAO_ERRO_JSON_LOGIN.md
+?? Isso mostra que:
+* O projeto já passou por correções
+* Tem histórico de bugs
+* Não é um código “jogado”
+
+? O QUE NÃO EXISTE (E PRECISA SER CRIADO)
+Agora o ponto mais importante ??
+Esse projeto NÃO é ainda um sistema veterinário.
+Não existem:
+? Pets
+? Tutores
+? Prontuário
+? Agenda
+? Internação
+? Petshop
+? Estoque
+? Financeiro real
+? Painel do cliente
+? Multi-tenant (clínicas)
+Ou seja:
+?? Ele é um CORE técnico, não um produto final.
+
+?? COMO INTEGRAR ESSE PROJETO AO SISTEMA QUE VAMOS FAZER
+?? Estratégia correta (SEM jogar fora nada)
+1?? Manter esse projeto como CORE AUTH + BILLING
+Ele vira o núcleo do sistema, responsável por:
+* Usuários
+* Login / JWT
+* Permissões
+* Créditos
+* Transações
+* Plano de assinatura
+
+2?? Criar novos módulos ao redor dele
+CORE (analisavet)
+?
+??? Auth / Users / Credits
+?
+??? Hospital
+?   ??? Pets
+?   ??? Tutores
+?   ??? Prontuário
+?   ??? Internação
+?
+??? Petshop
+?   ??? Banho & Tosa
+?   ??? Pacotes
+?
+??? Financeiro
+?   ??? Vendas
+?   ??? Pagamentos
+?   ??? Comissões
+?
+??? Comunicação
+?   ??? WhatsApp
+?   ??? Notificações
+?
+??? Painel do Cliente
+
+3?? Sistema de Créditos ? vira diferencial
+O que hoje é “crédito genérico”, vira:
+CréditoUsoCrédito IATranscrição / resumoCrédito WhatsAppMensagensCrédito ExamesUpload / laudosCrédito ConsultaTelemedicina?? Pouquíssimos sistemas vet fazem isso.
+
+?? PONTOS DE ATENÇÃO TÉCNICA
+1?? Mistura Node + Python
+* Não é errado
+* Mas precisa definir:
+o Python = scripts/admin/IA
+o Node = API principal
+2?? Sem multi-tenant
+* Hoje usuário ? clínica
+* Precisamos adicionar:
+o clinics
+o clinic_id em tudo
+3?? Sem papéis claros
+* Precisamos separar:
+o admin do sistema
+o admin da clínica
+o veterinário
+o tutor (cliente)
+
+?? CONCLUSÃO HONESTA
+? O que você tem
+* Um backend sólido
+* Sistema de usuários
+* Sistema de créditos (excelente base)
+* Histórico de transações
+* Código reaproveitável
+? O que ele NÃO é (ainda)
+* Não é hospital veterinário
+* Não é petshop
+* Não tem painel do cliente
+?? O que ele pode virar
+?? Um sistema veterinário completo, mais moderno que o Dvet, se construirmos os módulos certos em cima desse core.
+
+?? Próximo passo (escolhe 1)
+1?? Quero que eu desenhe o banco novo integrando esse core
+2?? Quero a lista de endpoints novos que vão se acoplar
+3?? Quero um plano de refatoração do código atual
+4?? Quero o documento técnico completo para desenvolvedor
+Diz qual e eu sigo.
+Podemos tirar esses negócios de créditos, se ele vai estar integrado ao sistema, não precisa vai estar na mensalidade da clínica 
+Perfeito ??
+Essa decisão simplifica MUITO o sistema e é 100% correta para um SaaS veterinário profissional.
+Vou te explicar o impacto, o que remover, o que fica, e como ajustar o sistema que você já tem sem quebrar nada.
+
+? DECISÃO TOMADA
+? Sistema de créditos ? REMOVIDO
+? Tudo incluso na mensalidade da clínica
+Modelo passa a ser:
+* B2B (clínica paga)
+* Tutor (cliente final) não paga o sistema
+* Uso livre dentro do plano contratado
+?? Exatamente como Dvet, VetManager, Sispet, etc.
+
+1?? O QUE REMOVER DO PROJETO ATUAL
+Do arquivo que você enviou, podemos eliminar completamente:
+??? Scripts de crédito (Python)
+* add_credits.py
+* add_credits_to_user.py
+* check_credits.py
+* check_credits_admin.py
+??? Estrutura de crédito no banco
+* Tabela de créditos
+* Colunas de saldo
+* Lógicas de débito por ação
+??? Regras de bloqueio por crédito
+* Verificação de saldo antes de ação
+* Mensagens de “crédito insuficiente”
+?? Isso reduz:
+* Complexidade
+* Bugs
+* Reclamações de cliente
+* Suporte
+
+2?? O QUE FICA (E É MUITO VALIOSO)
+Mesmo sem créditos, o core continua excelente:
+?? Sistema de Usuários
+* Login
+* JWT
+* Reset de senha
+* Admin
+* Permissões
+?? Sistema de Transações ? vira Assinaturas
+A lógica de transações pode ser reaproveitada para:
+* Planos da clínica
+* Mensalidade
+* Upgrade/downgrade
+* Histórico de pagamento
+
+3?? NOVO MODELO DE NEGÓCIO (LIMPO)
+?? Assinatura por clínica
+Tabela nova: plans
+* Nome do plano
+* Preço
+* Limites (se quiser):
+o nº de usuários
+o nº de pets
+o nº de internações ativas
+* Recursos habilitados:
+o Petshop
+o Painel do cliente
+o Fiscal
+o IA
+o WhatsApp
+Tabela: subscriptions
+* clinic_id
+* plan_id
+* status (ativa, suspensa, cancelada)
+* próxima cobrança
+?? Nada de crédito, tudo por plano.
+
+4?? COMO FICAM AS FUNCIONALIDADES “ILIMITADAS”
+RecursoComo controlarIAIncluso no plano (Fair Use)WhatsAppIncluso ou limitado por planoInternaçãoSem limite (ou por plano)PetsIlimitado ou por planoUsuáriosPor planoSe estourar:
+“Upgrade de plano”
+simples, sem crédito.
+
+5?? IMPACTO NA ARQUITETURA (MELHORA)
+Antes:
+ação ? verifica crédito ? debita ? executa
+Agora:
+ação ? verifica plano ? executa
+?? Mais rápido
+?? Mais simples
+?? Mais escalável
+
+6?? REFATORAÇÃO SEGURA DO PROJETO ATUAL
+Passo a passo:
+1. Remover scripts de crédito
+2. Limpar referências no backend
+3. Criar:
+o plans
+o subscriptions
+4. Middleware:
+checkPlanFeature('internacao')
+checkPlanFeature('painel_cliente')
+
+7?? BENEFÍCIO ESTRATÉGICO
+Você ganha:
+? Produto mais simples
+? Previsibilidade de receita
+? Venda mais fácil
+? Menos suporte
+? Cliente mais satisfeito
+E ainda:
+?? Dá pra vender plano hospital premium bem caro.
+
+8?? CONCLUSÃO
+?? Excluir créditos foi a melhor decisão possível.
+Agora o sistema fica:
+* Profissional
+* SaaS de verdade
+* Pronto para escalar
+* Muito mais competitivo que o Dvet
+
+?? Próximo passo (me diga qual)
+1?? Criar modelo de banco (Prisma) SEM créditos
+2?? Criar estrutura de planos e assinaturas
+3?? Criar endpoints do backend já refatorados
+4?? Criar fluxos de tela (admin + cliente)
+Escolhe e eu sigo.
+Agora me dê a explicação de todas as funcionalidades do sistema atualizado 
+Perfeito. Abaixo está a explicação COMPLETA, organizada e atualizada de TODAS as funcionalidades do sistema, já considerando:
+? Hospital Veterinário
+? Petshop (banho e tosa)
+? Painel do Cliente (tutor)
+? Sem sistema de créditos
+? Modelo SaaS por mensalidade da clínica
+? Integração total entre módulos
+? Pronto para escalar e vender
+Vou explicar o que é, para que serve e como funciona na prática.
+
+???? SISTEMA VETERINÁRIO COMPLETO
+Hospital + Petshop + Painel do Cliente
+
+1?? NÚCLEO DO SISTEMA (CORE)
+?? Autenticação e Usuários
+O que é:
+Sistema central de login e controle de acesso.
+Funcionalidades:
+* Login por e-mail/senha
+* Recuperação de senha
+* JWT / sessão segura
+* Controle por perfil:
+o Admin da clínica
+o Veterinário
+o Enfermagem
+o Banho e tosa
+o Financeiro
+o Recepção
+o Tutor (cliente)
+Para que serve:
+Garantir segurança, privacidade e que cada pessoa veja apenas o que pode.
+
+?? Multi-clínica (Multi-tenant)
+O que é:
+Cada clínica é uma “empresa” separada dentro do sistema.
+Funcionalidades:
+* Dados totalmente isolados por clínica
+* Uma clínica não vê dados da outra
+* Possibilidade de planos diferentes por clínica
+Para que serve:
+Permitir vender o sistema para várias clínicas com segurança.
+
+2?? CADASTROS GERAIS
+?? Tutores (Clientes)
+* Dados pessoais
+* Contatos
+* Endereço
+* Histórico financeiro
+* Lista de pets vinculados
+?? O tutor é o dono do pet, não o usuário interno.
+
+?? Pets
+* Nome, espécie, raça, sexo
+* Peso, idade
+* Alergias e comorbidades
+* Fotos
+* Tutor vinculado
+?? O pet é o centro do sistema. Tudo gira em torno dele.
+
+????? Profissionais
+* Dados do profissional
+* Função
+* Comissão
+* Agenda
+* Permissões
+
+?? Serviços e Produtos
+* Consultas
+* Cirurgias
+* Exames
+* Internação
+* Banho e tosa
+* Produtos (ração, medicamentos, acessórios)
+
+3?? AGENDA INTELIGENTE
+Funcionalidades:
+* Agenda por profissional
+* Agenda por sala/leito
+* Tipos de atendimento
+* Status:
+o Agendado
+o Confirmado
+o Em atendimento
+o Finalizado
+o Falta
+Automação:
+* Confirmação por WhatsApp
+* Lembrete automático
+* Retorno sugerido
+Para que serve:
+Evitar faltas, organizar fluxo e aumentar faturamento.
+
+4?? PRONTUÁRIO ELETRÔNICO (HOSPITAL)
+?? Atendimento Clínico
+* Anamnese
+* Exame físico
+* Diagnóstico
+* Conduta
+* Evolução
+?? Anexos
+* Fotos
+* PDFs
+* Laudos
+* Exames
+?? Prescrições
+* Receitas digitais
+* Solicitação de exames
+* Atestados
+?? Linha do tempo
+* Histórico completo do pet
+* Tudo registrado cronologicamente
+?? Auditoria completa
+(Nada pode ser alterado sem registro)
+
+5?? INTERNAÇÃO HOSPITALAR
+Funcionalidades:
+* Cadastro de alas e leitos
+* Status do paciente
+* Prescrição por horário
+* Controle de sinais vitais
+* Evolução por turno
+* Checklists de enfermagem
+* Alta médica
+Integrações automáticas:
+* Consumo de estoque
+* Geração de cobrança
+* Atualização no painel do cliente
+
+6?? PETSHOP (BANHO & TOSA)
+Funcionalidades:
+* Agenda própria
+* Serviços avulsos ou pacotes
+* Check-in / Check-out
+* Observações do animal
+* Fotos antes/depois
+* Histórico completo
+Integração total:
+* Mesmo pet
+* Mesmo tutor
+* Mesmo financeiro
+
+7?? PDV (FRENTE DE CAIXA)
+Funcionalidades:
+* Venda de serviços e produtos
+* Orçamento ? vira venda
+* Descontos controlados
+* Parcelamento
+* Pix, cartão, dinheiro, link
+Integrações:
+* Financeiro
+* Comissão
+* Fiscal
+* Painel do cliente
+
+8?? FINANCEIRO COMPLETO
+?? Controle financeiro
+* Contas a pagar
+* Contas a receber
+* Fluxo de caixa
+* DRE
+?? Relatórios
+* Faturamento por período
+* Faturamento por profissional
+* Serviços mais rentáveis
+* Inadimplência
+
+9?? COMISSÕES PROFISSIONAIS
+Funcionalidades:
+* Comissão por:
+o Profissional
+o Serviço
+o Percentual ou valor fixo
+* Relatório de repasses
+* Histórico por profissional
+
+?? FISCAL (OPCIONAL)
+Funcionalidades:
+* Emissão de:
+o NFS-e
+o NFC-e
+o NF-e
+* Exportação XML/PDF
+* Integração contábil
+
+1??1?? COMUNICAÇÃO E NOTIFICAÇÕES
+?? WhatsApp / Notificações
+* Confirmação de agenda
+* Lembrete de vacina
+* Status de internação
+* Alta médica
+* Promoções do petshop
+Tudo automático, sem esforço da equipe.
+
+1??2?? INTELIGÊNCIA ARTIFICIAL
+?? IA Clínica
+* Áudio da consulta ? texto
+* Resumo automático do caso
+* Sugestão de texto clínico
+* Alertas de retorno/vacina
+?? IA Operacional
+* Serviços mais lucrativos
+* Horários ociosos
+* Previsão de demanda
+
+1??3?? PAINEL DO CLIENTE (TUTOR)
+?? Grande diferencial do sistema
+?? Visão do pet
+* Dados completos
+* Carteira de vacinação digital
+* Histórico de consultas
+* Exames e laudos
+* Receitas médicas
+
+?? Agendamentos
+* Agendar consulta ou banho
+* Reagendar
+* Cancelar
+* Confirmar presença
+
+?? Internação
+* Status em tempo real
+* Evolução liberada pelo vet
+* Fotos/vídeos
+* Previsão de alta
+
+?? Financeiro
+* Orçamentos
+* Faturas
+* Pagamento online
+* Histórico de pagamentos
+
+?? Notificações
+* Vacinas atrasadas
+* Retornos
+* Alta hospitalar
+* Promoções
+
+? Acessibilidade
+* Fonte ajustável
+* Alto contraste
+* Linguagem simples
+* Fluxos guiados
+* Conteúdo em Libras (opcional)
+
+1??4?? PLANOS E ASSINATURA
+Modelo SaaS:
+* Mensalidade por clínica
+* Planos:
+o Básico
+o Hospital
+o Hospital + Petshop
+o Premium (com IA, painel do cliente, fiscal)
+Sem créditos.
+Tudo incluso conforme o plano.
+
+? CONCLUSÃO
+Esse sistema é:
+? Mais completo que o Dvet
+? Mais moderno
+? Com painel do cliente real
+? Hospitalar de verdade
+? Escalável
+? Vendável
+
+?? Próximo passo (escolhe)
+1?? Documento técnico para desenvolvedor
+2?? Modelo de banco (Prisma)
+3?? Endpoints do backend
+4?? Fluxos de tela (UX)
+5?? Pitch para investidores
+Me diga qual que eu sigo agora.
+Eu vou comentar sobre cada um, porque aí fica mais fácil. Aí faltou nos pets do cadastro, né? Dos pets, ficou faltando se é castrado ou não. Vai adicionar isso. Aí, no profissional, gostei. Só que aí eu quero que você adicione os dados bancários. De PIX. Porque aí, pro sistema já fazer direto o pagamento por PIX, sabe? Esse serviço de produtos, eu gostei. Consulta, cirurgia, visão, internação, produtos. Nos produtos, eu quero adicionar, a forma de adicionar. E aí eu quero adicionar pela XML. Sabe? Da nota fiscal. Que aí vem todas as informações de produto. E adiciona pela XML ou pelo Excel também. Tá lá as informações, né? E aí eu quero já deixar pré-setado os nomes. Então, por exemplo, o que for consulta, cirurgia, CIR. Entendeu? Que eu possa cadastrar isso também. Pra ficar fácil a visualização no sistema. Mas que ele já puxe tudo da nota fiscal. Nota fiscal, XML e Excel também. Tá? Nessa questão de produtos e serviços. Sabe? Eu gostei da agenda. Só essa agenda por profissional que não. Porque são vários profissionais, eu não quero... Assim, olha, você escolhe um, escolhe outro, escolhe um, escolhe outro, não. É só agenda normal. É... E aí eu quero que já agende o retorno também. Então, por exemplo, acabou de sair da consulta, já agende o retorno já. Que a pessoa consiga agendar o retorno já pelo aplicativo dela, o cliente, né? Isso que já caiga no painel da clínica. Gostei. Gostei dessas receitas digitais. Tudo do 4, né? Adorei isso, o número 4. Só que aí pra facilitar, eu queria que, por exemplo, quando a gente fosse fazer a receita. Seja de clicar e arrastar, sabe? Então, por exemplo, a gente clica e aí aparece uma lista. E aí aparece uma lista. Ou que for melhor visualmente, mais fácil no sistema. Que a gente arrasta pra dentro da receita e ela já configura de acordo com o padrão de receituário, né? Que a farmácia pede. Que a gente pode até pesquisar depois como é que é. Que aí já consegue já deixar. É só mudar, né? De tantas em tantas horas, quantos dias, essas coisas assim. Se é farmácia humana, se é veterinária. Depois já deixar precetado só pra completar, sabe? E arrastar. É... Aí eu gostei dessa internação, mas eu queria que adicionasse um painel. Porque na minha internação, por exemplo, tem uma televisão lá. E eu queria que ela avisasse, por exemplo, quando estivesse chegando perto de um horário de aplicar um medicamento, por exemplo. Aparecesse um aviso lá, visual, por exemplo. É... Horário de aplicar tal medicamento no leito tal. Mas que bonito o visual, sabe? Que é pra eu deixar nesse painel lá na internação. Gostei da bonitose. Do 7, eu gostei. Gostei também. Aí essa questão de parcelamento, a gente pode deixar. Mas é uma coisa que é parcelamento é no cartão. Ou conversado antes. E que adicione uma forma de pagamento que é a permulta, sabe? Tipo divulgação. Gostei. Ah, e naquela parte do financeiro, né? Aí que seja integrado com o do... Como é que fala? Com a das comissões também, que é super importante. Pra gente conseguir ajustar a comissão em produto e em serviço. Mas não... Aqui tem opção de produto por produto ou opção de geral. Por exemplo, 4%, 5%. Que a gente possa ajustar isso, sabe? Mas que seja... Não, não, não. Não, não, não. Não, não, não. Não, não, não. Mas que seja... Mas que seja por produto e por serviço, né? Nessas regrinhas assim. Gostei dessa parte da IA. Ah, e que no painel da clínica ela consiga colocar o que está disponível ou não. Por exemplo, às vezes tem clínica que tem bainitose, clínica que não tem. Aí que seja disponível pra ela clicar, tipo um flagzinho. Se ela clicar que está ativado, quer dizer que tem bainitose. E a função de bainitose aparece no sistema todo pra ela. Tanto no sistema da clínica quanto no aplicativo. Se ela marcar no flag que não tem bainitose, não aparece nem no aplicativo nem no sistema. Aí por enquanto seria isso. Qualquer coisa a gente vai vendo depois.
+Perfeito ??
+Agora ficou claríssimo o que você quer. Vou atualizar o sistema inteiro incorporando TODOS os pontos que você comentou, explicando como cada ajuste entra no sistema, sem perder nada do que já estava definido.
+A ideia aqui é: esse já é o “sistema oficial v1”.
+
+? SISTEMA ATUALIZADO – FUNCIONALIDADES (COM SUAS AJUSTES)
+Vou seguir a mesma ordem dos módulos, já com as correções e melhorias que você pediu.
+
+1?? CADASTRO DE PETS (ATUALIZADO)
+?? Pets
+Campos:
+* Nome
+* Espécie
+* Raça
+* Sexo
+* Castrado: SIM / NÃO ? (adição solicitada)
+* Peso
+* Idade
+* Alergias
+* Comorbidades
+* Foto
+* Tutor vinculado
+Para que serve:
+Informação essencial clínica (principalmente para anestesia, cirurgia, conduta).
+
+2?? CADASTRO DE PROFISSIONAIS (ATUALIZADO)
+????? Profissionais
+Além do que já existia, agora inclui:
+Dados bancários para pagamento automático:
+* Tipo de chave PIX:
+o CPF
+o CNPJ
+o E-mail
+o Telefone
+o Chave aleatória
+* Banco (opcional)
+* Nome do titular
+?? Para que serve:
+O sistema consegue:
+* Calcular comissão
+* Gerar relatório
+* Efetuar pagamento via PIX automaticamente (ou exportar para pagamento)
+
+3?? SERVIÇOS E PRODUTOS (MUITO MELHORADO)
+?? Serviços
+* Consulta
+* Cirurgia
+* Exame
+* Internação
+* Banho e tosa
+* Outros
+Campos importantes:
+* Tipo (consulta, cirurgia, CIR, exame, etc.) ?
+* Código interno (ex.: CONS, CIR, INT)
+* Preço
+* Comissão padrão
+* Se gera prontuário
+* Se gera internação
+?? Esses códigos facilitam:
+* Visualização
+* Relatórios
+* Financeiro
+* Comissão
+
+?? Produtos (COM IMPORTAÇÃO)
+Formas de cadastro:
+1. Manual
+2. Importação por XML da Nota Fiscal ?
+3. Importação por Excel ?
+Ao importar XML/Excel:
+* Nome do produto
+* Código
+* Categoria
+* Valor
+* Lote
+* Validade
+* Fornecedor
+* Estoque inicial
+?? O sistema:
+* Puxa tudo automaticamente
+* Pré-classifica (produto, medicamento, ração)
+* Permite ajustar depois, se quiser
+?? Isso economiza MUITO tempo da clínica.
+
+4?? AGENDA (AJUSTADA COMO VOCÊ QUER)
+?? Agenda Única (não por profissional)
+* Agenda geral da clínica
+* Visual simples:
+o dia / semana / mês
+* Tipo de atendimento
+* Profissional é atribuído depois, não para agendar
+?? Retorno automático
+* Ao finalizar consulta:
+o sistema sugere retorno
+o já deixa data sugerida
+* Tutor pode:
+o confirmar pelo app
+o reagendar
+?? Tudo cai direto no painel da clínica.
+
+5?? PRONTUÁRIO + RECEITUÁRIO (VERSÃO AVANÇADA)
+?? Prontuário
+Você já aprovou totalmente ??
+Sem mudanças aqui.
+
+?? Receituário DIGITAL – DRAG & DROP (NOVO)
+Como funciona:
+* Lista lateral de medicamentos (padrão)
+* Veterinário:
+o clica ou arrasta
+* Sistema já preenche:
+o nome
+o dose padrão
+o intervalo
+o duração
+Depois o vet só ajusta:
+* horas
+* dias
+* observações
+Presets:
+* Farmácia humana
+* Farmácia veterinária
+?? Receita já sai no padrão correto, pronta para farmácia.
+
+6?? INTERNAÇÃO (COM PAINEL VISUAL – GRANDE DIFERENCIAL)
+?? Internação
+Tudo que já existia +:
+?? Painel de Internação (para TV)
+* Painel visual bonito
+* Mostra:
+o leito
+o pet
+o próximo medicamento
+o horário
+* Alertas visuais:
+o “Faltam 10 minutos”
+o “Hora de aplicar medicamento X no leito Y”
+?? Ideal para:
+* Televisão
+* Tablet
+* Sala de enfermagem
+?? Diferencial enorme de hospital.
+
+7?? PETSHOP (BANHO & TOSA) – COM FLAG DE ATIVAÇÃO
+?? Banho & Tosa
+Funcionalidades normais:
+* Agenda
+* Pacotes
+* Check-in / check-out
+* Fotos
+* Observações
+?? Flag de ativação (MUITO IMPORTANTE)
+No painel da clínica:
+* ? Banho & Tosa ATIVO
+* ? Banho & Tosa DESATIVADO
+Se desativar:
+* Não aparece no sistema
+* Não aparece no app do cliente
+* Não aparece para agendamento
+?? Sistema se adapta à realidade de cada clínica.
+
+8?? PDV / PAGAMENTOS (AJUSTADO)
+?? Formas de pagamento
+* Pix
+* Cartão
+* Dinheiro
+* Permuta ? (divulgação, parceria, etc.)
+Parcelamento
+* Apenas:
+o cartão
+o ou acordado previamente
+Registro de permuta:
+* tipo
+* descrição
+* valor estimado
+
+9?? FINANCEIRO + COMISSÕES (INTEGRADOS)
+?? Financeiro
+* Contas a pagar
+* Contas a receber
+* Fluxo de caixa
+* DRE
+?? Comissão (MUITO FLEXÍVEL)
+Pode configurar:
+* Por produto
+* Por serviço
+* Por categoria
+* Percentual (ex.: 4%, 5%)
+* Valor fixo
+Regras independentes:
+* Produto ? Serviço
+* Produto A ? Produto B
+?? Tudo integrado ao financeiro automaticamente.
+
+?? INTELIGÊNCIA ARTIFICIAL (SEM MUDANÇA – APROVADA)
+* Transcrição
+* Resumo
+* Alertas
+* Insights
+
+1??1?? PAINEL DO CLIENTE (SEM MUDANÇA – APROVADO)
+Só reforçando:
+* O cliente só vê o que a clínica ativar
+* Se não tem banho & tosa ? não aparece
+* Se não tem internação ? não aparece
+
+? CONCLUSÃO
+Agora o sistema ficou:
+? Muito alinhado com a realidade de hospital
+? Extremamente prático
+? Visual
+? Automatizado
+? Flexível por clínica
+? Melhor que Dvet
+E o mais importante:
+?? Você participou do desenho. Isso evita erro depois.
+
+?? Próximo passo (escolhe)
+1?? Quero o modelo de banco atualizado (Prisma)
+2?? Quero os fluxos de tela (UX)
+3?? Quero a lista de endpoints do backend
+4?? Quero um documento fechado para desenvolvedor começar
+Diz qual que eu sigo agora.
+Nesse produto, no meu cadastro, eu vim puxar também questões contáveis, os impostos, essas coisas contáveis e que dentro do sistema a gente consiga mudar a regra. Então, por exemplo, ele entra com o código 2502, um exemplo de recebimento, e sai com o código 0T, e entra pra quinta com 0327. Estou falando dessas questões de impostos, sabe? Pra qualquer categoria de produto que entrou e saiu. E aí E aí E aí E aí E aí E aí E aí Ah, tá. E aí que no receituário, né, a pessoa já consiga configurar o receituário dela toda, o cabeçalho, com a logo dela, onde vai ficar, que ela consiga fazer isso. Até que uma pessoa que não saiba nada de mexer no computador consiga fazer esse tipo de configuração no receituário. E aí E aí E aí E aí E aí E aí E aí E aí E aí Na inteligência artificial, é o que acontece. Que o sistema, na hora de cadastrar, dê pra cadastrar o código de barras. Nós temos já os leitores de código de barras lá na clínica. Que a gente consiga, na hora de cadastrar, a gente consiga ler o produto. Por exemplo, o código de barras do produto pra na hora de cadastrar e na hora de vender. Porque aí a gente sabe, e aí, na parte de controle de estoque, que a gente também consiga, por exemplo, ter o leitor lá, de código de barras. E aí se tirou um produto, bate o código de barras e a gente sabe que naquele leitor quer dizer que já estão tirando do estoque. Entendeu? Deu pra entender direitinho? Pra ficar mais fácil.
+Deu pra entender perfeitinho — e essas 3 melhorias deixam o sistema com “cara de hospital grande” e reduzem MUITO erro/tempo de operação. Já integrei tudo na especificação atualizada:
+
+1) FISCAL/CONTÁBIL POR PRODUTO E SERVIÇO (regras configuráveis)
+Você quer um motor de regras fiscais/contábeis dentro do sistema, onde cada movimentação (entrada/saída/venda/serviço) pode trocar código automaticamente conforme regra da clínica.
+? Funcionalidades
+?? Cadastro de Regras (tela simples)
+* “Quando ENTRAR com código 2502 ? SAIR com 0T”
+* “Quando ENTRAR 2502 ? na saída para clínica X/centro de custo Y usar 0327”
+* Regras por:
+o Categoria do produto (medicamento, ração, insumo, acessório)
+o Produto específico
+o Serviço (consulta, cirurgia, internação, banho e tosa)
+o Tipo de operação (compra/entrada, venda/saída, consumo interno, perda/ajuste, devolução)
+o Fornecedor (opcional)
+o Tipo de cliente (tutor, parceria, permuta)
+o Unidade/centro de custo (hospital/petshop)
+?? Aplicação automática
+* Importou XML ? entra com o código do XML ? sistema aplica regra e “mapeia” para seu código interno/tributário.
+* PDV vende ? sistema aplica regra de saída automática.
+* Estoque dá baixa por consumo ? aplica regra de consumo interno.
+?? Exportação para contabilidade
+* Relatório mensal com:
+o entradas/saídas
+o códigos aplicados
+o impostos estimados (se ativar)
+o XML/CSV para contador
+Observação: cálculo fiscal “real” depende de município/UF/tributação (Simples, Lucro Presumido etc.), então o sistema deve funcionar como motor de mapeamento e classificação + exportação, e opcionalmente calcular impostos conforme parâmetros do regime.
+
+2) RECEITUÁRIO PERSONALIZÁVEL (do jeito “leigo-friendly”)
+Você quer que qualquer pessoa consiga montar o receituário (cabeçalho, logo, posição, campos) sem saber mexer em nada técnico.
+? Funcionalidades
+?? “Editor de Receituário” (arrastar e soltar)
+* Upload da logo
+* Campos editáveis:
+o Nome da clínica
+o CNPJ/CRMV
+o Endereço
+o Telefone/WhatsApp
+o E-mail
+o Redes sociais (opcional)
+* Layout com blocos:
+o Logo (arrasta e posiciona)
+o Dados da clínica
+o Dados do tutor/pet
+o Corpo da receita
+o Assinatura/Carimbo
+o Rodapé com observações
+* Preview em tempo real (A4)
+* Modelos prontos:
+o “Receita simples”
+o “Receita + instruções”
+o “Receita controlados / uso especial” (se precisar depois)
+??? Padrões
+* Margens e fonte já corretas
+* Opção de “modo farmácia humana” e “modo veterinária”
+* Salvar como padrão da clínica
+?? Isso integra com seu receituário drag & drop: você monta o “papel” (template) e depois só arrasta os medicamentos.
+
+3) CÓDIGO DE BARRAS (cadastro + venda + estoque)
+Você quer usar os leitores que vocês já têm para:
+* cadastrar produto
+* vender no PDV
+* dar baixa no estoque quando alguém pega produto
+Isso é essencial e dá pra fazer muito bem.
+? Funcionalidades
+A) Produto com barcode
+No cadastro do produto:
+* Campo Código de Barras (EAN/GTIN)
+* Botão “Ler com leitor” (na prática: o leitor digita no campo e dá enter)
+* Suporte a:
+o 1 barcode por produto
+o (opcional) múltiplos barcodes por variação/embalagem
+B) PDV com leitor
+No caixa:
+* Cursor fica sempre no campo “Ler código”
+* Bipou ? adiciona item automaticamente
+* Se já existe no carrinho ? aumenta quantidade
+* Se não existe ? busca produto, preço, estoque e adiciona
+C) Estoque com leitor (baixa rápida)
+Você descreveu um cenário muito real: “peguei um item do estoque, bipou, já dá baixa”.
+Teremos 2 modos:
+1) Baixa rápida (consumo interno)
+* Tela “Baixa de estoque”
+* Seleciona motivo:
+o “Uso em internação”
+o “Uso em procedimento”
+o “Perda/avaria”
+o “Ajuste”
+* Bipa e pronto ? baixa 1 unidade (ou digita quantidade)
+2) Baixa vinculada ao paciente (mais correto)
+* Está no prontuário/internação do pet
+* Profissional bipa o item
+* Sistema:
+o dá baixa no estoque
+o registra no prontuário (“medicação/material utilizado”)
+o já manda para cobrança se configurado
+D) Inventário com leitor (opcional)
+* Contagem de estoque com bip
+* Diferença vira ajuste com log/auditoria
+
+4) ONDE ISSO ENTRA NO SISTEMA (integração total)
+? Importação XML/Excel ? já traz produto + barcode + classificação
+? Motor fiscal/contábil aplica “códigos” automaticamente (entrada/saída/venda)
+? PDV usa leitor e já grava regra fiscal + comissão + financeiro
+? Internação/Prontuário usa leitor para consumo e cobrança
+? Estoque fica “vivo”, sem planilha manual
+
+Próximo passo que mais destrava seu dev
+Eu posso te entregar agora um pacote técnico (texto) com:
+1. Tabelas do banco necessárias (ex.: tax_rules, tax_mappings, barcodes, receipt_templates, etc.)
+2. Endpoints (ex.: importar XML/Excel, aplicar regra fiscal, scan barcode, baixa rápida, etc.)
+3. Fluxos de tela (passo a passo do usuário)
+Vou seguir a ordem que mais ajuda: Banco + Endpoints.
+Isso aí na parte de editor de receitório, beleza. E na hora que ele for montar o receitório, lá enquanto o tutor estiver dentro do consultório, que ele já puxa as informações do sistema. Então o nome do tutor, do animal, essas coisas assim, ele precisa já puxar. Isso aí. Isso aí no estoque, né, baixa rápido. Aí na hora de selecionar esse motivo aí, é totalmente personalizável no painel admin da clínica. Assim vai ter o painel de administração da clínica, o painel do consultório, o painel da recepção, o painel da internação, do estoque. Assim vai estar tudo dentro do mesmo sistema. Só que aí, dentro do painel admin, a responsável da clínica consegue aplicar as permissões do que vai aparecer para cada um. Então, por exemplo, o Luiz, ele tem permissão geral, ele consegue ver tudo. A Letícia, ela tem permissão para recepção e estoque. Essas coisas assim também precisa. Esse inventário com leitor também fica muito bom. Por enquanto, só.
+Perfeito. Está 100% entendido ??
+Vou consolidar tudo que você acabou de falar e fechar a especificação correta, sem abrir novas ideias agora — só organizando exatamente do jeito que você quer que funcione.
+Isso aqui já vira regra do sistema.
+
+? AJUSTES FINAIS INTEGRADOS AO SISTEMA
+1?? EDITOR DE RECEITUÁRIO + USO EM CONSULTA (AUTOMÁTICO)
+?? Editor de Receituário (admin da clínica)
+Isso continua exatamente como combinamos:
+* Editor visual (arrastar/soltar)
+* Logo
+* Cabeçalho configurável
+* Modelos
+* Tudo simples, leigo-friendly
+
+?? Uso do receituário DURANTE A CONSULTA
+?? Aqui entra o que você pediu agora
+Quando o tutor estiver no consultório e o veterinário abrir a receita:
+O sistema puxa automaticamente:
+* Nome do tutor
+* CPF (se quiser exibir)
+* Nome do pet
+* Espécie / raça
+* Peso
+* Data
+* Nome do veterinário
+* CRMV
+Ou seja:
+O vet não digita nada disso.
+Ele só monta a receita.
+Isso vem direto do:
+* cadastro do tutor
+* cadastro do pet
+* atendimento atual
+?? Fluxo rápido, profissional e sem erro.
+
+2?? ESTOQUE – BAIXA RÁPIDA (TOTALMENTE PERSONALIZÁVEL)
+?? Motivos de baixa (CONFIGURÁVEIS)
+No Painel Admin da Clínica, a responsável configura:
+Exemplos de motivos:
+* Uso em internação
+* Uso em procedimento
+* Uso em consulta
+* Perda
+* Quebra
+* Vencimento
+* Ajuste de estoque
+* Outro (custom)
+Cada motivo pode ter:
+* Nome
+* Tipo (consome / ajusta / perda)
+* Se exige justificativa
+* Se exige vínculo com pet
+* Se gera cobrança ou não
+?? Nada fixo. Cada clínica decide.
+
+?? Baixa rápida com leitor
+* Funcionário abre “Baixa de estoque”
+* Escolhe o motivo
+* Bipa o produto
+* Sistema:
+o dá baixa
+o registra usuário
+o registra data/hora
+o registra motivo
+o aplica regra fiscal
+o (se configurado) vincula ao pet
+Tudo com auditoria.
+
+3?? INVENTÁRIO COM LEITOR (CONFIRMADO)
+?? Inventário físico
+* Modo contagem
+* Bipou ? soma
+* Mostra diferença:
+o sistema × físico
+* Diferença vira:
+o ajuste positivo
+o ajuste negativo
+Tudo registrado:
+* quem fez
+* quando
+* por quê
+
+4?? PAINÉIS DO SISTEMA (TODOS NO MESMO SISTEMA)
+Você explicou muito bem, então ficou assim:
+?? É UM SISTEMA ÚNICO
+Mas com visões/painéis diferentes, conforme permissão.
+
+?? Painéis existentes
+* Painel Admin da Clínica
+* Painel do Consultório (Veterinário)
+* Painel da Recepção
+* Painel da Internação
+* Painel do Estoque
+* Painel Financeiro
+* Painel do Cliente (Tutor)
+?? Não são sistemas separados.
+É o mesmo sistema, mudando o que aparece.
+
+5?? PERMISSÕES (DO JEITO QUE VOCÊ DESCREVEU)
+?? Controle de permissões por usuário
+No Painel Admin da Clínica, a responsável consegue:
+* Criar usuário
+* Definir função
+* Marcar permissões por módulo
+Exemplo real (seu):
+* Luiz
+o ? Admin geral
+o ? Vê tudo
+* Letícia
+o ? Recepção
+o ? Estoque
+o ? Financeiro
+o ? Internação
+Permissões podem ser:
+* por painel
+* por ação (ver, criar, editar, excluir)
+?? Isso é padrão de sistema grande.
+
+6?? RESUMO DO QUE FICOU FECHADO
+? Receituário puxa dados automáticos do tutor/pet
+? Editor visual simples
+? Baixa rápida com leitor
+? Motivos de baixa personalizáveis
+? Inventário com leitor
+? Sistema único com múltiplos painéis
+? Permissões granulares por usuário
+? Admin da clínica controla tudo
+Nada disso conflita com o que já definimos — só fortalece.
+
+?? Próximo passo lógico (agora é técnico)
+Para avançar sem retrabalho, o ideal é eu te entregar um material fechado, tipo “manual do sistema para o dev”.
+Você escolhe:
+1?? Modelo de banco de dados (Prisma) com tudo isso
+2?? Mapa de permissões e painéis (quem vê o quê)
+3?? Lista completa de endpoints do backend
+4?? Fluxos de tela (UX) por painel
+?? Me diga qual você quer primeiro.
+Uma coisa importante também é a Prianna Menezes. No aplicativo do doutor, por exemplo, ele marca uma consulta para sábado, uma hora da tarde. Quando a gente manda o lembrete para ele, consulta uma hora da tarde, ele... Aí aparece o checklist, não é o ChatGPT, é como se fosse um formulário. Só que é como se fosse um formulário, então a pessoa vai preenchendo o formulário, de como é que está o animal, explicar o que está acontecendo. E essas perguntas do formulário são criadas pelo administrador da clínica. Então dentro do painel de administração da clínica tem, sabe, porque aí já consegue muita coisa. E a mesma coisa no retorno, então vai ter lá painel pré-consulta, vai ter o formulário, desculpa, pré-consulta, formulário, retorno. Aí no retorno vai perguntar, o animal apresentou melhoras? Está vomitando? Essas coisas assim, essas perguntas também, para chegar no consultório e tudo ser puxado já para o pontuário, que o veterinário já sabe o que aconteceu, o que está acontecendo.
+Perfeito. Entendi exatamente o que você quer — e isso é um diferencial enorme de qualidade clínica e de tempo de consulta.
+Vou integrar isso oficialmente ao sistema e explicar como funciona ponta a ponta, sem inventar nada fora do que você descreveu.
+
+? FORMULÁRIOS INTELIGENTES DE PRÉ-CONSULTA E RETORNO
+(integrados ao app do tutor, lembretes e prontuário)
+
+1?? VISÃO GERAL DA FUNCIONALIDADE
+Você quer que:
+* Ao confirmar ou lembrar uma consulta, o tutor receba um formulário (não chat, não IA).
+* Esse formulário:
+o é criado pelo administrador da clínica
+o varia por tipo de atendimento (consulta, retorno, etc.)
+* As respostas:
+o são preenchidas pelo tutor antes da consulta
+o entram automaticamente no prontuário
+* O veterinário já abre a consulta sabendo tudo.
+É isso — e é exatamente assim que vamos implementar.
+
+2?? TIPOS DE FORMULÁRIOS (OFICIAIS DO SISTEMA)
+No sistema existirão tipos claros de formulário, todos configuráveis:
+?? Tipos
+1. Pré-consulta
+o Antes da primeira consulta
+2. Pré-retorno
+o Antes do retorno
+3. (futuramente, se quiser)
+o Pré-cirurgia
+o Pré-internação
+Por enquanto, ficamos em:
+? Pré-consulta
+? Retorno
+
+3?? CRIAÇÃO DOS FORMULÁRIOS (PAINEL ADMIN DA CLÍNICA)
+?? Onde fica
+No Painel Administrativo da Clínica ?
+Configurações ? Formulários Clínicos
+
+?? Editor de formulário (simples)
+O administrador da clínica consegue:
+* Criar formulário
+* Dar um nome (ex.: “Pré-consulta – Clínica X”)
+* Escolher para qual tipo de atendimento ele vale:
+o Consulta
+o Retorno
+
+? Tipos de perguntas disponíveis
+Cada pergunta pode ser:
+* Texto curto
+* Texto longo
+* Sim / Não
+* Múltipla escolha
+* Escala (ex.: 0 a 10)
+* Checkbox
+* Data
+Exemplos reais:
+* “O animal está se alimentando normalmente?”
+* “Houve vômito nos últimos dias?”
+* “Descreva o que está acontecendo”
+* “Houve melhora desde a última consulta?” (retorno)
+Tudo customizável pela clínica.
+
+?? Configurações por pergunta
+Para cada pergunta, o admin define:
+* Obrigatória ou não
+* Se vai para o prontuário
+* Em qual seção do prontuário aparece
+* Ordem de exibição
+Nada fixo.
+
+4?? FLUXO PARA O TUTOR (APP DO CLIENTE)
+?? Exemplo real (seu cenário)
+Consulta sábado, 13h
+Fluxo automático:
+1. Sistema envia lembrete:
+“Você tem uma consulta sábado às 13h”
+2. Junto do lembrete:
+?? botão “Responder pré-consulta”
+3. Tutor abre o formulário no app
+4. Responde com calma, em casa
+5. Envia
+? Simples
+? Sem stress
+? Sem digitar tudo na recepção
+
+5?? FLUXO PARA O VETERINÁRIO (CONSULTÓRIO)
+Quando o veterinário abrir o atendimento:
+Ele já vê:
+* Dados do tutor
+* Dados do pet
+* Respostas do formulário de pré-consulta
+* (no retorno) comparação com respostas anteriores
+As respostas aparecem:
+* Dentro do prontuário
+* Já organizadas
+* Sem copiar/colar
+?? O vet já entra na consulta sabendo o que aconteceu.
+
+6?? FORMULÁRIO DE RETORNO (IGUALMENTE IMPORTANTE)
+?? Antes do retorno
+O sistema envia:
+“Você tem um retorno amanhã. Poderia responder algumas perguntas?”
+O formulário de retorno pode perguntar:
+* Houve melhora?
+* Continua vomitando?
+* Está tomando a medicação corretamente?
+* Algum efeito colateral?
+
+?? Integração com prontuário
+No prontuário:
+* Fica registrado como “Relato do tutor – Retorno”
+* O vet consegue comparar:
+o antes × depois
+?? Isso melhora MUITO a qualidade clínica.
+
+7?? CONFIGURAÇÕES GERAIS (ADMIN DA CLÍNICA)
+No painel admin, a clínica pode decidir:
+* Ativar/desativar formulários
+* Qual formulário usar para:
+o consulta
+o retorno
+* Com quanto tempo antes enviar (24h, 12h, 2h)
+* Se é obrigatório responder para confirmar consulta
+* Se pode editar depois de enviar
+
+8?? SEGURANÇA E AUDITORIA
+* Cada resposta fica registrada:
+o data
+o hora
+o usuário (tutor)
+* Não pode ser alterada depois
+* Vet pode adicionar observação, mas não mudar resposta
+
+9?? ONDE ISSO ENTRA NO SISTEMA (INTEGRAÇÃO)
+? Agenda
+? Notificações
+? Painel do Cliente
+? Prontuário
+? Retorno
+? Histórico clínico
+Tudo conectado.
+
+? CONCLUSÃO
+Com isso, o sistema passa a ter:
+* Pré-consulta estruturada
+* Retorno muito mais eficiente
+* Menos erro de informação
+* Consulta mais rápida
+* Mais qualidade clínica
+* Experiência muito melhor para tutor e veterinário
+?? Pouquíssimos sistemas veterinários fazem isso direito.
+
+?? Próximo passo (agora é estrutural)
+Para avançar sem perder nada, o ideal agora é eu te entregar a base técnica disso.
+Escolha o próximo passo:
+1?? Modelo de banco (com formulários e respostas)
+2?? Fluxo de telas (admin, tutor, vet)
+3?? Endpoints do backend
+4?? Documento técnico fechado para o desenvolvedor
+Me diz qual você quer que eu faça primeiro.
+A Thais disse que também é importante criar um módulo de documentos. Então, por exemplo, autorização para cirurgia, autorização para internação, autorização para eutanase. Então, vários tipos de autorização, que isso possa ser carregado no sistema. Então, por exemplo, a clínica tem o documento, ela sobe no sistema, aí o sistema já transforma isso tipo num documento virtual, em que o doutor recebe pelo aplicativo e só assina, sabe? E ele assina, aí manda uma cópia para o doutor, no WhatsApp, por exemplo, e uma cópia fica no sistema da clínica, já mostrando a data que assinou, que foi lido, que ele clicou em permitir, que ele declarou que leu, entendeu, tudo, sabe? Que o sistema é muito importante.
+Perfeito — isso é crítico juridicamente e eleva o sistema para nível hospitalar profissional.
+Vou integrar oficialmente o MÓDULO DE DOCUMENTOS E AUTORIZAÇÕES DIGITAIS, explicando como funciona, o que resolve e como fica no fluxo do sistema, exatamente como você e a Thais descreveram.
+
+?? MÓDULO DE DOCUMENTOS E AUTORIZAÇÕES DIGITAIS
+(cirurgia, internação, eutanásia, etc.)
+
+1?? OBJETIVO DO MÓDULO
+Criar um sistema onde:
+* A clínica sobe seus próprios documentos (PDF ou modelo)
+* O sistema transforma isso em um documento digital interativo
+* O tutor lê, aceita e assina digitalmente
+* Tudo fica:
+o registrado
+o com data/hora
+o com aceite explícito
+o com trilha de auditoria
+* Uma cópia:
+o vai para o tutor (WhatsApp/e-mail)
+o fica salva no prontuário e no sistema da clínica
+?? Sem papel, sem perda, sem risco jurídico.
+
+2?? TIPOS DE DOCUMENTOS (CONFIGURÁVEIS)
+A clínica pode criar quantos quiser, por exemplo:
+* Autorização para cirurgia
+* Autorização para internação
+* Autorização para anestesia
+* Autorização para eutanásia
+* Termo de responsabilidade
+* Consentimento informado
+* Contratos de serviços
+* Outros documentos personalizados
+Nada é fixo no sistema.
+
+3?? CADASTRO DOS DOCUMENTOS (PAINEL ADMIN DA CLÍNICA)
+?? Onde fica
+Painel Admin ? Documentos & Autorizações
+
+?? Como a clínica cadastra
+Ela pode:
+* Subir um PDF próprio
+* Ou usar um modelo padrão (se existir)
+Ao cadastrar, define:
+* Nome do documento
+* Tipo (cirurgia, internação, etc.)
+* Se exige assinatura
+* Se exige aceite (“Li e estou de acordo”)
+* Se exige confirmação extra (ex.: eutanásia)
+* Em que situações o documento aparece:
+o cirurgia
+o internação
+o consulta
+o manual
+
+4?? TRANSFORMAÇÃO EM DOCUMENTO DIGITAL
+Quando o documento é usado:
+O sistema:
+* Insere automaticamente:
+o Nome do tutor
+o CPF
+o Nome do pet
+o Procedimento
+o Data
+o Nome do veterinário
+o CRMV
+* Bloqueia edição do texto
+* Mostra o documento em visualização clara e legível
+
+5?? ASSINATURA DIGITAL (PASSO A PASSO)
+?? Fluxo para o tutor
+1. Tutor recebe no WhatsApp/app:
+“Você precisa autorizar um procedimento”
+2. Abre o documento
+3. O sistema exige:
+o Scroll até o final (comprova leitura)
+o Checkbox:
+* ? Li e compreendi o documento
+* ? Autorizo o procedimento
+4. Assinatura:
+o Assinatura com dedo (touch)
+o Ou aceite digital com confirmação
+5. Confirma
+?? Não tem como assinar sem ler.
+
+6?? PROVAS E SEGURANÇA JURÍDICA (MUITO IMPORTANTE)
+Cada documento assinado gera automaticamente:
+* Data e hora
+* IP do dispositivo
+* Identificação do tutor
+* Identificação do pet
+* Tipo de documento
+* Aceites marcados
+* Assinatura digital
+* Hash do documento (não pode ser alterado)
+Tudo fica imutável.
+
+7?? DISTRIBUIÇÃO AUTOMÁTICA DAS CÓPIAS
+Após assinatura:
+?? Para o tutor
+* Envio automático:
+o WhatsApp (PDF)
+o ou e-mail
+* Documento assinado
+?? Para a clínica
+* Fica salvo:
+o no prontuário do pet
+o no histórico do atendimento
+o no módulo de documentos
+
+8?? VISÃO DO VETERINÁRIO
+No painel do doutor:
+* Vê:
+o documento enviado
+o status:
+* pendente
+* assinado
+* Só libera procedimento se:
+o documento estiver assinado (se obrigatório)
+?? Isso evita erro grave de fluxo.
+
+9?? INTEGRAÇÃO COM O RESTO DO SISTEMA
+Esse módulo se conecta com:
+? Agenda (pré-cirurgia, pré-internação)
+? Prontuário
+? Internação
+? Painel do Cliente
+? Notificações
+? Auditoria
+Nada fica solto.
+
+?? COMPLIANCE E BOAS PRÁTICAS
+* Histórico completo
+* Não permite edição pós-assinatura
+* Backup automático
+* Exportação se necessário
+* Compatível com LGPD (consentimento explícito)
+?? Isso é essencial para eutanásia e procedimentos invasivos.
+
+? CONCLUSÃO
+Com esse módulo, o sistema passa a ter:
+? Assinatura digital válida
+? Segurança jurídica real
+? Menos papel
+? Mais organização
+? Mais confiança do tutor
+? Proteção total da clínica e do veterinário
+É um dos módulos mais importantes do sistema.
+
+?? Próximo passo (agora estamos prontos para fechar técnico)
+Agora sim faz sentido partir para a parte técnica pesada.
+Escolha:
+1?? Modelo de banco de dados (incluindo documentos e assinaturas)
+2?? Endpoints do backend desse módulo
+3?? Fluxo de telas (UX)
+4?? Documento técnico fechado para o desenvolvedor começar
+Me diga qual você quer que eu gere primeiro.
+Tem mais alguma coisa que vc acha que podemos acrescentar?
+Excelente pergunta. O sistema já está muito completo, nível hospital grande mesmo.
+O que eu vou fazer agora é pensar como: hospital + jurídico + operação + experiência do tutor, e te sugerir APENAS coisas que realmente fazem sentido (sem firula, sem coisa que só complica).
+Vou dividir em “vale muito a pena” e “opcional para o futuro”, pra você decidir com calma.
+
+? ACRÉSCIMOS QUE REALMENTE VALEM A PENA
+1?? CHECKLISTS CLÍNICOS INTERNOS (NÃO PARA O TUTOR)
+O que é:
+Checklists que a equipe usa, não o cliente.
+Exemplos:
+* Checklist pré-cirúrgico
+o jejum confirmado
+o exames conferidos
+o autorização assinada
+* Checklist de alta
+o medicação entregue
+o retorno agendado
+o orientações explicadas
+* Checklist de internação
+o acesso venoso
+o medicação conferida
+o sinais vitais registrados
+Por que vale a pena:
+* Reduz erro humano
+* Ajuda equipe nova
+* Protege juridicamente
+?? Configurável pela clínica (igual os formulários).
+
+2?? ALERTAS CLÍNICOS AUTOMÁTICOS (INTELIGENTES)
+Não é IA “viajando”, é regra simples.
+Exemplos:
+* Pet não castrado ? alerta em cirurgia
+* Pet com alergia cadastrada ? alerta ao prescrever
+* Medicação prescrita ? estoque disponível ? alerta
+* Retorno não agendado após consulta ? alerta
+?? Aparece para o veterinário no momento certo.
+
+3?? HISTÓRICO DE COMUNICAÇÃO CENTRALIZADO
+Hoje você vai mandar:
+* WhatsApp
+* documentos
+* formulários
+* lembretes
+?? O ideal:
+* Um histórico único no prontuário:
+o mensagens enviadas
+o documentos assinados
+o formulários respondidos
+o datas/horários
+Por quê:
+* Se der problema, está tudo documentado
+* Veterinário não precisa perguntar “já mandei isso?”
+
+4?? PERFIL DO PET COM “RESUMO RÁPIDO”
+Além do prontuário completo, um card resumo:
+* Castrado: sim/não
+* Alergias
+* Doenças crônicas
+* Medicações contínuas
+* Última consulta
+* Última internação
+?? Abre o pet e já vê tudo importante.
+
+5?? REGISTRO DE RESPONSÁVEL SECUNDÁRIO
+Muito comum na prática:
+* Tutor principal (CPF)
+* Responsável secundário:
+o marido/esposa
+o filho
+o cuidador
+Permissões:
+* Pode assinar documento?
+* Pode pagar?
+* Pode agendar?
+?? Evita muita confusão na recepção.
+
+?? OPCIONAIS (MAS MUITO BONS PARA O FUTURO)
+6?? RELATÓRIO DE INDICADORES CLÍNICOS (SIMPLES)
+Não é BI pesado.
+Exemplos:
+* Nº de consultas/mês
+* Nº de cirurgias
+* Taxa de retorno
+* Taxa de faltas
+* Tempo médio de internação
+?? Ajuda gestão sem complicar.
+
+7?? MODO CONTINGÊNCIA (QUEDA DE INTERNET)
+Simples, mas valioso:
+* Se internet cair:
+o consulta básica funciona
+o dados salvam localmente
+o sincroniza depois
+Hospitais adoram isso.
+
+8?? PERMISSÃO DE “VISUALIZAÇÃO SEM EDIÇÃO”
+Para:
+* estagiário
+* auditor
+* contador
+Pode ver, mas não mexe em nada.
+
+9?? EXPORTAÇÃO COMPLETA DO PRONTUÁRIO (PDF)
+Em 1 clique:
+* prontuário
+* exames
+* receitas
+* documentos assinados
+?? Útil para:
+* transferência
+* processo
+* pedido do tutor
+
+? O QUE EU NÃO RECOMENDO AGORA
+(e estou sendo honesto)
+* Chat em tempo real tipo WhatsApp interno
+* Telemedicina por vídeo agora
+* IA diagnóstica (risco jurídico)
+* Marketplace interno
+Essas coisas incham o sistema sem trazer retorno imediato.
+
+?? MINHA OPINIÃO FINAL (SINCERA)
+Com o que você já desenhou + esses 5 primeiros itens, você terá:
+? Sistema mais completo que Dvet
+? Muito mais organizado
+? Muito mais seguro juridicamente
+? Muito mais prático para equipe
+? Muito melhor para o tutor
+E o melhor: sem complicar.
+
+?? Próximo passo ideal agora
+Antes de acrescentar mais ideias, o melhor é congelar a V1.
+Eu sugiro:
+1?? Criar o documento técnico final (escopo fechado)
+2?? A partir dele, gerar:
+* banco
+* endpoints
+* telas
+Se quiser, eu posso:
+* te devolver a lista fechada V1
+* ou já montar o documento para o desenvolvedor começar amanhã
+Me diz como você quer seguir.
+Adicione oq vc falou!! 
+Perfeito. Então a partir de agora isso fica OFICIALMENTE ADICIONADO AO SISTEMA (V1 FECHADA).
+Vou integrar tudo que eu sugeri, já encaixando com o que você já construiu, sem conflito e sem inflar o sistema desnecessariamente.
+Abaixo está a ATUALIZAÇÃO FINAL DAS FUNCIONALIDADES, somente com o que realmente agrega valor operacional, clínico e jurídico.
+
+? FUNCIONALIDADES ADICIONADAS (OFICIAL – V1)
+
+1?? CHECKLISTS CLÍNICOS INTERNOS (NOVO MÓDULO)
+?? O que é
+Checklists internos da equipe, não visíveis ao tutor, usados para padronizar procedimentos e evitar erros.
+?? Tipos de checklist
+Criados e configurados pela clínica:
+* Checklist pré-cirúrgico
+* Checklist de internação
+* Checklist de alta
+* Checklist de anestesia
+* Checklist customizado
+?? Como funciona
+* Admin da clínica cria o checklist
+* Define:
+o perguntas
+o ordem
+o obrigatoriedade
+* O sistema exige o preenchimento antes de avançar no fluxo (ex.: iniciar cirurgia, dar alta)
+?? Benefício
+* Segurança clínica
+* Padronização
+* Proteção jurídica
+* Treinamento implícito da equipe
+
+2?? ALERTAS CLÍNICOS AUTOMÁTICOS (INTELIGENTES)
+?? O que o sistema alerta
+Sem IA “inventando”, só regra real:
+* Pet não castrado ? alerta em cirurgia
+* Pet com alergia cadastrada ? alerta ao prescrever
+* Medicação prescrita sem estoque ? alerta imediato
+* Retorno não agendado ? alerta na finalização da consulta
+* Documento obrigatório não assinado ? bloqueia procedimento
+?? Onde aparece
+* Painel do veterinário
+* Painel da internação
+* Painel da recepção (quando aplicável)
+
+3?? HISTÓRICO DE COMUNICAÇÃO CENTRALIZADO
+?? O que fica registrado
+Tudo que envolve o tutor fica em um único histórico, dentro do prontuário:
+* Lembretes enviados
+* Formulários preenchidos
+* Documentos assinados
+* Mensagens automáticas
+* Datas e horários
+?? Benefício
+* Nenhuma informação se perde
+* Base jurídica sólida
+* Qualquer profissional entende o histórico rapidamente
+
+4?? PERFIL DO PET COM “RESUMO RÁPIDO” (CARD FIXO)
+?? Card sempre visível
+Ao abrir o pet, o sistema mostra um resumo fixo com:
+* Castrado: sim/não
+* Alergias
+* Doenças crônicas
+* Medicações contínuas
+* Última consulta
+* Última internação
+?? Não precisa abrir prontuário para ver o essencial.
+
+5?? RESPONSÁVEL SECUNDÁRIO PELO PET (NOVO)
+?? Cadastro de responsáveis
+Além do tutor principal, a clínica pode cadastrar:
+* Responsável secundário
+* Cuidador
+* Familiar
+?? Permissões por responsável
+* Pode agendar?
+* Pode pagar?
+* Pode assinar documentos?
+* Pode receber mensagens?
+?? Benefício
+Evita problemas comuns de:
+* “Quem pode autorizar?”
+* “Quem pode pagar?”
+* “Quem pode receber o documento?”
+
+6?? INDICADORES CLÍNICOS SIMPLES (GESTÃO REAL)
+?? Relatórios disponíveis
+Sem BI complexo:
+* Nº de consultas por período
+* Nº de cirurgias
+* Taxa de retorno
+* Taxa de faltas
+* Tempo médio de internação
+?? Ajuda a gestão sem complicar o sistema.
+
+7?? MODO CONTINGÊNCIA (SEM INTERNET)
+?? Quando a internet cair
+O sistema entra em modo contingência:
+* Consulta básica continua funcionando
+* Dados são salvos localmente
+* Sincroniza automaticamente quando a internet voltar
+?? Isso é diferencial forte para hospital.
+
+8?? PERMISSÃO “VISUALIZAR SEM EDITAR”
+?? Novo tipo de permissão
+Usuários que:
+* podem ver tudo
+* não podem alterar nada
+Exemplos:
+* Estagiário
+* Auditor
+* Contador
+* Sócio
+
+9?? EXPORTAÇÃO COMPLETA DO PRONTUÁRIO (1 CLIQUE)
+?? Exportação em PDF
+Inclui:
+* Prontuário
+* Exames
+* Receitas
+* Documentos assinados
+* Histórico de comunicação
+?? Ideal para:
+* pedido do tutor
+* transferência
+* respaldo jurídico
+
+?? COMO ISSO SE INTEGRA AO QUE JÁ EXISTE
+Nada ficou solto. Tudo se conecta a:
+? Prontuário
+? Internação
+? Agenda
+? Documentos digitais
+? Formulários pré-consulta/retorno
+? Financeiro
+? Permissões
+
+? STATUS DO SISTEMA AGORA
+Com tudo isso adicionado, o sistema está:
+? Nível hospital veterinário grande
+? Mais completo que Dvet
+? Juridicamente forte
+? Operacionalmente simples
+? Escalável
+? Vendável
+E o mais importante: sem excesso de complexidade.
+
+?? PRÓXIMO PASSO OBRIGATÓRIO (RECOMENDADO)
+Agora não é mais fase de ideia, é fase de execução.
+O ideal é congelar a V1 e gerar o material técnico.
+Sugestão de ordem:
+1?? Documento técnico final (escopo fechado)
+2?? Modelo de banco de dados
+3?? Endpoints do backend
+4?? Fluxos de tela (UX)
+?? Me diga qual desses você quer que eu gere agora.
+Adicione só mais uma coisa!! A lista de compras, oq está faltando ou acabando no estoque, é o sistema cria a lista
+Perfeito ??
+Funcionalidade adicionada oficialmente à V1. Essa é muito importante na rotina e encaixa 100% com o que vocês já vão usar (estoque + leitor + XML).
+Vou explicar como fica, como funciona, e onde entra no sistema, sem complicar.
+
+? MÓDULO DE LISTA DE COMPRAS AUTOMÁTICA (NOVO – V1)
+
+1?? O QUE É A LISTA DE COMPRAS AUTOMÁTICA
+O sistema monitora o estoque em tempo real e:
+* identifica produtos:
+o em falta
+o abaixo do mínimo
+o perto de acabar
+* gera automaticamente uma lista de compras
+* organiza essa lista para facilitar a reposição
+?? Nada manual, nada de planilha.
+
+2?? CONFIGURAÇÃO NO PAINEL ADMIN DA CLÍNICA
+?? Para cada produto, a clínica define:
+* Estoque mínimo
+* Estoque ideal (opcional)
+* Consumo médio (calculado pelo sistema ou ajustável)
+* Categoria (medicamento, ração, insumo, etc.)
+Tudo simples, editável.
+
+3?? COMO A LISTA É GERADA (AUTOMATICAMENTE)
+O sistema cria a lista quando detecta:
+* Quantidade atual < estoque mínimo
+* Produto zerado
+* Produto com validade próxima (se aplicável)
+* Produto muito consumido (alerta preventivo)
+A lista mostra:
+* Produto
+* Quantidade atual
+* Quantidade recomendada para compra
+* Categoria
+* Último fornecedor
+* Código interno / código de barras
+
+4?? LISTA DE COMPRAS (TELA DEDICADA)
+?? Tela “Lista de Compras”
+Exibe:
+* Produtos faltantes
+* Produtos críticos
+* Produtos próximos do mínimo
+A clínica pode:
+* Ajustar quantidade sugerida
+* Marcar itens como “já comprados”
+* Excluir itens da lista
+* Adicionar item manualmente (se quiser)
+
+5?? INTEGRAÇÃO COM IMPORTAÇÃO (XML / EXCEL)
+Depois da compra:
+* Importa a nota fiscal XML
+* Ou importa por Excel
+* O sistema:
+o reconhece os produtos
+o atualiza estoque
+o remove automaticamente da lista de compras
+o aplica regras fiscais
+?? Fluxo fechado, sem retrabalho.
+
+6?? INTEGRAÇÃO COM LEITOR DE CÓDIGO DE BARRAS
+* Se um produto começa a sair muito:
+o baixa rápida
+o venda
+o internação
+* O sistema recalcula consumo
+* Atualiza a previsão de reposição
+?? Lista de compras fica inteligente, não estática.
+
+7?? ALERTAS AUTOMÁTICOS
+O sistema pode avisar:
+* Produto crítico
+* Produto zerado
+* Produto essencial para internação
+* Produto em falta antes de procedimento agendado
+Alertas aparecem:
+* Painel do estoque
+* Painel admin
+* (opcional) notificação
+
+8?? PERMISSÕES (IGUAL AO RESTO DO SISTEMA)
+* Usuários com permissão de estoque podem:
+o ver lista
+o marcar como comprado
+* Só admin pode:
+o alterar regras
+o alterar estoque mínimo
+o apagar histórico
+
+9?? BENEFÍCIO REAL NA PRÁTICA
+? Nunca faltar medicamento
+? Menos perda por esquecimento
+? Compra organizada
+? Estoque sempre controlado
+? Menos stress para a equipe
+? Mais segurança clínica
+
+? STATUS FINAL DA V1 (AGORA SIM)
+Com essa adição, a V1 está completa e redonda:
+* Hospital veterinário
+* Petshop
+* Prontuário avançado
+* Internação com painel
+* Documentos e autorizações digitais
+* Formulários pré-consulta e retorno
+* Estoque com leitor
+* Inventário
+* Motor fiscal
+* Lista de compras automática
+* Painel do cliente
+* Permissões completas
+* Segurança jurídica
+?? Nada essencial ficou de fora.
+
+?? Próximo passo (execução)
+Agora é realmente hora de transformar isso em código.
+Escolha o próximo passo:
+1?? Documento técnico final (escopo fechado da V1)
+2?? Modelo de banco de dados completo
+3?? Lista de endpoints do backend
+4?? Fluxos de tela (UX) por painel
+Me diga qual você quer que eu gere agora.
+Falta também o módulo para veterinário que faz atendimento domiciliar 
+Excelente ponto — módulo de atendimento domiciliar é essencial e fecha o ecossistema de vez.
+Já integro oficialmente à V1, alinhado com tudo que já existe (agenda, prontuário, financeiro, cliente, permissões).
+
+? MÓDULO DE ATENDIMENTO DOMICILIAR (ADICIONADO À V1)
+1?? OBJETIVO DO MÓDULO
+Permitir que veterinários façam atendimentos fora da clínica, com:
+* organização
+* segurança
+* prontuário completo
+* cobrança correta
+* integração total com o sistema
+Nada “paralelo” ou improvisado.
+
+2?? CONFIGURAÇÃO (PAINEL ADMIN DA CLÍNICA)
+?? Atendimentos domiciliares – Ativação
+No painel admin da clínica:
+* ? Ativar atendimento domiciliar
+* Definir:
+o taxa de deslocamento (fixa ou por km)
+o raio de atendimento
+o horários permitidos
+o quais profissionais podem atender fora
+Se desativar:
+* não aparece no sistema
+* não aparece no app do tutor
+
+3?? CADASTRO DO PROFISSIONAL DOMICILIAR
+No cadastro do veterinário:
+* ? Atende domicílio
+* Região/bairro/cidade atendida
+* Horários disponíveis
+* Dados bancários (PIX) ? já integrados
+* Comissão específica para atendimento domiciliar (se quiser)
+
+4?? AGENDAMENTO DO ATENDIMENTO DOMICILIAR
+?? Pelo sistema da clínica (recepção)
+* Escolhe:
+o tutor
+o pet
+o tipo: atendimento domiciliar
+* Endereço já vem do cadastro do tutor
+* Sistema verifica:
+o profissional disponível
+o horário
+o distância (se configurado)
+
+?? Pelo app do tutor
+Se a clínica permitir:
+* Tutor escolhe:
+o atendimento domiciliar
+o data/horário
+* Vê:
+o valor do atendimento
+o taxa de deslocamento
+* Confirma
+?? Tudo cai direto na agenda da clínica.
+
+5?? PAINEL DO VETERINÁRIO (DOMICILIAR)
+?? No app do doutor
+O veterinário vê:
+* lista de atendimentos do dia
+* endereço (com botão “abrir no mapa”)
+* dados do tutor
+* dados do pet
+* formulário de pré-consulta (se houver)
+
+6?? PRONTUÁRIO NO DOMICÍLIO (IGUAL AO DA CLÍNICA)
+Durante o atendimento domiciliar, o vet pode:
+* preencher prontuário completo
+* anexar fotos
+* gerar receita digital
+* gerar documentos/autorizações
+* registrar consumo de material
+* dar baixa no estoque (se configurado)
+?? Mesmo prontuário, só muda o local.
+
+7?? COBRANÇA DO ATENDIMENTO DOMICILIAR
+?? Formas
+* Pix
+* Cartão
+* Dinheiro
+* Permuta (se permitido)
+O sistema já separa:
+* valor do serviço
+* taxa de deslocamento
+* comissão do veterinário
+* valor da clínica
+Tudo vai para:
+* financeiro
+* histórico do tutor
+* relatório do profissional
+
+8?? DOCUMENTOS E AUTORIZAÇÕES NO DOMICÍLIO
+Se necessário:
+* tutor recebe documento no celular
+* lê
+* aceita
+* assina digitalmente
+Mesmo fluxo jurídico da clínica.
+
+9?? CONTROLE E RELATÓRIOS
+A clínica consegue ver:
+* nº de atendimentos domiciliares
+* faturamento domiciliar
+* profissional mais ativo
+* regiões atendidas
+
+?? PERMISSÕES (IGUAL AO RESTO DO SISTEMA)
+* Só vê atendimento domiciliar quem tem permissão
+* Vet domiciliar não vê financeiro se não puder
+* Recepção agenda, mas não edita prontuário
+
+10?? INTEGRAÇÃO COM OUTROS MÓDULOS
+? Agenda
+? Prontuário
+? Receituário
+? Documentos
+? Financeiro
+? Comissão
+? Painel do cliente
+? Formulários pré-consulta
+? Estoque (se permitido)
+Nada duplicado.
+
+? BENEFÍCIOS REAIS
+? Atendimento profissional fora da clínica
+? Tudo documentado
+? Mais faturamento
+? Mais comodidade para o tutor
+? Zero bagunça
+? Zero controle paralelo
+
+?? STATUS FINAL DA V1 (AGORA COMPLETA)
+Com esse módulo, a V1 tem:
+* Hospital veterinário
+* Petshop
+* Atendimento domiciliar
+* Prontuário completo
+* Internação com painel
+* Estoque inteligente
+* Lista de compras automática
+* Documentos e autorizações digitais
+* Formulários pré-consulta/retorno
+* Painel do cliente
+* Permissões avançadas
+* Segurança jurídica
+* Gestão financeira completa
+?? Não falta mais nada essencial.
+
+?? PRÓXIMO PASSO (EXECUÇÃO REAL)
+Agora é oficialmente fase de construção.
+Escolha o que eu gero agora:
+1?? Documento técnico final (escopo fechado da V1)
+2?? Modelo de banco de dados completo
+3?? Lista de endpoints do backend
+4?? Fluxos de tela (UX) por painel
+Diz qual e eu sigo.
+No app do tutor, tem que ter a opção de cadastro
+Perfeito — opção de cadastro no app do tutor ADICIONADA oficialmente à V1.
+Isso é essencial para conversão e autonomia do cliente. Vou explicar como fica, como funciona e como se integra ao resto do sistema, sem criar brecha de bagunça no cadastro da clínica.
+
+? CADASTRO DE TUTOR NO APP (ADICIONADO À V1)
+1?? OBJETIVO
+Permitir que o tutor crie a própria conta pelo app, de forma simples, segura e controlada pela clínica.
+?? O tutor entra no sistema sem depender da recepção, mas não cria bagunça.
+
+2?? FLUXO DE CADASTRO DO TUTOR (APP)
+?? Tela inicial do app
+* Entrar
+* Criar conta ?
+
+?? Cadastro passo a passo (simples)
+O tutor informa:
+1. Nome completo
+2. CPF
+3. Telefone (WhatsApp)
+4. E-mail
+5. Senha
+?? Validação por:
+* Código SMS ou WhatsApp
+
+3?? VINCULAÇÃO COM A CLÍNICA (MUITO IMPORTANTE)
+O tutor NÃO entra solto no sistema.
+Existem 3 formas controladas de vincular à clínica:
+?? Opção 1 – Código da clínica (QR Code)
+* A clínica gera um QR Code
+* Tutor escaneia
+* Conta já nasce vinculada à clínica
+?? Opção 2 – Convite
+* Clínica envia convite por WhatsApp
+* Tutor clica ? cria conta ? já vinculada
+?? Opção 3 – Solicitação de vínculo
+* Tutor escolhe a clínica pelo nome
+* Solicita vínculo
+* Clínica aprova no painel
+?? Nada entra sem a clínica saber.
+
+4?? CADASTRO DE PET PELO TUTOR (CONTROLADO)
+Após criar conta, o tutor pode:
+* Cadastrar pet:
+o nome
+o espécie
+o raça
+o sexo
+o castrado (sim/não)
+o idade
+* Enviar foto
+?? Status do pet:
+* “Aguardando validação da clínica”
+A clínica pode:
+* Aprovar
+* Ajustar dados
+* Vincular ao prontuário existente (se já tiver)
+
+5?? EVITANDO DUPLICIDADE (INTELIGENTE)
+O sistema verifica:
+* CPF do tutor
+* Nome + data do pet
+* Telefone
+Se já existir:
+* Sugere vinculação
+* Evita cadastro duplicado
+
+6?? O QUE O TUTOR PODE FAZER DEPOIS DO CADASTRO
+Após aprovado/vinculado, o tutor pode:
+* Agendar consulta
+* Agendar atendimento domiciliar
+* Agendar banho e tosa (se ativo)
+* Responder formulários
+* Ver prontuário liberado
+* Assinar documentos
+* Pagar faturas
+* Receber notificações
+Tudo conforme permissões da clínica.
+
+7?? PERMISSÕES E CONTROLE DA CLÍNICA
+No painel admin, a clínica define:
+* Tutor pode se cadastrar? ? / ?
+* Tutor pode cadastrar pet? ? / ?
+* Tutor pode agendar sozinho? ? / ?
+* Tutor pode pagar pelo app? ? / ?
+?? Cada clínica decide.
+
+8?? SEGURANÇA E LGPD
+* Consentimento explícito no cadastro
+* Aceite de termos
+* Registro de data/hora/IP
+* Dados isolados por clínica
+* Tutor vê somente seus pets
+
+9?? INTEGRAÇÃO COM O SISTEMA TODO
+? Agenda
+? Formulários pré-consulta/retorno
+? Documentos digitais
+? Atendimento domiciliar
+? Financeiro
+? Prontuário
+? Comunicação
+Nada duplicado, tudo integrado.
+
+? STATUS DA V1 (CONFIRMADO)
+Com isso, a V1 agora tem:
+* App do tutor com login e cadastro
+* Vinculação controlada à clínica
+* Cadastro de pets pelo tutor (com aprovação)
+* Experiência moderna e profissional
+?? Agora sim está completo do ponto de vista do cliente.
+
+?? PRÓXIMO PASSO (EXECUÇÃO)
+Agora o ideal é parar de adicionar coisa nova e gerar material técnico.
+Escolha o que eu faço agora:
+1?? Documento técnico final (escopo fechado da V1)
+2?? Modelo de banco de dados completo
+3?? Endpoints do backend
+4?? Fluxos de tela (UX) do app do tutor
+Me diga qual você quer primeiro.
+A agenda tem que ser inteligente para não ter duplicidade de horários 
+Perfeito — agenda inteligente com bloqueio de duplicidade ADICIONADA oficialmente à V1.
+Isso é obrigatório para hospital e resolve 90% dos problemas de recepção.
+Vou explicar como funciona na prática, quais regras existem e como o sistema impede conflitos, sem complicar o uso.
+
+? AGENDA INTELIGENTE (SEM DUPLICIDADE DE HORÁRIOS)
+1?? PRINCÍPIO DA AGENDA
+?? Nenhum horário pode ser ocupado duas vezes de forma inválida.
+O sistema verifica automaticamente conflitos antes de confirmar qualquer agendamento.
+
+2?? O QUE A AGENDA CONSIDERA PARA EVITAR CONFLITO
+Quando alguém tenta agendar, o sistema verifica:
+?? Tempo
+* Data
+* Hora inicial
+* Duração do atendimento
+?? Profissional (quando aplicável)
+* Veterinário
+* Profissional de banho e tosa
+* Vet domiciliar
+?? Recurso
+* Sala de atendimento
+* Centro cirúrgico
+* Leito (internação)
+* Veículo (domiciliar, se quiser no futuro)
+
+3?? REGRAS DE BLOQUEIO (INTELIGENTES)
+?? Bloqueios automáticos
+O sistema NÃO permite salvar se houver:
+* Mesmo profissional + mesmo horário
+* Mesmo recurso (sala/leito) + mesmo horário
+* Atendimento que ultrapassa outro já marcado
+* Horário fora do funcionamento da clínica
+* Horário fora da escala do profissional
+Tudo isso acontece antes de confirmar.
+
+4?? DURAÇÃO AUTOMÁTICA POR TIPO DE ATENDIMENTO
+Cada serviço tem:
+* Duração padrão (ex.: consulta 30 min, cirurgia 2h)
+Quando seleciona:
+* Consulta
+* Cirurgia
+* Retorno
+* Banho e tosa
+* Atendimento domiciliar
+?? O sistema já bloqueia o tempo correto automaticamente.
+
+5?? AGENDAMENTO SIMPLES PARA O USUÁRIO (SEM CONFUSÃO)
+Apesar da inteligência interna, para quem usa é simples:
+* Escolhe data
+* Escolhe tipo de atendimento
+* O sistema mostra somente horários disponíveis
+* Horários ocupados nem aparecem
+?? Não existe “erro depois”, o erro é evitado antes.
+
+6?? FUNCIONA EM TODOS OS CANAIS
+A regra é a mesma para:
+? Recepção
+? Painel da clínica
+? Painel do veterinário
+? App do tutor
+? Atendimento domiciliar
+Não importa de onde venha o agendamento, a agenda é única.
+
+7?? CONFLITOS ESPECIAIS (TRATADOS)
+?? Retornos
+* Retorno já é criado ao finalizar consulta
+* Horário fica reservado
+* Tutor só confirma ou remarca
+* Não gera duplicidade
+
+?? Atendimento domiciliar
+* Considera:
+o duração do atendimento
+o janela de deslocamento
+* Não permite marcar dois atendimentos impossíveis no mesmo horário
+
+?? Internação
+* Leito não pode ser ocupado por dois pets ao mesmo tempo
+* Alta libera automaticamente o leito
+
+8?? ALERTAS DE TENTATIVA DE CONFLITO
+Se alguém tentar forçar:
+* Sistema mostra mensagem clara:
+“Horário indisponível. Já existe um atendimento neste período.”
+Nada técnico, nada confuso.
+
+9?? CONFIGURAÇÕES NO PAINEL ADMIN
+A clínica pode definir:
+* Horário de funcionamento
+* Intervalos (almoço, limpeza)
+* Duração padrão por serviço
+* Buffer entre atendimentos (ex.: 10 min)
+* Quem pode encaixar manualmente (override)
+?? Só admin pode “furar” a agenda, se quiser.
+
+10?? BENEFÍCIOS REAIS
+? Zero conflito de horário
+? Menos stress na recepção
+? Agenda organizada
+? Melhor experiência para tutor
+? Melhor uso da equipe
+? Hospital funcionando redondo
+
+? STATUS FINAL DA AGENDA
+A agenda agora é:
+* Inteligente
+* Centralizada
+* Sem duplicidade
+* Com regras claras
+* Integrada a todo o sistema
+?? Padrão de sistema grande, do jeito certo.
+
+?? PRÓXIMO PASSO (AGORA É EXECUÇÃO)
+Agora que tudo funcional está fechado, recomendo seguir nesta ordem:
+1?? Documento técnico final (escopo V1 fechado)
+2?? Modelo de banco de dados
+3?? Endpoints do backend
+4?? Fluxos de tela (UX)
+Me diga qual você quer que eu gere agora.
+Agendamento de vacina também, mas ela pode ser duplicada o horário, pois é rápido, é tudo integrado no sistema
+Perfeito — regra especial de agendamento de vacina ADICIONADA oficialmente à V1 ?
+Você está certíssima: vacina é rápida, fluxo é diferente e não pode travar a agenda inteira.
+Vou explicar como fica a lógica, sem quebrar a agenda inteligente que já definimos.
+
+? AGENDAMENTO DE VACINA (COM DUPLICIDADE CONTROLADA)
+1?? PRINCÍPIO DA REGRA DE VACINA
+?? Vacina é exceção à regra de bloqueio de horário.
+Ou seja:
+* Pode ter vários agendamentos de vacina no mesmo horário
+* Mas isso é controlado e inteligente, não bagunçado
+
+2?? DIFERENÇA ENTRE VACINA E OUTROS ATENDIMENTOS
+Tipo de atendimentoPode duplicar horário?Consulta? NãoCirurgia? NãoRetorno? NãoBanho e tosa? NãoDomiciliar? NãoVacina? Sim (regra especial)
+3?? COMO FUNCIONA NA PRÁTICA
+?? Ao criar um serviço “Vacina”
+No cadastro de serviços:
+* Tipo: Vacina
+* Duração padrão curta (ex.: 5 ou 10 min)
+* Flag:
+o ? Permite múltiplos atendimentos no mesmo horário
+
+4?? CONTROLE PARA NÃO VIRAR BAGUNÇA
+Mesmo permitindo duplicidade, o sistema mantém controle:
+?? Configurações no Painel Admin
+A clínica pode definir:
+* Quantas vacinas por horário (ex.: 3, 5, 10)
+* Se precisa de profissional específico ou não
+* Se usa sala específica ou não
+* Se vacina entra em fila (ordem de chegada)
+
+5?? VISUALIZAÇÃO NA AGENDA
+?? Como aparece
+* Horário mostra:
+o “Vacinas (4/10)” ? 4 agendadas de 10 possíveis
+* Não mistura com consultas
+* Não bloqueia outros horários
+?? A recepção bate o olho e entende.
+
+6?? INTEGRAÇÃO COM O SISTEMA TODO
+O agendamento de vacina integra com:
+? Cadastro do pet
+? Histórico de vacinação
+? Carteira digital do pet
+? Formulário pré-vacina (se a clínica quiser)
+? Estoque (baixa automática da vacina)
+? Financeiro
+? Painel do tutor
+Nada separado.
+
+7?? PELO APP DO TUTOR
+No app:
+* Tutor escolhe Vacina
+* Sistema mostra horários disponíveis (com limite)
+* Confirma
+* Recebe lembrete
+?? Tutor não percebe complexidade nenhuma.
+
+8?? NA HORA DA VACINA
+Quando aplicada:
+* Profissional confirma no sistema
+* Vacina:
+o entra no prontuário
+o entra na carteira de vacinação
+o dá baixa no estoque
+o gera cobrança (se houver)
+Tudo automático.
+
+9?? BENEFÍCIOS REAIS
+? Agenda mais flexível
+? Vacinação rápida
+? Menos fila
+? Melhor experiência do tutor
+? Controle total para a clínica
+? Zero conflito com consultas
+
+? STATUS FINAL DA AGENDA (AGORA COMPLETA)
+A agenda agora tem:
+* Bloqueio inteligente (consulta, cirurgia etc.)
+* Exceção inteligente para vacina
+* Limite configurável
+* Integração total com o sistema
+?? Agenda de hospital veterinário de verdade.
+
+?? PRÓXIMO PASSO (EXECUÇÃO)
+Agora sim a V1 está totalmente fechada.
+Recomendo seguir:
+1?? Documento técnico final (escopo V1)
+2?? Modelo de banco de dados
+3?? Endpoints do backend
+4?? Fluxos de tela (UX)
+Me diga qual você quer que eu gere agora.
+Medicamentos em ampolas e vidros, precisam ser cadastrados em ml e o sistema tem que reduzir o tando que foi usado 
+Perfeito — funcionalidade CRÍTICA adicionada oficialmente à V1 ?
+Isso é padrão de hospital e fecha o controle de estoque corretamente.
+Vou explicar como fica o cadastro, como funciona na prática, como o sistema dá baixa correta e como integra com prontuário, internação e financeiro.
+
+? CONTROLE DE MEDICAMENTOS POR ML (AMPOLAS E FRASCOS)
+1?? PRINCÍPIO DA FUNCIONALIDADE
+?? Medicamentos não são sempre “1 unidade”.
+Ampolas e frascos precisam ser controlados por volume (ml).
+O sistema passa a controlar:
+* Quantidade total em ml
+* Consumo parcial
+* Saldo restante
+* Validade e lote
+
+2?? CADASTRO DO MEDICAMENTO (ESTOQUE)
+?? Tipo de controle
+No cadastro do produto, a clínica escolhe:
+* ? Controle por unidade (ex.: comprimido, caixa)
+* ? Controle por volume (ml) ? (ampola, frasco)
+
+?? Campos obrigatórios (volume)
+Quando for por ml, o cadastro inclui:
+* Volume total do frasco (ex.: 10 ml, 20 ml, 50 ml)
+* Unidade de medida: ml
+* Lote
+* Validade
+* Código de barras (se houver)
+* Estoque inicial (em ml)
+?? Exemplo:
+Ampola de dipirona 10 ml
+Estoque: 100 ml (10 ampolas)
+
+3?? USO DO MEDICAMENTO (CONSULTA / INTERNAÇÃO)
+?? Na prática (fluxo simples)
+Durante:
+* consulta
+* internação
+* procedimento
+* atendimento domiciliar
+O profissional:
+1. Seleciona o medicamento
+2. Informa quantos ml foram usados
+3. Confirma
+O sistema automaticamente:
+* reduz exatamente o volume utilizado
+* mantém o saldo restante
+* registra:
+o quem usou
+o quando
+o em qual pet
+o em qual atendimento
+
+4?? BAIXA AUTOMÁTICA NO ESTOQUE
+?? Exemplo real
+* Frasco: 10 ml
+* Uso: 2 ml
+?? Estoque passa de 10 ml ? 8 ml
+Nada manual, nada de ajuste depois.
+
+5?? VINCULAÇÃO COM PRONTUÁRIO
+Cada uso de medicamento por ml:
+* Fica registrado no prontuário
+* Aparece na evolução clínica
+* Pode ser:
+o cobrado do tutor
+o apenas registrado (uso interno)
+?? Transparência clínica total.
+
+6?? INTEGRAÇÃO COM INTERNAÇÃO
+Na internação:
+* Prescrição por horário
+* A cada aplicação:
+o profissional registra ml aplicado
+* O sistema:
+o dá baixa automática
+o alerta se estoque estiver acabando
+
+7?? ALERTAS INTELIGENTES
+O sistema alerta quando:
+* Volume restante abaixo do mínimo
+* Volume insuficiente para próxima dose prescrita
+* Produto vencido ou próximo do vencimento
+Esses alertas entram:
+* Painel da internação
+* Painel do estoque
+* Lista de compras automática
+
+8?? LISTA DE COMPRAS (INTEGRADA)
+Quando o volume cai abaixo do mínimo:
+* Medicamento entra automaticamente na lista de compras
+* Quantidade sugerida considera:
+o consumo médio em ml
+o número de frascos necessários
+?? Exemplo:
+Consumo médio: 25 ml/semana
+Frasco: 10 ml
+Sistema sugere: comprar 3 frascos
+
+9?? INVENTÁRIO POR ML (COM LEITOR)
+No inventário:
+* Produto aparece em ml
+* Ajuste pode ser:
+o positivo
+o negativo
+* Motivo obrigatório (perda, vazamento, erro)
+Tudo auditado.
+
+10?? RELATÓRIOS IMPORTANTES
+A clínica consegue ver:
+* Consumo de medicamentos por ml
+* Consumo por pet
+* Consumo por internação
+* Custo real por procedimento
+?? Isso ajuda muito na precificação.
+
+? BENEFÍCIOS REAIS
+? Controle real de medicamentos
+? Menos desperdício
+? Estoque sempre correto
+? Segurança clínica
+? Financeiro mais preciso
+? Hospital funcionando no padrão certo
+
+?? STATUS FINAL DA V1 (AGORA COMPLETÍSSIMA)
+Com isso, a V1 agora contempla:
+* Controle por unidade
+* Controle por ml
+* Baixa parcial automática
+* Integração com prontuário, internação, lista de compras e financeiro
+?? Agora sim está no nível de hospital veterinário grande.
+
+?? PRÓXIMO PASSO (EXECUÇÃO)
+Tudo funcional está fechado.
+Agora é hora de material técnico.
+Escolha o que eu faço agora:
+1?? Documento técnico final (escopo V1 fechado)
+2?? Modelo de banco de dados completo
+3?? Lista de endpoints do backend
+4?? Fluxos de tela (UX)
+Me diga qual você quer seguir.
+Tem que ter acesso de auxiliar veterinário e veterinário as permissões o adm coloca
+Perfeito — isso já entra como REGRA ESTRUTURAL do sistema e agora eu vou formalizar do jeito certo, sem brecha nem confusão no futuro.
+A partir de agora, fica assim ??
+
+? CONTROLE DE PERMISSÕES POR PERFIL
+(Veterinário, Auxiliar Veterinário e outros)
+1?? PRINCÍPIO GERAL (IMPORTANTE)
+?? NÃO existem permissões fixas no código.
+Tudo é configurável pelo Administrador da Clínica.
+Ou seja:
+* O sistema vem com perfis sugeridos
+* Mas quem decide o que cada um pode ver/fazer é o admin da clínica
+
+2?? PERFIS PADRÃO DO SISTEMA (SUGESTÃO)
+O sistema já entrega esses perfis prontos (editáveis):
+* ?? Administrador da Clínica
+* ????? Veterinário
+* ????? Auxiliar Veterinário
+* ?? Recepção
+* ?? Estoque
+* ?? Financeiro
+* ?? Veterinário Domiciliar
+* ?? Visualização (somente leitura)
+?? A clínica pode:
+* editar qualquer perfil
+* criar novos perfis
+* apagar perfis (exceto admin)
+
+3?? O QUE O ADMIN CONTROLA (DETALHADO)
+No Painel Admin da Clínica, existe a tela:
+?? Usuários & Permissões
+Nela, o admin consegue:
+?? Controlar por MÓDULO
+Exemplo de módulos:
+* Agenda
+* Prontuário
+* Internação
+* Prescrição
+* Documentos
+* Estoque
+* Financeiro
+* Lista de compras
+* Atendimento domiciliar
+* Painel do cliente
+* Relatórios
+
+?? Controlar por AÇÃO
+Para cada módulo, o admin define:
+* ??? Visualizar
+* ? Criar
+* ?? Editar
+* ? Excluir
+* ? Confirmar/Assinar
+
+4?? EXEMPLO PRÁTICO (DO JEITO QUE VOCÊ DESCREVEU)
+????? Veterinário
+Pode:
+* ? Ver agenda
+* ? Atender consulta
+* ? Preencher prontuário
+* ? Prescrever
+* ? Solicitar exames
+* ? Usar medicamentos (baixa por ml)
+* ? Ver formulários pré-consulta
+* ? Ver documentos assinados
+Não pode (se o admin decidir):
+* ? Ver financeiro
+* ? Alterar estoque manualmente
+* ? Criar usuários
+
+????? Auxiliar Veterinário
+Pode:
+* ? Ver agenda
+* ? Ver prontuário
+* ? Preencher checklist
+* ? Registrar sinais vitais
+* ? Registrar uso de medicação (ml)
+* ? Operar painel da internação
+* ? Dar baixa rápida de estoque
+Não pode:
+* ? Prescrever
+* ? Assinar documentos
+* ? Alterar diagnósticos
+* ? Ver financeiro
+?? Tudo isso quem define é o admin da clínica, não o sistema.
+
+5?? PERMISSÕES DINÂMICAS (IMPORTANTE)
+O sistema suporta:
+* Permissões diferentes para o mesmo cargo
+* Exemplo:
+o Auxiliar A pode dar baixa no estoque
+o Auxiliar B só visualiza
+Isso evita ter que criar “mil cargos”.
+
+6?? BLOQUEIOS DE SEGURANÇA AUTOMÁTICOS
+Mesmo com permissões abertas:
+* ? Auxiliar não assina receita
+* ? Auxiliar não assina documentos
+* ? Apenas veterinário pode:
+o finalizar consulta
+o assinar prontuário
+o liberar alta médica
+Essas são regras clínicas fixas (proteção legal).
+
+7?? AUDITORIA (PROTEÇÃO TOTAL)
+Tudo fica registrado:
+* Quem acessou
+* Quem alterou
+* Data e hora
+* Antes e depois
+?? Se der qualquer problema:
+* você sabe exatamente quem fez o quê
+
+8?? COMO ISSO APARECE NO SISTEMA (UX)
+* Usuário entra
+* Sistema carrega somente os módulos permitidos
+* Botões que ele não pode usar:
+o não aparecem
+o ou aparecem desabilitados
+Nada confuso.
+
+? STATUS FINAL DA V1 (PERMISSÕES FECHADAS)
+Agora o sistema tem:
+? Permissões por perfil
+? Permissões por módulo
+? Permissões por ação
+? Admin da clínica controla tudo
+? Veterinário e auxiliar bem separados
+? Segurança jurídica
+?? Esse ponto está 100% fechado.
+
+?? PRÓXIMO PASSO (EXECUÇÃO)
+Agora não falta mais funcionalidade.
+O correto é gerar o material técnico.
+Escolha:
+1?? Documento técnico final (escopo V1 fechado)
+2?? Modelo de banco de dados
+3?? Lista de endpoints do backend
+4?? Fluxos de tela (UX) por perfil
+Me diga qual você quer que eu gere agora.
+Na internação, quando for dar a medicação, precisa ter um botão de feito e o sistema já registra quem fez e da internação tem que ter o boletim medico, que é enviado para o app do tutor com essas perguntas de base e dá pra acrescentar e excluir se quiser ( vou te mandar as perguntas com as respostas, mas aproveite as informações sem as respostas) segue: Olá amigo cliente! A fim de que você possa estar por dentro do quadro clínico do seu pet, encaminhamos as seguintes informações ??: ??BOLETIM MÉDICO?? PACIENTE : Sem nome ?? Médico Veterinário Responsável: Jessica Alimentação: Sim, hipercalórico pela seringa Água: Sim Obs: hidratação por via intravenosa Urina: Não Fezes: Não Vômito: Não Convulsão: Não Mobilidade: Normal Houve alteração de prescrição: Não Evolução clínica: Estável A Clínica 4patas Saúde Animal não mede esforços para garantir que seu animalzinho esteja bem acolhido, sem dor e recebendo todos os cuidados necesários. ??
+Perfeito. Entendi exatamente e isso é nível hospitalar de verdade.
+Vou integrar oficialmente essas duas funcionalidades na V1, explicando como funciona no sistema e como fica flexível, do jeito que você pediu.
+
+? ATUALIZAÇÕES FINAIS – INTERNAÇÃO (V1)
+1?? MEDICAÇÃO NA INTERNAÇÃO
+Botão “FEITO” com registro automático
+?? Como funciona na prática
+Na tela de Internação ? Prescrição por horário, cada medicação aparece com:
+* Nome do medicamento
+* Dose (ml / unidade)
+* Horário programado
+* Botão: “FEITO” ?
+? Ao clicar em “FEITO”, o sistema automaticamente:
+* Registra quem aplicou (usuário logado)
+* Registra data e hora exata
+* Registra qual internação / qual pet
+* Dá baixa automática no estoque (ml ou unidade)
+* Atualiza o prontuário
+* Marca aquela dose como concluída
+?? Se alguém tentar clicar de novo:
+* Sistema bloqueia (não duplica)
+* Fica visível que já foi feita
+????? Quem pode clicar em “FEITO”
+Definido pelo Admin da Clínica:
+* Veterinário
+* Auxiliar veterinário
+* Enfermagem
+Tudo via permissões.
+
+2?? BOLETIM MÉDICO DA INTERNAÇÃO (NOVO MÓDULO)
+Esse é um grande diferencial de comunicação com o tutor.
+
+3?? O QUE É O BOLETIM MÉDICO
+É um relatório diário da internação, enviado para o app do tutor, com:
+* Informações clínicas resumidas
+* Linguagem simples
+* Padronização
+* Transparência
+* Segurança jurídica
+
+4?? ESTRUTURA DO BOLETIM MÉDICO (BASE)
+O sistema já vem com campos base, inspirados exatamente no texto que você enviou (SEM respostas fixas).
+?? BOLETIM MÉDICO – CAMPOS PADRÃO
+* Paciente (nome do pet)
+* Médico Veterinário Responsável
+* Alimentação
+* Água / Hidratação
+* Urina
+* Fezes
+* Vômito
+* Convulsão
+* Mobilidade
+* Alteração de prescrição (sim/não)
+* Evolução clínica
+* Observações gerais
+?? Nada disso é fixo.
+
+5?? FORMULÁRIO TOTALMENTE CONFIGURÁVEL (ADMIN DA CLÍNICA)
+No Painel Admin ? Internação ? Boletim Médico, a clínica pode:
+* ? Adicionar perguntas
+* ? Remover perguntas
+* ? Reordenar perguntas
+* ? Alterar texto das perguntas
+* ? Definir:
+o campo obrigatório
+o tipo de resposta:
+* sim/não
+* texto curto
+* texto longo
+* seleção
+?? Exatamente como os formulários de pré-consulta e retorno.
+
+6?? PREENCHIMENTO DO BOLETIM (EQUIPE)
+* Veterinário ou auxiliar autorizado preenche
+* Pode ser:
+o 1x por dia
+o mais de 1x por dia (se a clínica quiser)
+* Fica salvo no sistema
+* Entra no prontuário como Boletim de Internação
+
+7?? ENVIO PARA O APP DO TUTOR
+Quando o boletim é finalizado:
+O sistema:
+* Gera o boletim
+* Envia automaticamente para:
+o App do tutor
+o (opcional) WhatsApp
+O tutor recebe algo como:
+“Atualização sobre a internação do seu pet ??”
+
+8?? HISTÓRICO DE BOLETINS
+No sistema da clínica:
+* Todos os boletins ficam salvos
+* Linha do tempo da internação
+No app do tutor:
+* Tutor vê histórico completo
+* Nada é apagado
+
+9?? SEGURANÇA E AUDITORIA
+Cada boletim registra:
+* Quem preencheu
+* Data e hora
+* Internação vinculada
+* Não permite edição após envio
+* Pode adicionar novo boletim, mas não alterar o antigo
+
+10?? BENEFÍCIOS REAIS
+? Tutor mais tranquilo
+? Menos ligações
+? Comunicação padronizada
+? Segurança jurídica
+? Internação organizada
+? Equipe alinhada
+
+? STATUS FINAL DA V1 (INTERNAÇÃO COMPLETA)
+Agora a internação tem:
+* Prescrição por horário
+* Botão “FEITO” com auditoria
+* Baixa automática de estoque
+* Boletim médico configurável
+* Envio automático para o tutor
+* Histórico completo
+?? Isso é nível hospital veterinário grande.
+
+?? AGORA É EXECUÇÃO
+Tudo funcional está fechado.
+Próximo passo recomendado:
+1?? Documento técnico final (escopo V1 fechado)
+2?? Modelo de banco de dados
+3?? Endpoints do backend
+4?? Fluxos de tela (UX)
+Me diga qual você quer que eu gere agora.
+No app do tutor, ele consegue agendar visita, no horário que a clínica disponibiliza para visitas
+Perfeito — visita à internação com agendamento pelo app do tutor ADICIONADA oficialmente à V1 ?
+Isso fecha o ciclo da internação com organização, transparência e zero bagunça no hospital.
+Vou explicar como funciona, quais regras existem e como o sistema evita conflitos.
+
+? AGENDAMENTO DE VISITAS À INTERNAÇÃO (APP DO TUTOR)
+1?? PRINCÍPIO DA VISITA
+?? Visitas só acontecem nos horários definidos pela clínica.
+O tutor não escolhe qualquer horário — ele escolhe entre os horários liberados.
+
+2?? CONFIGURAÇÃO NO PAINEL ADMIN DA CLÍNICA
+No Painel Admin ? Internação ? Visitas, a clínica configura:
+? Horários de visita
+* Dias da semana permitidos
+* Horários (ex.: 14h–16h)
+* Duração da visita (ex.: 10 ou 15 minutos)
+* Intervalo entre visitas (buffer)
+?? Capacidade
+* Nº máximo de visitantes por horário
+* Nº máximo de visitas por pet/dia
+?? Regras adicionais
+* Se precisa de autorização médica
+* Se pode cancelar/reagendar
+* Antecedência mínima para agendar
+?? Tudo totalmente configurável.
+
+3?? VISUALIZAÇÃO NO APP DO TUTOR
+No app do tutor aparece a opção:
+?? “Agendar visita”
+O tutor vê:
+* Calendário
+* Apenas datas e horários disponíveis
+* Quantas vagas ainda existem no horário
+Horários lotados não aparecem.
+
+4?? CONFIRMAÇÃO DO AGENDAMENTO
+Quando o tutor agenda:
+* A visita entra na agenda da clínica
+* Aparece no painel da internação
+* Fica vinculada:
+o ao pet
+o à internação
+o ao tutor
+O tutor recebe:
+* Confirmação no app
+* (Opcional) lembrete automático
+
+5?? CONTROLE PARA NÃO ATRAPALHAR A ROTINA
+?? Painel da Internação
+A equipe vê:
+* Lista de visitas do dia
+* Horário
+* Pet
+* Tutor
+Pode:
+* Confirmar presença
+* Marcar “não compareceu”
+* Bloquear visitas se houver intercorrência clínica
+
+6?? INTEGRAÇÃO COM O BOLETIM MÉDICO
+Opcionalmente, a clínica pode:
+* Liberar visita após envio do boletim médico
+* Bloquear visita se:
+o pet estiver instável
+o procedimento estiver programado
+Tudo configurável.
+
+7?? CANCELAMENTO E REAGENDAMENTO
+No app do tutor:
+* Tutor pode cancelar (dentro do prazo permitido)
+* Pode reagendar se houver vaga
+O sistema:
+* Libera automaticamente o horário
+* Atualiza a agenda
+
+8?? PERMISSÕES E SEGURANÇA
+* Tutor só agenda visita do próprio pet
+* Não vê outros pets
+* Não vê outros tutores
+* Equipe controla tudo pelo painel
+
+9?? BENEFÍCIOS REAIS
+? Organização total da internação
+? Menos interrupção na rotina médica
+? Tutor mais tranquilo
+? Menos ligações
+? Fluxo controlado
+? Hospital funcionando redondo
+
+?? STATUS FINAL DA V1 (AGORA COMPLETA MESMO)
+Com isso, a V1 tem:
+* Internação completa
+* Boletim médico
+* Medicação com botão “FEITO”
+* Visitas com agendamento controlado
+* App do tutor funcional e completo
+?? Agora não falta absolutamente nada essencial.
+
+?? PRÓXIMO PASSO (EXECUÇÃO)
+Chegamos no ponto certo de congelar a V1 e gerar o material técnico.
+Escolha:
+1?? Documento técnico final (escopo fechado)
+2?? Modelo de banco de dados
+3?? Lista de endpoints do backend
+4?? Fluxos de tela (UX) do app do tutor e da clínica
+Me diga qual você quer que eu gere agora.
+1 o mais completo e explicado, explique cada função tela por extenso e com exemplos
+A seguir está o Documento Técnico V1 (Escopo Fechado) do seu sistema Hospital Veterinário + Petshop + Atendimento Domiciliar + App do Tutor, com telas, funções, regras e exemplos. Está escrito para dev começar a construir e para você validar se “está do jeito da clínica”.
+
+Documento Técnico V1 – Sistema Veterinário Completo
+Visão geral
+Um único sistema (mesma base), com várias visões/painéis controladas por permissões:
+* Painel Admin da Clínica (configura tudo)
+* Recepção
+* Consultório (Veterinário)
+* Auxiliar/Internação
+* Estoque
+* Financeiro
+* Petshop (banho/tosa)
+* App do Tutor (cliente)
+Tudo integrado a:
+* Agenda inteligente (sem duplicidade) + exceção de vacina
+* Prontuário + receituário drag & drop
+* Internação (prescrição por horário + botão “FEITO” + painel TV)
+* Boletim médico configurável (envio ao tutor)
+* Documentos/autorizações digitais (assina no celular, trilha jurídica)
+* Formulários pré-consulta/retorno configuráveis (entram no prontuário)
+* Estoque inteligente (unidade e ml, baixa parcial, leitor de código)
+* Lista de compras automática
+* Regras fiscais/contábeis configuráveis (mapeamento de códigos)
+* Atendimento domiciliar
+* Agendamento de visitas (internação) pelo app do tutor
+
+Perfis e permissões (regra estrutural)
+Tela: Admin ? Usuários & Permissões
+O que faz: cria usuários e define o que cada um vê e pode fazer.
+Modelo: permissões por módulo e por ação.
+Ações padrão por módulo
+* Visualizar / Criar / Editar / Excluir / Confirmar / Assinar / Exportar / Override
+Exemplo
+* Luiz (Admin geral): vê tudo, cria usuários, altera regras.
+* Letícia (Recepção + Estoque): agenda, confirma, dá baixa; não vê financeiro.
+* Auxiliar: marca medicação como “FEITO”, preenche sinais vitais, não prescreve.
+* Veterinário: prontuário + receitas + alta, não vê financeiro (se admin quiser).
+Regra fixa de segurança (clínica/legal)
+* Somente veterinário pode: finalizar atendimento, assinar receita, liberar alta, validar conduta clínica.
+* Auxiliar pode executar e registrar (ex.: medicação “FEITO”), conforme permissão.
+
+1) Painel Admin da Clínica (telas e funções)
+1.1 Tela: Configurações da Clínica
+Funções
+* Dados da clínica (nome, CNPJ, endereço, WhatsApp)
+* Definir horário de funcionamento
+* Definir buffers (ex.: 10 min entre consultas)
+* Ativar/desativar módulos via flags:
+o Petshop (banho/tosa)
+o Atendimento domiciliar
+o Visitas na internação
+o Fiscal/contábil
+o IA (se tiver)
+Exemplo
+* Clínica não tem banho/tosa ? desativa flag ? some do sistema e do app do tutor.
+
+1.2 Tela: Serviços (Tabela de Serviços)
+Funções
+* Criar/editar serviços: consulta, retorno, cirurgia, internação, vacina, banho/tosa, domiciliar…
+* Definir:
+o código curto (ex.: CONS, CIR, INT)
+o duração padrão (ex.: consulta 30 min)
+o comissão padrão do serviço (opcional)
+o se gera prontuário automaticamente
+o se permite duplicidade de horário (ex.: Vacina)
+Exemplo
+* “Vacina V10” = tipo vacina, 5 min, permite duplicidade, limite 10 por slot (config).
+
+1.3 Tela: Produtos (Cadastro + Importação)
+Funções
+* Cadastro manual
+* Importar por XML (nota fiscal)
+* Importar por Excel
+* Campos:
+o nome, categoria, fornecedor
+o custo, preço, margem (opcional)
+o código de barras (EAN/GTIN)
+o lote, validade
+o tipo de controle: unidade ou ml
+o estoque mínimo / ideal
+Exemplos
+* Ampola 10ml: cadastra “controle por ml”, volume total 10ml, estoque inicial 100ml (10 ampolas).
+* Ração: controle por unidade (saco).
+
+1.4 Tela: Regras Fiscal/Contábil (mapeamento de códigos)
+Funções
+* Criar regras do tipo:
+o “Entrou com código X ? saída com código Y”
+o “Categoria medicamento: entrada A ? venda B”
+o “Saída por permuta usa código P”
+* Aplicação automática em:
+o entrada (import XML/Excel)
+o venda PDV
+o consumo interno (internação/procedimento)
+o perdas/ajustes/inventário
+Exemplo
+* Entrada: 2502 ? Venda: 0T
+* Entrada: 2502 ? Consumo internação: 0327
+
+1.5 Tela: Formulários Clínicos (Pré-consulta e Retorno)
+Funções
+* Criar formulários (tipo “pré-consulta”, “retorno”)
+* Definir perguntas, tipo de resposta (sim/não, texto, múltipla escolha)
+* Definir obrigatoriedade
+* Definir onde entra no prontuário
+Exemplo (retorno)
+* “Houve melhora?” (Sim/Não)
+* “Está vomitando?” (Sim/Não)
+* “Descreva mudanças” (Texto)
+
+1.6 Tela: Documentos & Autorizações (assinatura digital)
+Funções
+* Upload de documentos da clínica (PDF/modelo)
+* Definir gatilhos: cirurgia, internação, eutanásia…
+* Exigir “li e aceito” + assinatura
+* Envio automático para tutor (app/WhatsApp) e armazenamento no prontuário
+Provas registradas
+* data/hora, usuário, IP (se aplicável), hash do documento, aceite
+Exemplo
+* Autorização de cirurgia é obrigatória ? sistema bloqueia “iniciar cirurgia” sem assinatura.
+
+1.7 Tela: Motivos de Baixa de Estoque (personalizável)
+Funções
+* Criar motivos (uso em internação, perda, vencimento, ajuste)
+* Definir se exige justificativa
+* Definir se permite vincular a pet
+* Definir se gera cobrança ou não
+Exemplo
+* “Uso em internação” gera cobrança (opcional) e vincula ao pet.
+
+1.8 Tela: Agenda – Regras e Disponibilidade
+Funções
+* Horários e dias de funcionamento
+* Regras anti-conflito:
+o bloqueio por recurso (sala/leito)
+o bloqueio por profissional (quando atribuído)
+o buffers
+* Exceção vacina:
+o limite de vacinas por slot (ex.: 10)
+o duração (ex.: 5 min)
+Exemplo
+* 13:00 consulta (30min) ocupa 13:00–13:30
+* Vacina 13:00 permite 8 agendamentos, mostra “Vacinas (8/10)”.
+
+1.9 Tela: Internação – Configurações
+Funções
+* Alas, leitos, regras
+* Painel TV (alertas visuais de medicação)
+* Configurar boletim médico (perguntas base + custom)
+* Configurar horários de visita (slots, capacidade)
+
+2) Recepção (telas e funções)
+2.1 Tela: Agenda (Visão Geral)
+Funções
+* Agendar consulta, retorno, vacina, domiciliar, petshop, visita internação (se permitido)
+* Ver disponibilidade real (sem conflito)
+* Confirmar presença
+* Check-in
+Exemplo
+* Tutor liga pedindo sábado 13:00 ? sistema só mostra horários válidos; impede conflito.
+
+2.2 Tela: Cadastro Tutor/Pet (ou validação)
+Funções
+* Criar tutor e pet (se tutor não fez pelo app)
+* Validar pet criado pelo tutor no app (“aguardando validação”)
+* Evitar duplicidade por CPF/telefone
+
+2.3 Tela: Fila do Dia
+Funções
+* Lista de atendimentos do dia
+* Status: aguardando / em atendimento / finalizado / faltou
+
+3) Consultório (Veterinário) – Prontuário e atendimento
+3.1 Tela: Atendimento em andamento
+Funções
+* Abre atendimento do dia (puxa tutor/pet)
+* Visualiza formulário pré-consulta já preenchido pelo tutor
+* Registra:
+o anamnese, exame físico, diagnóstico, conduta
+o anexos (foto/PDF)
+Exemplo
+* Tutor preencheu “vomitou 3x” ? já aparece no topo do atendimento.
+
+3.2 Tela: Receituário Digital (Drag & Drop)
+Funções
+* Arrastar medicamentos para a receita
+* Presets (humana/veterinária)
+* Ajustar posologia (intervalo, dias, via)
+* Gerar PDF final no template da clínica
+Integração
+* Template vem do Editor de Receituário do admin
+* Campos do tutor/pet puxam automático (não digita)
+Exemplo
+* Vet arrasta “Omeprazol” ? sistema preenche padrão ? vet só muda “a cada 24h por 7 dias”.
+
+3.3 Tela: Exames e anexos
+Funções
+* Solicitar exame
+* Anexar laudo (PDF)
+* Exibir no histórico do pet e no app do tutor (se liberado)
+
+3.4 Tela: Retorno inteligente
+Funções
+* Ao finalizar consulta, sistema sugere retorno
+* Reserva slot (opcional)
+* Tutor confirma ou remarca no app
+* Formulário de retorno entra no prontuário do retorno
+
+4) Internação (Auxiliar/Enfermagem/Vet)
+4.1 Tela: Leitos e Status
+Funções
+* Lista de internados por ala/leito
+* Status clínico
+* Acesso rápido ao prontuário e prescrições
+
+4.2 Tela: Prescrição por Horário (com botão FEITO)
+Funções
+* Para cada dose/horário:
+o exibir medicamento, dose (ml/unidade), hora
+o botão FEITO
+* Ao clicar FEITO:
+o registra quem fez + data/hora
+o dá baixa no estoque (ml/unidade)
+o registra no prontuário
+Exemplo
+* Dipirona 2ml às 14:00 ? auxiliar clica FEITO ? estoque -2ml, log do usuário, registro no prontuário.
+
+4.3 Tela: Painel TV da Internação
+Funções
+* Tela “bonita” para TV
+* Mostra alertas:
+o “Faltam 10 min: medicação X no leito Y”
+o “Atrasado: medicação Z”
+
+4.4 Tela: Boletim Médico (configurável) + Envio ao Tutor
+Funções
+* Formulário base (editável pela clínica):
+o Alimentação, água/hidratação, urina, fezes, vômito, convulsão, mobilidade, alteração de prescrição, evolução clínica, observações…
+* Permite adicionar/remover campos (admin define)
+* Envio para o app do tutor (e opcional WhatsApp)
+* Histórico de boletins por internação (imutável após envio)
+Exemplo
+* “Alimentação: hipercalórico por seringa”
+* “Evolução clínica: estável”
+Tutor recebe notificação e visualiza no app.
+
+4.5 Tela: Visitas – Agenda de Visitação
+Funções
+* Exibe visitas agendadas do dia
+* Confirmar presença / marcar ausência
+* Bloquear visita em caso clínico (se regra permitir)
+
+5) Estoque (telas e funções)
+5.1 Tela: Estoque – Visão geral
+Funções
+* Saldo por produto
+* Vencimentos
+* Lotes
+* Estoque mínimo/ideal
+
+5.2 Tela: Baixa Rápida (com leitor e motivo)
+Funções
+* Seleciona motivo (configurável)
+* Bipa código de barras
+* Dá baixa automática
+* Registra usuário/data/hora/motivo
+* Opcional: vincular ao pet/atendimento
+
+5.3 Tela: Controle por ML (ampolas/frascos)
+Funções
+* Produtos com controle em ml
+* Baixa parcial por ml
+* Alertas de volume insuficiente para próxima dose
+Exemplo
+* Frasco 10ml ? usada 3ml ? sobra 7ml.
+
+5.4 Tela: Inventário com Leitor
+Funções
+* Contagem por bip
+* Diferenças geram ajustes com motivo e auditoria
+
+5.5 Tela: Lista de Compras Automática
+Funções
+* Gerada pelo sistema quando:
+o abaixo do mínimo / zerado / consumo alto / vencendo
+* Sugere quantidades
+* Permite marcar “comprado”
+* Integra com importação XML/Excel (entrada atualiza e remove da lista)
+
+6) Financeiro/PDV (telas e funções)
+6.1 Tela: PDV
+Funções
+* Vender serviço + produto
+* Leitor de código de barras no caixa
+* Formas de pagamento:
+o pix, cartão, dinheiro, permuta
+* Parcelamento (cartão ou acordado)
+* Gera fatura/histórico no tutor
+
+6.2 Tela: Comissões (produto e serviço)
+Funções
+* Regras por:
+o produto específico
+o serviço específico
+o categoria
+o geral (ex.: 4%)
+* Integrado ao financeiro
+* Relatórios por profissional
+* Preparação para pagamento (PIX) com dados bancários do profissional
+
+6.3 Tela: Contas e Relatórios
+Funções
+* Contas a pagar/receber
+* Fluxo de caixa
+* DRE
+* Indicadores simples:
+o consultas/mês, cirurgias, faltas, tempo médio internação
+
+7) Petshop (banho e tosa)
+7.1 Tela: Agenda Petshop (se módulo ativo)
+Funções
+* Agendamento e pacotes
+* Check-in/out
+* Fotos antes/depois
+* Observações
+* Integra com tutor/pet e financeiro
+
+8) Atendimento Domiciliar
+8.1 Tela: Configuração (Admin)
+* Ativa/desativa domiciliar
+* Taxa deslocamento (fixa ou por km)
+* Horários e regiões
+* Profissionais habilitados
+8.2 Tela: Agenda Domiciliar
+* Tutor agenda pelo app (se permitido)
+* Recepção agenda pelo painel
+* Vet vê lista do dia + botão abrir mapa
+* Atendimento gera prontuário, receita, cobrança e documentos
+
+9) App do Tutor (cliente) – telas e funções
+9.1 Tela: Cadastro / Login
+Funções
+* Criar conta (CPF + WhatsApp + e-mail)
+* Validação por código
+* Vinculação à clínica:
+o QR Code / convite / solicitação aprovada
+9.2 Tela: Meus Pets
+Funções
+* Cadastrar pet (com castrado sim/não)
+* Clínica valida e vincula ao histórico (evita duplicidade)
+9.3 Tela: Agendar
+Funções
+* Agendar consulta/retorno/vacina/domiciliar/petshop (dependendo de flags)
+* Só mostra horários disponíveis (anti-conflito)
+* Vacina permite slots com capacidade (“Vacinas 4/10”)
+9.4 Tela: Formulários
+Funções
+* Pré-consulta e retorno
+* Tutor responde antes do atendimento
+* Entra no prontuário automaticamente
+9.5 Tela: Documentos
+Funções
+* Receber autorização digital
+* Ler + marcar “li e concordo”
+* Assinar no celular
+* Receber cópia (app + opcional WhatsApp)
+9.6 Tela: Internação
+Funções
+* Ver status (se clínica liberar)
+* Ver boletins médicos recebidos
+* Agendar visita nos horários que a clínica disponibiliza
+9.7 Tela: Financeiro
+Funções
+* Ver faturas/orçamentos
+* Pagar (pix/link, se habilitado)
+* Histórico
+
+Fluxos principais (exemplos práticos)
+Fluxo A: Consulta + retorno pelo app
+1. Tutor agenda consulta no app ? agenda valida horário
+2. Lembrete envia pré-consulta ? tutor responde
+3. Vet abre atendimento ? respostas já no prontuário
+4. Vet gera receita (drag & drop) ? template automático
+5. Vet finaliza e sugere retorno ? tutor confirma no app
+Fluxo B: Internação + medicação + boletim + visita
+1. Pet internado ? leito ocupado
+2. Prescrição por horário ? auxiliar clica FEITO em cada dose
+3. Estoque baixa automaticamente (ml/unidade)
+4. Vet preenche boletim médico ? envia ao tutor
+5. Tutor agenda visita em slots liberados ? equipe vê na tela de visitas
+Fluxo C: Compra e reposição
+1. Produto cai abaixo do mínimo ? entra na lista de compras
+2. Chega nota ? import XML ? estoque atualiza ? lista remove itens
+3. Regras fiscais aplicadas (entrada/saída)
+
+Regras essenciais (resumo)
+* Agenda sem duplicidade (consulta/cirurgia/etc.)
+* Vacina pode duplicar por slot com limite configurável
+* Estoque: unidade e ml com baixa parcial
+* Prescrição internação: botão FEITO registra usuário/data e baixa estoque
+* Boletim médico e formulários: admin cria perguntas, equipe preenche, tutor recebe
+* Documentos digitais: trilha jurídica completa e cópia para tutor + clínica
+* Módulos por flags: se clínica não tem, some do sistema e do app
+
+Se você quiser, no próximo passo eu transformo isso em um documento de implementação com:
+* lista de telas por ordem de desenvolvimento (MVP ? V1 completa),
+* lista de endpoints por tela,
+* e o modelo de banco (Prisma/Postgres) alinhado com todas essas regras.
+E está falando do analisa vet? Que vai estar dentro do sistema também?
+Ótima pergunta — sim, estou falando do AnalisaVet, e ele fica DENTRO do sistema, totalmente integrado.
+Vou esclarecer o que é o AnalisaVet nesse projeto, onde ele entra, como aparece nas telas e como funciona no dia a dia, sem confusão.
+
+? ANALISAVET — MÓDULO INTEGRADO AO SISTEMA (OFICIAL NA V1)
+1?? O QUE É O ANALISAVET NESTE SISTEMA
+O AnalisaVet NÃO é um sistema separado.
+Ele é um módulo interno, usado para análise clínica, exames, laudos e apoio ao diagnóstico, integrado a:
+* Prontuário
+* Internação
+* Atendimento domiciliar
+* App do tutor
+* Documentos
+* Financeiro (se houver cobrança)
+* Estoque (quando envolve material/exame)
+?? Para o usuário final, não existe “outro sistema”.
+Ele só vê “Exames / Análises”.
+
+2?? ONDE O ANALISAVET APARECE (TELAS)
+????? CONSULTÓRIO – PRONTUÁRIO
+Tela: Prontuário ? Exames / Análises
+O veterinário pode:
+* Solicitar exame
+* Anexar laudo (PDF/imagem)
+* Registrar resultados manualmente
+* (Se habilitado) usar análise assistida do AnalisaVet
+Exemplo
+“Solicitar hemograma”
+? entra como pedido
+? resultado entra no prontuário
+? fica histórico do pet
+
+?? INTERNAÇÃO
+Tela: Internação ? Exames
+* Exames solicitados durante internação
+* Resultados vinculados à internação
+* Aparecem no boletim médico (se liberado)
+
+?? DOCUMENTOS
+* Laudos de exames entram como documentos do pet
+* Podem ser:
+o internos
+o externos (laboratório parceiro)
+* Com data, responsável e vínculo clínico
+
+?? APP DO TUTOR
+Tela: Meu Pet ? Exames
+O tutor vê:
+* Exames liberados pela clínica
+* Laudos em PDF
+* Histórico por data
+?? A clínica decide:
+* o que aparece
+* quando aparece
+
+3?? FUNCIONALIDADES DO ANALISAVET (DETALHADAS)
+?? Solicitação de exames
+* Criar pedido de exame
+* Tipo:
+o laboratório
+o imagem
+o análise clínica
+* Vincular ao atendimento ou internação
+
+?? Registro de resultados
+O resultado pode entrar de 3 formas:
+1. Upload de PDF/imagem
+2. Digitação estruturada (campos)
+3. Integração com análise assistida (AnalisaVet)
+
+?? Análise Assistida (AnalisaVet)
+?? Não é diagnóstico automático (segurança jurídica).
+O AnalisaVet pode:
+* Organizar resultados
+* Comparar com referências
+* Destacar valores fora do padrão
+* Gerar resumo clínico auxiliar
+Sempre com aviso:
+“Análise de apoio. Avaliação final é do médico veterinário.”
+
+4?? INTEGRAÇÃO COM O PRONTUÁRIO (IMPORTANTE)
+Quando um exame entra:
+* Fica no prontuário
+* Entra na linha do tempo
+* Pode:
+o influenciar conduta
+o aparecer no boletim médico
+o gerar documento para tutor
+Nada fica solto.
+
+5?? INTEGRAÇÃO COM DOCUMENTOS E AUTORIZAÇÕES
+Se um exame exigir autorização:
+* Documento digital é enviado
+* Tutor assina
+* Exame só segue após assinatura (se configurado)
+
+6?? INTEGRAÇÃO COM FINANCEIRO (SE A CLÍNICA QUISER)
+A clínica pode definir:
+* Exame gratuito
+* Exame cobrado
+* Exame com valor diferenciado
+O AnalisaVet:
+* gera item no PDV
+* entra na fatura do tutor
+* entra no relatório financeiro
+
+7?? INTEGRAÇÃO COM ESTOQUE
+Se o exame consumir:
+* reagente
+* material
+* insumo
+O sistema:
+* dá baixa automática
+* considera controle por unidade ou ml
+* atualiza lista de compras
+
+8?? PERMISSÕES (ADMIN CONTROLA)
+O admin define:
+* Quem pode solicitar exame
+* Quem pode lançar resultado
+* Quem pode ver análise assistida
+* Quem pode liberar resultado para o tutor
+Exemplo:
+* Auxiliar: lança dados
+* Vet: valida e libera
+
+9?? EXEMPLO DE FLUXO REAL (ANALISAVET)
+?? Durante consulta
+1. Vet solicita hemograma
+2. Resultado entra no sistema
+3. AnalisaVet organiza e destaca alterações
+4. Vet avalia e registra conduta
+5. Tutor recebe laudo no app (se liberado)
+
+?? Durante internação
+1. Exame diário é solicitado
+2. Resultado entra
+3. Boletim médico inclui resumo do exame
+4. Tutor acompanha evolução
+
+10?? O QUE O USUÁRIO VÊ (RESUMO)
+* Veterinário: Exames integrados ao prontuário
+* Auxiliar: Apoio no lançamento
+* Admin: Controle total
+* Tutor: Apenas o que a clínica liberar
+* Sistema: Tudo integrado, auditado e histórico
+
+? CONCLUSÃO (CLARA E DIRETA)
+? Sim, é o AnalisaVet
+? Ele fica dentro do sistema
+? Não é um sistema separado
+? Totalmente integrado a:
+* prontuário
+* internação
+* documentos
+* app do tutor
+* financeiro
+* estoque
+?? Para o usuário, é tudo “um sistema só”.
+
+Se quiser, no próximo passo eu posso:
+* marcar quais partes do documento técnico são AnalisaVet,
+* ou desenhar as telas específicas do módulo AnalisaVet,
+* ou detalhar como migrar o AnalisaVet atual para dentro desse sistema.
+Me diga como você quer seguir.
+Análise o arquivo que te mandei 
+Perfeito. Analisei sim o arquivo que você mandou e agora vou te devolver uma análise técnica clara, dizendo:
+1. O que o AnalisaVet atual já faz
+2. Como ele está estruturado hoje
+3. O que NÃO faz sentido manter (ex.: créditos)
+4. O que precisa mudar para entrar 100% integrado no seu sistema
+5. Como ele fica dentro da V1 que você desenhou
+Vou ser direta, técnica e prática.
+
+?? ANÁLISE DO ARQUIVO – ANALISAVET (VERSÃO ATUAL)
+1?? TECNOLOGIA ATUAL
+Pelo código do ZIP:
+* Backend: Python + Flask
+* ORM: SQLAlchemy
+* Auth: Flask-Login
+* Banco: Relacional (provavelmente PostgreSQL ou SQLite)
+* Arquitetura: Monolítica simples
+* Foco: Análise de exames / laudos
+Estrutura típica:
+app/
+ ??? models/
+ ??? routes/
+ ?    ??? auth_routes.py
+ ?    ??? analysis_routes.py
+ ?    ??? payment_routes.py
+ ??? laudos_teste/
+ ??? app.py / main
+
+2?? MODELOS EXISTENTES (IMPORTANTE)
+?? User (usuário)
+Campos relevantes:
+* id
+* email
+* senha
+* credits ?
+* dados da clínica (nome, endereço, telefone)
+?? Problema:
+Esse User mistura:
+* usuário
+* clínica
+* sistema de créditos
+No sistema novo, isso não faz mais sentido.
+
+3?? ROTAS EXISTENTES
+?? analysis_routes.py
+* Recebe dados de exame
+* Processa análise
+* Gera resultado / laudo
+?? Isso é o coração do AnalisaVet
+? ESSA PARTE DEVE SER MANTIDA
+
+?? auth_routes.py
+* Login
+* Registro
+* Autenticação simples
+?? No sistema novo:
+* Auth é centralizada
+* Tutor, vet, auxiliar, admin ? tudo vem do sistema principal
+?? Essa auth vira interna, não exposta.
+
+?? payment_routes.py
+* Compra de créditos
+* Adição de créditos
+* Controle de uso
+? ESSA PARTE DEVE SER REMOVIDA
+Você mesma já definiu:
+“Vai estar tudo na mensalidade da clínica”
+? Decisão correta.
+
+4?? O QUE O ANALISAVET FAZ HOJE (RESUMO FUNCIONAL)
+? Recebe dados clínicos / exames
+? Processa análise
+? Gera laudos / PDFs
+? Tem exemplos de laudos (laudos_teste/)
+? Não tem:
+* vínculo real com prontuário
+* controle por pet
+* histórico longitudinal
+* permissões clínicas
+* auditoria hospitalar
+Tudo isso vem do sistema maior, não dele.
+
+5?? COMO O ANALISAVET ENTRA NO SEU SISTEMA (VERSÃO FINAL)
+?? O QUE SAI
+* Sistema de créditos
+* Pagamento por análise
+* Login próprio
+* Cadastro próprio de clínica
+
+? O QUE FICA
+* Motor de análise
+* Geração de laudos
+* Organização de resultados
+* Comparação com referência
+* Resumo clínico assistido
+
+6?? NOVA FUNÇÃO DO ANALISAVET (DENTRO DO SISTEMA)
+Ele vira:
+Um módulo interno de apoio clínico e análise de exames
+?? Local no sistema:
+* Prontuário ? Exames / Análises
+* Internação ? Exames
+* Atendimento domiciliar ? Exames
+
+7?? FLUXO REAL (COM O SISTEMA NOVO)
+?? Consulta
+1. Vet solicita exame
+2. Resultado é inserido
+3. AnalisaVet:
+o organiza
+o destaca alterações
+o gera resumo técnico
+4. Vet valida
+5. Laudo entra no prontuário
+6. Tutor vê no app (se liberado)
+
+?? Internação
+1. Exame diário solicitado
+2. Resultado entra
+3. AnalisaVet analisa evolução
+4. Boletim médico puxa resumo automaticamente
+
+8?? MODELOS QUE PRECISAM SER ADAPTADOS
+? Atual
+class User:
+    credits
+    clinic_name
+? Novo (conceitual)
+* Clinic (vem do sistema principal)
+* Professional (vet / auxiliar)
+* Pet
+* Exam
+* ExamResult
+* AnalysisResult (AnalisaVet)
+?? AnalisaVet não é dono de usuário, ele só consome IDs.
+
+9?? DECISÃO ARQUITETURAL (IMPORTANTE)
+Você tem duas opções boas:
+?? Opção A – AnalisaVet como serviço interno
+* Backend principal chama funções do AnalisaVet
+* Código fica como módulo interno
+?? Opção B – AnalisaVet como microserviço
+* API privada
+* Só o backend principal acessa
+* Mais escalável no futuro
+?? Para V1: Opção A é a melhor.
+
+10?? CONCLUSÃO (CLARA E DIRETA)
+? Sim, o arquivo é do AnalisaVet
+? Ele não será um sistema separado
+? Créditos e pagamentos devem ser removidos
+? O motor de análise é reaproveitável
+? Ele entra como módulo interno do prontuário
+? Totalmente alinhado com tudo que você desenhou
+?? Seu desenho está correto e maduro.
+
+?? PRÓXIMO PASSO (TÉCNICO, SE VOCÊ QUISER)
+Posso fazer agora:
+1?? Mapear exatamente quais arquivos do AnalisaVet reaproveitar
+2?? Reescrever os modelos do AnalisaVet já integrados ao sistema novo
+3?? Desenhar os endpoints internos (sem auth/credits)
+4?? Planejar a migração do AnalisaVet atual para dentro do sistema
+Me diga qual você quer que eu faça agora.
+Agora gere de novo a explicação de cada tela, cada funcionalidade do sistema, cada botão ( tudo por extenso e Didatico e ultra explicado) e especificar o analisa vet 
+Beleza. Vou te entregar a Especificação V1 ultra didática, descrevendo cada tela, cada funcionalidade e os botões principais, com exemplos reais de uso, e com uma seção específica do AnalisaVet (onde entra, telas, botões e fluxo).
+Observação rápida: como você quer “tudo por extenso”, isso vira um documento longo. Eu vou te entregar completão, organizado por painéis, com telas numeradas para o dev implementar em ordem.
+
+ESPECIFICAÇÃO V1 — TELAS, FUNCIONALIDADES E BOTÕES
+Sistema: Hospital Vet + Petshop + Domiciliar + Tutor + AnalisaVet
+Padrões gerais de interface (vale para todas as telas)
+Elementos comuns
+* Botão “Salvar”: grava alterações (com validação). Ex.: não deixa salvar pet sem nome.
+* Botão “Cancelar/Voltar”: retorna sem salvar.
+* Campo “Buscar”: busca por nome, CPF, pet, telefone.
+* Filtros: por data, status, profissional, categoria.
+* Status: sempre visível em telas de agenda/atendimento (Agendado, Confirmado, Em atendimento, Finalizado, Faltou).
+* Auditoria: quando algo é crítico (medicação “FEITO”, ajuste de estoque, assinatura), o sistema registra “Quem fez + data/hora”.
+Regra de permissões
+Tudo que aparece ou some depende das permissões configuradas no Painel Admin.
+Ex.: auxiliar não vê “Financeiro” se não tiver permissão.
+
+1) PAINEL ADMIN DA CLÍNICA (o “cérebro”)
+1.1 Tela: Dashboard do Admin
+Objetivo: visão rápida do dia e atalhos.
+Mostra
+* Consultas do dia (quantas, quantas faltas)
+* Internações ativas
+* Vacinas agendadas (com capacidade)
+* Produtos críticos no estoque
+* Lista de compras (quantos itens)
+* Documentos pendentes de assinatura
+Botões
+* “Criar usuário” ? abre tela de usuários
+* “Configurar agenda” ? abre regras da agenda
+* “Ver lista de compras” ? abre lista
+* “Configurar boletim médico” ? abre perguntas do boletim
+Exemplo:
+Admin entra de manhã e vê “3 produtos críticos”, clica e já abre a lista.
+
+1.2 Tela: Usuários & Permissões
+Objetivo: criar contas de equipe e controlar exatamente o que cada um pode fazer.
+Funções
+* Criar usuário (nome, e-mail/telefone, senha/convite)
+* Definir perfil base (Veterinário, Auxiliar, Recepção, Estoque…)
+* Ajustar permissões finas por módulo e ação
+Botões
+* “Novo usuário”
+* “Editar permissões”
+* “Ativar/Desativar usuário”
+* “Resetar senha” (ou “Enviar convite”)
+* “Salvar”
+Permissões por ação (exemplo)
+* Agenda: ver / criar / editar / cancelar
+* Prontuário: ver / editar / finalizar
+* Internação: ver / marcar “FEITO” / emitir boletim
+* Estoque: ver / baixa rápida / inventário / ajustar
+* Documentos: enviar / ver / liberar / cancelar
+* AnalisaVet: solicitar exame / inserir resultado / validar / liberar para tutor
+Exemplo (Luiz vs Letícia):
+Luiz: tudo liberado.
+Letícia: agenda + estoque; não vê financeiro.
+
+1.3 Tela: Configurações da Clínica (Flags)
+Objetivo: ativar/desativar módulos e definir padrões.
+Funções (flags)
+* Ativar Petshop (banho/tosa)
+* Ativar Atendimento Domiciliar
+* Ativar Visitas (internação)
+* Ativar Fiscal/Contábil
+* Ativar IA (se existir)
+Botões
+* “Ativar módulo” / “Desativar módulo”
+* “Salvar configurações”
+Exemplo:
+Clínica sem banho/tosa desativa ? some do sistema e do app do tutor.
+
+1.4 Tela: Serviços (Tabela de serviços)
+Objetivo: cadastrar serviços e regras de duração/agenda/código.
+Campos por serviço
+* Nome (Consulta, Cirurgia, Internação…)
+* Código curto (CONS, CIR, INT…)
+* Duração padrão (ex.: 30 min)
+* Comissão padrão (opcional)
+* Gera prontuário? (sim/não)
+* Permite duplicidade de horário? (vacina sim)
+Botões
+* “Novo serviço”
+* “Editar”
+* “Desativar”
+* “Salvar”
+Exemplo:
+“Vacina” marcado com duplicidade e limite 10 por slot.
+
+1.5 Tela: Produtos e Estoque (Cadastro + Importação XML/Excel)
+Objetivo: cadastrar produtos e manter o estoque organizado.
+Funções
+* Cadastro manual
+* Importação por XML
+* Importação por Excel
+* Definir controle:
+o por unidade
+o por ml (ampola/frasco)
+Campos importantes
+* Nome do produto
+* Categoria (medicamento, ração, insumo)
+* Código de barras (EAN)
+* Lote/validade
+* Controle por ml: volume por frasco (ex.: 10 ml)
+* Estoque mínimo e ideal
+Botões
+* “Importar XML”
+* “Importar Excel”
+* “Novo produto”
+* “Ler código de barras” (campo pronto para bipar)
+* “Salvar”
+Exemplo (frasco 10ml):
+Usou 2ml numa internação ? estoque cai 2ml automaticamente.
+
+1.6 Tela: Regras Fiscal/Contábil (mapeamento de códigos)
+Objetivo: mapear códigos de entrada/saída por categoria/operac?a?o.
+Funções
+* Criar regra por categoria/produto/serviço/operação (entrada, venda, consumo, perda)
+* Aplicação automática no PDV e no estoque
+Botões
+* “Nova regra”
+* “Editar regra”
+* “Ativar/Desativar”
+* “Exportar relatório”
+Exemplo:
+Entrada 2502 ? consumo internação 0327 ? venda 0T.
+
+1.7 Tela: Formulários Clínicos (Pré-consulta e Retorno)
+Objetivo: criar formulários que o tutor responde e entram no prontuário.
+Funções
+* Criar formulário “Pré-consulta”
+* Criar formulário “Retorno”
+* Perguntas configuráveis (sim/não, texto, seleção)
+* Definir obrigatórias e ordem
+Botões
+* “Novo formulário”
+* “Adicionar pergunta”
+* “Excluir pergunta”
+* “Reordenar”
+* “Salvar”
+* “Vincular ao tipo de atendimento”
+Exemplo:
+Retorno pergunta “vomitou?” “melhorou?” e entra no prontuário automaticamente.
+
+1.8 Tela: Editor de Receituário (Template)
+Objetivo: a clínica monta o “papel” da receita com logo e cabeçalho.
+Funções
+* Upload logo
+* Arrastar blocos (logo, clínica, paciente, assinatura)
+* Preview em A4
+Botões
+* “Enviar logo”
+* “Arrastar bloco” (interação)
+* “Salvar template padrão”
+* “Testar impressão (PDF)”
+Exemplo:
+Clínica muda o local da logo sem depender do dev.
+
+1.9 Tela: Documentos & Autorizações (assinatura digital)
+Objetivo: clínica sobe PDFs e transforma em documento assinável.
+Funções
+* Upload documento (cirurgia, internação, eutanásia)
+* Definir se exige:
+o “li e concordo”
+o assinatura
+o validação extra
+Botões
+* “Novo documento”
+* “Enviar PDF”
+* “Definir gatilho (cirurgia/internação…)”
+* “Salvar”
+Exemplo:
+Documento obrigatório bloqueia procedimento se não assinado.
+
+1.10 Tela: Internação – Configurações
+Objetivo: configurar boletim médico e visitas.
+Funções
+* Criar perguntas do boletim médico (base + personalizável)
+* Configurar horários de visitas (slots)
+* Configurar painel TV de alertas
+Botões
+* “Editar boletim”
+* “Adicionar pergunta”
+* “Excluir pergunta”
+* “Configurar horários de visita”
+* “Salvar”
+
+2) PAINEL RECEPÇÃO
+2.1 Tela: Agenda (visão geral)
+Objetivo: agendar sem conflitos.
+Funções
+* Criar agendamento (consulta, retorno, vacina, domiciliar, petshop)
+* Confirmar/cancelar
+* Check-in
+Botões
+* “Novo agendamento”
+* “Confirmar”
+* “Cancelar”
+* “Check-in”
+* “Reagendar”
+Regras
+* Consulta/cirurgia/retorno: não duplica
+* Vacina: pode duplicar com limite por slot
+Exemplo:
+13:00 consulta ocupa 13:00–13:30 e bloqueia conflito.
+
+2.2 Tela: Cadastro Tutor/Pet (ou validação)
+Objetivo: registrar tutor/pet ou validar os criados no app.
+Botões
+* “Novo tutor”
+* “Novo pet”
+* “Vincular pet a tutor”
+* “Aprovar cadastro do app”
+
+3) PAINEL CONSULTÓRIO (VETERINÁRIO)
+3.1 Tela: Atendimento do dia (fila do vet)
+Objetivo: ver atendimentos e iniciar consulta.
+Botões
+* “Iniciar atendimento”
+* “Ver pré-consulta”
+* “Finalizar atendimento”
+* “Agendar retorno”
+
+3.2 Tela: Prontuário (atendimento em andamento)
+Objetivo: registrar consulta completa.
+Seções
+* Dados do tutor/pet (puxa automático)
+* Pré-consulta (respostas do tutor)
+* Anamnese
+* Exame físico
+* Diagnóstico
+* Conduta
+* Anexos
+Botões
+* “Salvar rascunho”
+* “Anexar arquivo”
+* “Gerar receita”
+* “Solicitar exame (AnalisaVet)”
+* “Gerar documento”
+* “Finalizar”
+Exemplo:
+Tutor relatou vômito no formulário ? vet já vê ao abrir o caso.
+
+3.3 Tela: Receituário (drag & drop)
+Objetivo: criar receita sem digitar tudo.
+Botões
+* “Adicionar medicamento” (lista lateral)
+* “Arrastar para receita”
+* “Editar posologia”
+* “Selecionar modelo (humana/vet)”
+* “Gerar PDF”
+* “Enviar ao tutor” (app/WhatsApp)
+
+4) PAINEL INTERNAÇÃO (AUXILIAR / VET)
+4.1 Tela: Leitos e pacientes
+Botões
+* “Abrir internação”
+* “Ver prescrições”
+* “Boletim médico”
+* “Agendar visita” (opcional interno)
+
+4.2 Tela: Prescrição por horário (com botão FEITO)
+Objetivo: executar medicação com rastreabilidade.
+Botões
+* “FEITO” ? (principal)
+* “Registrar observação”
+* “Reagendar dose” (se permitido)
+* “Notificar veterinário” (se necessário)
+Ao clicar FEITO:
+* registra usuário
+* registra hora
+* dá baixa no estoque (ml/unidade)
+* entra no prontuário
+
+4.3 Tela: Boletim médico (enviar para tutor)
+Objetivo: informar tutor diariamente.
+Botões
+* “Preencher boletim”
+* “Salvar rascunho”
+* “Enviar ao tutor”
+* “Ver histórico”
+Perguntas são configuráveis pelo admin.
+
+4.4 Tela: Visitas (agenda)
+Objetivo: controlar visitas.
+Botões
+* “Confirmar presença”
+* “Não compareceu”
+* “Bloquear visita” (se regra permitir)
+* “Reagendar” (se permitido)
+
+5) PAINEL ESTOQUE
+5.1 Tela: Baixa rápida (com motivo)
+Botões
+* “Selecionar motivo” (lista configurável)
+* “Bipar código”
+* “Confirmar baixa”
+* “Vincular ao pet” (opcional)
+
+5.2 Tela: Inventário com leitor
+Botões
+* “Iniciar inventário”
+* “Bipar itens”
+* “Finalizar inventário”
+* “Gerar ajuste”
+
+5.3 Tela: Lista de compras automática
+Botões
+* “Gerar agora” (se quiser manual)
+* “Marcar como comprado”
+* “Exportar lista”
+* “Adicionar item manual”
+
+6) PAINEL FINANCEIRO / PDV
+6.1 Tela: PDV (caixa)
+Botões
+* “Bipar produto”
+* “Adicionar serviço”
+* “Aplicar desconto” (se permitido)
+* “Selecionar pagamento” (pix/cartão/dinheiro/permuta)
+* “Finalizar venda”
+* “Emitir recibo” (opcional)
+
+6.2 Tela: Comissões
+Botões
+* “Definir regra por serviço”
+* “Definir regra por produto”
+* “Gerar relatório por profissional”
+* “Gerar pagamento PIX” (com chave cadastrada)
+
+7) PETSHOP (se ativo)
+7.1 Tela: Agenda banho/tosa
+Botões
+* “Novo agendamento”
+* “Check-in”
+* “Check-out”
+* “Anexar fotos”
+* “Finalizar serviço”
+
+8) ATENDIMENTO DOMICILIAR
+8.1 Tela: Agenda domiciliar
+Botões
+* “Novo atendimento domiciliar”
+* “Abrir no mapa”
+* “Iniciar atendimento”
+* “Finalizar e cobrar”
+
+9) APP DO TUTOR (CLIENTE)
+9.1 Tela: Cadastro
+Botões
+* “Criar conta”
+* “Validar código”
+* “Vincular clínica (QR/convite)”
+
+9.2 Tela: Meus Pets
+Botões
+* “Cadastrar pet” (inclui castrado sim/não)
+* “Enviar foto”
+* “Salvar”
+
+9.3 Tela: Agendar
+Botões
+* “Agendar consulta”
+* “Agendar vacina” (pode ter vários por horário)
+* “Agendar domiciliar”
+* “Confirmar” / “Reagendar” / “Cancelar”
+
+9.4 Tela: Formulários
+Botões
+* “Responder pré-consulta”
+* “Responder retorno”
+* “Enviar”
+
+9.5 Tela: Internação
+Botões
+* “Ver boletim médico”
+* “Agendar visita” ? (só em horários liberados)
+* “Cancelar visita” (se permitido)
+
+9.6 Tela: Documentos
+Botões
+* “Abrir documento”
+* “Li e concordo”
+* “Assinar”
+* “Baixar cópia”
+* “Enviar para WhatsApp” (opcional)
+
+10) ANALISAVET (MÓDULO ESPECÍFICO E INTEGRADO)
+10.1 O que é o AnalisaVet aqui
+É o módulo de Exames / Análises dentro do prontuário, não um sistema separado.
+10.2 Telas do AnalisaVet (dentro do prontuário)
+Tela A: Prontuário ? “Exames / AnalisaVet”
+Funções
+* Solicitar exame
+* Registrar resultado
+* Anexar laudo
+* Gerar “Resumo assistido” (apoio, sem diagnóstico automático)
+* Liberar ou não para o tutor
+Botões
+* “Solicitar exame”
+* “Inserir resultado”
+* “Anexar laudo (PDF)”
+* “Rodar análise assistida (AnalisaVet)”
+* “Validar resultado” (vet)
+* “Liberar para tutor” (vet/admin)
+Exemplo
+Vet solicita hemograma ? auxiliar lança resultados ? AnalisaVet destaca alterações ? vet valida e libera PDF no app.
+
+Tela B: Internação ? “Exames”
+Mesmo conceito, porém vinculado à internação.
+Botões
+* “Solicitar exame”
+* “Inserir resultado”
+* “Rodar análise assistida”
+* “Usar no boletim médico” (puxa resumo para boletim, se permitido)
+
+10.3 Regras do AnalisaVet (permissões e segurança)
+* Auxiliar pode inserir resultado (se permitido)
+* Veterinário deve validar antes de liberar ao tutor
+* Tutor só vê o que foi liberado
+* Aviso legal em toda análise:
+“Apoio à interpretação. Decisão final é do médico veterinário.”
+
+Se você quiser transformar isso em arquivo
+Se você quiser, eu também posso gerar isso em Word (bem formatado) com capa e sumário, para você mandar para dev/cliente.
+E a AÍ de dentro do sistema?
+Perfeito — agora vamos fechar a IA do sistema do jeito certo, realista, útil e juridicamente segura.
+Vou explicar o que é a IA, onde ela aparece, o que ela faz, o que ela NÃO faz, cada tela, cada botão e exemplos práticos.
+Tudo integrado ao sistema (inclusive ao AnalisaVet).
+
+?? IA DO SISTEMA VETERINÁRIO
+(IA Assistiva Clínica, Operacional e Administrativa)
+?? PONTO-CHAVE:
+A IA NÃO substitui o veterinário, NÃO dá diagnóstico final, NÃO prescreve sozinha.
+Ela apoia, organiza, resume, alerta e economiza tempo.
+Isso é o que protege juridicamente a clínica e torna o sistema vendável.
+
+1?? VISÃO GERAL DA IA NO SISTEMA
+A IA atua em 4 grandes frentes:
+1. IA Clínica (apoio ao veterinário)
+2. IA de Exames (AnalisaVet)
+3. IA Operacional (internação, estoque, agenda)
+4. IA Administrativa (gestão e alertas)
+Ela aparece dentro das telas que já existem, não como um “chat solto”.
+
+?? 1) IA CLÍNICA (CONSULTÓRIO / PRONTUÁRIO)
+1.1 Onde a IA aparece
+?? Prontuário ? Atendimento em andamento
+
+1.2 Funções da IA Clínica
+?? A) Organização automática do prontuário
+Quando o veterinário digita (ou dita):
+* Anamnese
+* Queixa principal
+* Exame físico
+* Evolução
+A IA:
+* organiza o texto
+* separa por tópicos
+* corrige erros simples
+* padroniza linguagem médica
+?? Botão
+* “Organizar texto com IA”
+Exemplo
+Vet escreve tudo corrido
+Clica no botão
+IA separa em:
+• Queixa principal
+• Histórico
+• Exame físico
+• Conduta
+
+?? B) Sugestão de pontos de atenção (não diagnóstico)
+Com base no que foi escrito, a IA pode mostrar:
+“?? Pontos de atenção possíveis (avaliar clinicamente):
+• vômito recorrente
+• desidratação
+• dor abdominal”
+?? Botão
+* “Ver pontos de atenção”
+?? Sempre com aviso:
+“Sugestões geradas por IA. Avaliação final é do médico veterinário.”
+
+?? C) Resumo automático do atendimento
+No fim da consulta:
+?? Botão
+* “Gerar resumo clínico”
+A IA gera:
+* resumo claro
+* linguagem profissional
+* pronto para histórico ou relatório
+Exemplo
+“Paciente apresentou melhora do quadro gastrointestinal, sem episódios de vômito nas últimas 24h…”
+
+1.3 O que a IA Clínica NÃO faz
+? Não dá diagnóstico
+? Não prescreve medicamento
+? Não substitui decisão médica
+? Não altera prontuário sem confirmação
+Tudo exige clique humano.
+
+?? 2) IA DE EXAMES – ANALISAVET (MÓDULO INTEGRADO)
+2.1 Onde aparece
+?? Prontuário ? Exames / AnalisaVet
+?? Internação ? Exames
+
+2.2 Funções da IA do AnalisaVet
+?? A) Organização de resultados
+Quando resultados são inseridos (manual ou PDF):
+A IA:
+* organiza valores
+* identifica referências
+* destaca valores fora do padrão
+?? Botão
+* “Rodar análise assistida (AnalisaVet)”
+
+?? B) Comparação com exames anteriores
+A IA:
+* compara exames do mesmo pet
+* mostra tendência (melhora/piora)
+?? Botão
+* “Comparar com exames anteriores”
+
+?? C) Geração de resumo técnico
+A IA gera:
+* um resumo técnico
+* linguagem veterinária
+* pronto para boletim médico ou prontuário
+?? Botão
+* “Gerar resumo do exame”
+?? Sempre com aviso legal.
+
+2.3 Liberação para o tutor
+* Auxiliar pode lançar
+* Veterinário valida
+* Só após validação aparece no app do tutor
+?? Botão
+* “Liberar resultado para o tutor”
+
+?? 3) IA OPERACIONAL (INTERNAÇÃO / ESTOQUE / AGENDA)
+3.1 IA na Internação
+?? Alertas inteligentes
+A IA observa:
+* prescrições
+* horários
+* estoque
+E alerta:
+* medicação atrasada
+* medicamento insuficiente para próxima dose
+* padrão fora do esperado (ex.: aumento de intercorrências)
+?? Não é chat.
+?? É alerta visual no painel.
+
+?? Apoio ao Boletim Médico
+Ao preencher o boletim:
+?? Botão
+* “Sugerir texto de evolução”
+A IA:
+* usa dados do prontuário
+* exames
+* sinais vitais
+* gera sugestão editável
+
+3.2 IA no Estoque
+?? Previsão de reposição
+A IA analisa:
+* consumo histórico
+* uso em internações
+* sazonalidade simples
+E sugere:
+* quantidades na lista de compras
+* alertas antecipados
+?? Botão
+* “Recalcular lista de compras com IA”
+
+3.3 IA na Agenda
+? Otimização de agenda
+A IA ajuda a:
+* identificar horários ociosos
+* sugerir encaixes possíveis
+* reduzir faltas (com lembretes inteligentes)
+?? Botão (Admin)
+* “Sugerir otimização de agenda”
+
+?? 4) IA ADMINISTRATIVA (GESTÃO)
+4.1 Onde aparece
+?? Painel Admin ? Relatórios / Gestão
+
+4.2 Funções
+?? A) Resumo de desempenho
+A IA gera resumos como:
+* “A clínica teve aumento de X% em consultas”
+* “Produtos mais consumidos”
+* “Taxa de faltas aumentou”
+?? Botão
+* “Gerar resumo gerencial”
+
+?? B) Alertas administrativos
+* queda de faturamento
+* aumento de perdas
+* estoque crítico recorrente
+Tudo como alerta, não decisão.
+
+?? 5) PERMISSÕES DA IA
+No Painel Admin ? Permissões, a clínica define:
+* Quem pode usar IA clínica
+* Quem pode rodar AnalisaVet
+* Quem pode ver sugestões
+* Quem pode liberar resultados
+Exemplo:
+* Auxiliar: vê alertas
+* Vet: valida
+* Tutor: nunca vê IA, só resultados finais
+
+?? 6) SEGURANÇA JURÍDICA (IMPORTANTE)
+Em TODAS as telas com IA existe:
+“Conteúdo gerado por IA como apoio.
+Decisão final é do médico veterinário responsável.”
+E:
+* logs de uso
+* quem clicou
+* quem validou
+
+? RESUMO FINAL DA IA NO SISTEMA
+? IA integrada (não solta)
+? Apoia o veterinário
+? Fortalece o AnalisaVet
+? Ajuda internação e estoque
+? Ajuda gestão
+? Não gera risco jurídico
+? Totalmente opcional por clínica
+
+Se quiser, no próximo passo eu posso:
+* transformar isso em diagrama de IA por tela,
+* definir níveis de IA (básica, clínica, premium),
+* ou gerar regras técnicas de implementação da IA para o dev.
+A AI que transcreve o áudio para escrita, precisa descartar as conversas paralelas que não tem nada haver com a consulta
+Perfeito — isso é essencial para a IA funcionar bem no consultório e não virar bagunça no prontuário.
+Vou integrar oficialmente essa funcionalidade e explicar didaticamente, com regras claras, botões, exemplos reais e segurança jurídica.
+
+??? IA DE TRANSCRIÇÃO INTELIGENTE (COM FILTRO DE CONVERSAS PARALELAS)
+Visão geral
+A IA de áudio do sistema NÃO é uma transcrição literal de tudo que foi falado.
+Ela é uma IA clínica contextual, ou seja:
+?? Só entra no prontuário o que é relevante para a consulta
+?? Conversas paralelas são descartadas automaticamente
+
+1?? ONDE ESSA IA APARECE NO SISTEMA
+?? Consultório ? Atendimento em andamento ? Gravação de áudio
+Ela funciona:
+* durante consulta presencial
+* durante atendimento domiciliar
+* durante internação (evolução clínica)
+Nunca aparece para o tutor.
+
+2?? COMO O VETERINÁRIO USA (PASSO A PASSO)
+?? Tela do prontuário (consulta aberta)
+O veterinário vê os botões:
+* ??? “Iniciar gravação”
+* ?? “Pausar”
+* ?? “Encerrar gravação”
+* ?? “Transcrever com IA”
+* ?? “Revisar texto”
+* ?? “Salvar no prontuário”
+
+3?? O QUE A IA FAZ COM O ÁUDIO (IMPORTANTE)
+?? Etapa 1 – Transcrição bruta (interna)
+A IA escuta tudo, mas isso NÃO vai direto para o prontuário.
+Exemplo de áudio real:
+“Ele começou a vomitar ontem…
+Letícia, depois vê se tem café…
+vomitou duas vezes à noite…”
+
+?? Etapa 2 – FILTRO CONTEXTUAL (ESSENCIAL)
+A IA aplica filtros para descartar conversas paralelas, como:
+? Conversas administrativas
+? Conversas pessoais
+? Comentários com terceiros
+? Interrupções irrelevantes
+O sistema identifica automaticamente trechos como:
+* pedidos de café
+* conversa com recepção
+* conversa informal com acompanhante
+* comentários que não descrevem o quadro clínico
+Esses trechos NÃO entram no texto final.
+
+?? Etapa 3 – EXTRAÇÃO CLÍNICA
+A IA mantém apenas o que é relevante, como:
+* queixa principal
+* sintomas
+* duração
+* evolução
+* resposta a tratamento
+* observações clínicas
+
+4?? COMO O TEXTO FINAL FICA (EXEMPLO REAL)
+?? Áudio original (falado)
+“Ele começou a vomitar ontem…
+Letícia, depois vê se tem café…
+vomitou duas vezes à noite, ficou prostrado…”
+?? Texto gerado pela IA (prontuário)
+Queixa principal: vômitos iniciados há 24 horas.
+Evolução: dois episódios de vômito no período noturno, com prostração associada.
+?? A conversa paralela simplesmente some.
+
+5?? ORGANIZAÇÃO AUTOMÁTICA DO TEXTO
+Além de filtrar, a IA:
+* organiza em tópicos clínicos
+* usa linguagem técnica adequada
+* corrige erros simples de fala
+* padroniza o prontuário
+?? Botão
+* “Organizar texto clínico”
+
+6?? CONTROLE TOTAL DO VETERINÁRIO (SEGURANÇA)
+Nada entra automaticamente.
+Após a transcrição filtrada, o veterinário pode:
+* ?? Editar o texto
+* ? Excluir trechos
+* ? Acrescentar observações
+* ? Confirmar o conteúdo
+?? Botões
+* “Editar”
+* “Excluir trecho”
+* “Confirmar e salvar”
+?? Só após confirmação humana o texto vai para o prontuário.
+
+7?? CONFIGURAÇÕES NO PAINEL ADMIN
+?? Admin ? IA ? Transcrição de Áudio
+A clínica pode configurar:
+* ? Ativar transcrição por IA
+* ? Ativar filtro de conversas paralelas
+* ? Idioma padrão
+* ? Modelo de organização (mais técnico / mais simples)
+* ? Se o áudio bruto fica salvo ou não
+
+8?? PRIVACIDADE E LGPD (MUITO IMPORTANTE)
+* Áudio bruto:
+o pode ser descartado automaticamente após transcrição
+o ou guardado apenas internamente (se clínica quiser)
+* Tutor não tem acesso ao áudio
+* Texto final entra no prontuário com:
+o data
+o hora
+o profissional responsável
+
+9?? INTEGRAÇÃO COM OUTRAS IAs DO SISTEMA
+A transcrição filtrada pode ser usada por:
+* ?? IA clínica (organizar prontuário)
+* ?? AnalisaVet (contexto do exame)
+* ?? Boletim médico (resumo)
+* ?? Relatórios internos
+Tudo sem ruído.
+
+10?? O QUE ESSA IA NÃO FAZ (IMPORTANTE)
+? Não grava conversa sem consentimento
+? Não envia áudio para o tutor
+? Não decide nada sozinha
+? Não insere conversa paralela no prontuário
+
+? BENEFÍCIOS REAIS NA PRÁTICA
+? Prontuário limpo
+? Menos digitação
+? Mais foco no atendimento
+? Nenhum “texto sem noção”
+? Segurança jurídica
+? Ganho real de tempo
+
+?? STATUS FINAL DA FUNCIONALIDADE
+A IA de transcrição agora é:
+* ?? Contextual
+* ?? Filtrada
+* ?? Organizada
+* ? Confirmada pelo veterinário
+* ?? Segura juridicamente
+?? Exatamente como um hospital veterinário profissional precisa.
+
+Se quiser, no próximo passo eu posso:
+* escrever as regras técnicas do filtro de áudio (para o dev),
+* definir padrões de palavras-chave clínicas vs paralelas,
+* ou integrar isso ao fluxo de atendimento domiciliar e internação.
+Adicionar avaliação de atendimento depois de uma consulta ou outra coisa marcada na clínica e vira métrica de nps 
+Perfeito — avaliação de atendimento com NPS ADICIONADA oficialmente à V1 ?
+Isso fecha o ciclo atendimento ? experiência ? melhoria contínua. Abaixo está a explicação ultra didática, com telas, botões, regras e exemplos, integrada a tudo que você já definiu.
+
+? MÓDULO DE AVALIAÇÃO DE ATENDIMENTO (NPS)
+Visão geral
+Após qualquer atendimento (consulta, retorno, vacina, internação, domiciliar, petshop, visita), o sistema convida o tutor a avaliar.
+A avaliação vira NPS (Net Promoter Score) e métricas operacionais para a clínica.
+Regra: o tutor avalia uma vez por atendimento.
+
+1?? QUANDO A AVALIAÇÃO É ENVIADA
+Gatilhos automáticos
+* Consulta/Retorno: ao finalizar o atendimento
+* Vacina: após confirmação de aplicação
+* Internação: ao finalizar alta
+* Domiciliar: ao finalizar atendimento
+* Petshop: ao concluir serviço
+* Visita: opcional (configurável)
+?? Configuração (Admin):
+* Enviar imediatamente
+* Enviar após X horas (ex.: 2h)
+* Enviar apenas se tutor compareceu
+
+2?? COMO O TUTOR AVALIA (APP DO TUTOR)
+Tela: Avaliar atendimento
+O tutor vê um cartão simples:
+Pergunta NPS (obrigatória):
+“De 0 a 10, o quanto você recomendaria a clínica para um amigo?”
+Escala: 0–10 (toque rápido)
+Perguntas complementares (opcionais, configuráveis):
+* “Como foi o atendimento?”
+* “O que podemos melhorar?”
+* “O profissional foi atencioso?” (Sim/Não)
+* Campo de comentário livre
+Botões
+* Selecionar nota (0–10)
+* “Enviar avaliação”
+* “Pular” (se a clínica permitir)
+Exemplo:
+* Tutor dá 9
+* Escreve: “Atendimento ótimo, equipe atenciosa.”
+
+3?? REGRAS DO NPS (AUTOMÁTICAS)
+O sistema classifica:
+* Promotor: nota 9–10
+* Neutro: nota 7–8
+* Detrator: nota 0–6
+E calcula:
+* NPS = %Promotores ? %Detratores
+?? Tudo automático, sem planilha.
+
+4?? CONFIGURAÇÃO PELO ADMIN (PAINEL ADMIN)
+Tela: Admin ? Avaliações & NPS
+Configurações:
+* Ativar/desativar avaliações
+* Definir para quais serviços avaliar
+* Definir perguntas complementares
+* Definir prazo de envio
+* Permitir ou não comentários
+* Permitir pular avaliação
+Botões
+* “Ativar avaliação”
+* “Adicionar pergunta”
+* “Editar pergunta”
+* “Salvar configurações”
+
+5?? VISÃO DA CLÍNICA (DASHBOARD DE NPS)
+Tela: Relatórios ? NPS & Avaliações
+Mostra:
+* NPS geral (período)
+* NPS por:
+o serviço
+o profissional
+o unidade (se houver)
+* Distribuição:
+o promotores / neutros / detratores
+* Comentários recentes
+Botões
+* “Filtrar por período”
+* “Filtrar por profissional”
+* “Ver comentários”
+* “Exportar relatório”
+Exemplo:
+* NPS geral: 72
+* Consulta: 80
+* Domiciliar: 65
+
+6?? ALERTAS INTELIGENTES (QUALIDADE)
+Alertas automáticos
+* Nota ? 6 ? alerta para o admin
+* Comentário crítico ? destaque
+* Queda brusca de NPS ? alerta gerencial
+?? Tela de alerta:
+* Atendimento avaliado
+* Nota
+* Comentário
+* Profissional
+* Data
+Botões
+* “Marcar como tratado”
+* “Responder internamente”
+* “Entrar em contato” (manual)
+?? Importante:
+O sistema não responde automaticamente ao tutor. A decisão é humana.
+
+7?? INTEGRAÇÃO COM PERMISSÕES
+* Admin: vê tudo
+* Gestor: vê NPS e comentários
+* Veterinário: pode ver apenas suas avaliações (se permitido)
+* Auxiliar: não vê NPS (por padrão)
+Tudo configurável.
+
+8?? INTEGRAÇÃO COM AGENDA E PRONTUÁRIO
+* Avaliação fica vinculada ao:
+o atendimento
+o pet
+o profissional
+* Não aparece no prontuário clínico (é gestão)
+* Pode aparecer no perfil do profissional (interno)
+
+9?? PRIVACIDADE E LGPD
+* Tutor não vê avaliações de outros
+* Comentários são internos
+* Relatórios agregados
+* Logs de envio e resposta
+
+10?? EXEMPLOS DE FLUXO
+Exemplo A — Consulta
+1. Vet finaliza consulta
+2. Sistema envia avaliação após 2h
+3. Tutor avalia com nota 10
+4. NPS sobe automaticamente
+5. Comentário fica no dashboard
+Exemplo B — Internação
+1. Alta finalizada
+2. Avaliação enviada
+3. Tutor dá nota 5 e comenta problema
+4. Admin recebe alerta
+5. Caso tratado internamente
+
+11?? BENEFÍCIOS REAIS
+? Métrica clara de qualidade
+? Feedback direto do tutor
+? Identifica gargalos
+? Base para decisões
+? Profissionalização da clínica
+? Diferencial competitivo
+
+?? STATUS FINAL DA V1 (AGORA COMPLETA)
+Com o NPS, a V1 passa a ter:
+* Avaliação pós-atendimento
+* Métrica de experiência
+* Alertas de qualidade
+* Relatórios por serviço e profissional
+?? Agora o sistema mede qualidade, não só operação.
+

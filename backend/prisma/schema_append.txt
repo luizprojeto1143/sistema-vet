@@ -1,0 +1,33 @@
+
+// ------------------------------------------------------
+// 12. FINANCE AUTOMATION (PROVIDER RULES)
+// ------------------------------------------------------
+
+model CommissionRule {
+  id            String   @id @default(uuid())
+  
+  name          String?  // Optional alias, e.g. "Anestesia Dr. House"
+  
+  providerId    String
+  provider      User     @relation(fields: [providerId], references: [id])
+  
+  serviceId     String
+  service       Service  @relation(fields: [serviceId], references: [id])
+  
+  // Rule Logic
+  ruleType      String   // FIXED_PROVIDER_VALUE, PERCENTAGE_CLINIC_MARGIN
+  
+  // If ruleType = FIXED_PROVIDER_VALUE
+  // e.g., Provider charges 300.00 fixed. Clinic charges client whatever (e.g. 500).
+  providerFixedValue Decimal? 
+  
+  // If ruleType = PERCENTAGE_CLINIC_MARGIN
+  // e.g., Clinic keeps 20%. Provider gets 80%.
+  clinicMarginPercent Float? 
+  
+  clinicId      String
+  clinic        Clinic   @relation(fields: [clinicId], references: [id])
+  
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+}

@@ -1,0 +1,514 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+// ------------------------------------------------------
+// 1. TENANT MANAGEMENT & CONFIG
+// ------------------------------------------------------
+
+model Clinic {
+  id            String   @id @default(uuid())
+  name          String
+  cnpj          String?  @unique
+  address       String?
+  phone         String?
+  email         String?
+  logoUrl       String?
+  operatingHours String? // JSON Stringified: { monday: { start: '09:00', end: '18:00', closed: false }, ... }
+  
+  // Module Flags (Config)
+  hasPetshop    Boolean  @default(false)
+  hasHomeCare   Boolean  @default(false)
+  hasInternment Boolean  @default(true)
+  hasFiscal     Boolean  @default(false)
+  hasAnalisaVet Boolean  @default(false)
+  hasTelemedicine Boolean @default(false)
+
+  // SaaS Fees
+  platformFeeRate     Float   @default(5.0) // Standard 5%
+  acceptedHardwareOffer Boolean @default(false)
+  promotionalRateEndsAt DateTime?
+
+  // Configuration
+  internmentDailyRate Decimal @default(150.00)
+
+  // Subscription / Plan
+  planId        String?
+  planStatus    String?  // ACTIVE, SUSPENDED
+
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  users         User[]
+  pets          Pet[]
+  tutors        Tutor[]
+  services      Service[]
+  products      Product[]
+  appointments  Appointment[]
+  internments   Internment[]
+  financials    FinancialTransaction[]
+  documents     DocumentTemplate[]
+  stockMovements StockMovement[]
+}
+
+// ------------------------------------------------------
+// 2. USER MANAGEMENT & ROLES
+// ------------------------------------------------------
+
+// Enum removed for SQLite compatibility
+// UserRole: ADMIN, VET, AUXILIARY, RECEPTION, STOCK, FINANCIAL, TUTOR
+
+model User {
+  id            String   @id @default(uuid())
+  email         String   @unique
+  passwordHash  String?
+  fullName      String
+  cpf           String?  @unique
+  phone         String?
+  photoUrl      String? // For Profile
+
+  role          String   // UserRole enum as String
+  
+  // Professional Details (For Vets/Staff)
+  crmv          String?
+  pixKeyType    String? // CPF, EMAIL, PHONE, RANDOM
+  pixKey        String? 
+  commissionRate Float?  // Default commission %
+  
+  // Permissions (JSON stringified)
+  permissions   String?    
+
+  clinicId      String?
+  clinic        Clinic?  @relation(fields: [clinicId], references: [id])
+
+  // Relations
+  tutorProfile  Tutor?   // If this user is also a Tutor linked to pets
+  
+  appointments  Appointment[] // As professional
+  prescriptions Prescription[] // As prescriber
+  vaccineRecords VaccineRecord[] // As vet
+  auditLogs     AuditLog[]
+  internmentLogs InternmentLog[]
+
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+}
+
+// ------------------------------------------------------
+// 3. PATIENTS (PETS) & TUTORS
+// ------------------------------------------------------
+
+model Tutor {
+  id            String   @id @default(uuid())
+  fullName      String
+  cpf           String?
+  phone         String
+  email         String?
+  address       String?
+  
+  // Link to User Login (Optional, created when they register on App)
+  userId        String?  @unique
+  user          User?    @relation(fields: [userId], references: [id])
+
+  clinicId      String
+  clinic        Clinic   @relation(fields: [clinicId], references: [id])
+
+  pets          Pet[]
+  invoices      FinancialTransaction[]
+
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+}
+
+model Pet {
+  id            String   @id @default(uuid())
+  name          String
+  species       String   // DOG, CAT, BIRD, EXOTIC
+  breed         String?
+  gender        String?  // MALE, FEMALE
+  isCastrated   Boolean  @default(false)
+  birthDate     DateTime?
+  weight        Float?
+  
+  photoUrl      String?
+  allergies     String? // Free text, highlighted in red
+  chronicConditions String?
+
+  tutorId       String
+  tutor         Tutor    @relation(fields: [tutorId], references: [id])
+
+  clinicId      String
+  clinic        Clinic   @relation(fields: [clinicId], references: [id])
+
+  medicalRecords MedicalRecord[]
+  internments    Internment[]
+  appointments   Appointment[]
+  vaccines       VaccineRecord[]
+
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+}
+
+model VaccineRecord {
+  id            String   @id @default(uuid())
+  name          String
+  batch         String?
+  applicationDate DateTime @default(now())
+  nextDueDate   DateTime?
+  
+  petId         String
+  pet           Pet      @relation(fields: [petId], references: [id])
+  
+  vetId         String?   
+  vet           User?     @relation(fields: [vetId], references: [id])
+
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+}
+
+
+
+model PetPackage {
+  id            String   @id @default(uuid())
+  name          String
+  totalSessions Int
+  usedSessions  Int      @default(0)
+  price         Decimal
+  type          String   // BATH, TOSA
+  
+  petId         String
+  pet           Pet      @relation(fields: [petId], references: [id])
+  
+  active        Boolean  @default(true)
+  createdAt     DateTime @default(now())
+}
+
+// ------------------------------------------------------
+// 4. SERVICES & APPOINTMENTS (AGENDA)
+// ------------------------------------------------------
+
+model Service {
+  id            String   @id @default(uuid())
+  name          String
+  shortCode     String?  // CONS, VAC, SURG
+  price         Decimal
+  durationMin   Int      @default(30)
+  
+  type          String   // CONSULTATION, SURGERY, VACCINE, BATH, HOME_CARE
+  allowParallel Boolean  @default(false) // For Vaccines (can have multiple in same slot)
+  
+  clinicId      String
+  clinic        Clinic   @relation(fields: [clinicId], references: [id])
+
+  appointments  Appointment[]
+}
+
+model Appointment {
+  id            String   @id @default(uuid())
+  date          DateTime
+  
+  status        String   // SCHEDULED, CONFIRMED, IN_PROGRESS, COMPLETED, MISSED, CANCELED
+  type          String   // CONSULTATION, RETURNING, VACCINE, etc.
+  
+  notes         String?
+
+  serviceId     String?
+  service       Service? @relation(fields: [serviceId], references: [id])
+
+  petId         String
+  pet           Pet      @relation(fields: [petId], references: [id])
+
+  tutorId       String?  // Denormalized for query speed
+  
+  vetId         String?
+  vet           User?    @relation(fields: [vetId], references: [id])
+
+  clinicId      String
+  clinic        Clinic   @relation(fields: [clinicId], references: [id])
+  
+  preConsultation String? // Syntons, evolution from Tutor App
+
+  // Link to generated Medical Record
+  medicalRecord MedicalRecord?
+
+  createdAt     DateTime @default(now())
+}
+
+// ------------------------------------------------------
+// 5. MEDICAL RECORD (PRONTUÁRIO) & ANALISAVET
+// ------------------------------------------------------
+
+model MedicalRecord {
+  id            String   @id @default(uuid())
+  
+  anamnesis     String?
+  
+  // Physical Exam Structured
+  physicalExam  String? // General notes
+  temperature   Float?
+  mucosa        String?
+  painLevel     String? // LOW, MEDIUM, HIGH
+  
+  diagnosis     String?
+  treatment     String?
+
+  // Links
+  appointmentId String? @unique
+  appointment   Appointment? @relation(fields: [appointmentId], references: [id])
+
+  petId         String
+  pet           Pet      @relation(fields: [petId], references: [id])
+
+  vetId         String
+  vet           User     @relation(fields: [vetId], references: [id])
+  exams         Exam[]
+  prescriptions Prescription[]
+  documents     SignedDocument[]
+
+  createdAt     DateTime @default(now())
+  
+  // Consumption & Billing
+  consumedItems String?  // JSON: [{ productId, name, quantity, price }]
+}
+
+model Prescription {
+  id              String   @id @default(uuid())
+  medicationName  String
+  dosage          String
+  frequency       String
+  duration        String
+  instructions    String?
+  
+  medicalRecordId String?
+  medicalRecord   MedicalRecord? @relation(fields: [medicalRecordId], references: [id])
+
+  internmentId    String? 
+  internment      Internment? @relation(fields: [internmentId], references: [id])
+
+  prescribedById  String
+  prescribedBy    User      @relation(fields: [prescribedById], references: [id])
+
+  executions      MedicationExecution[]
+}
+
+model MedicationExecution {
+  id             String   @id @default(uuid())
+  executedAt     DateTime @default(now())
+  
+  prescriptionId String
+  prescription   Prescription @relation(fields: [prescriptionId], references: [id])
+
+  executedById   String
+  executedBy     User     @relation(fields: [executedById], references: [id])
+
+  notes          String?
+}
+
+model Exam {
+  id            String   @id @default(uuid())
+  name          String
+  status        String   // REQUESTED, COMPLETED
+  
+  resultData    String?  // Structured result fields (JSON stringified)
+  fileUrl       String?  // PDF/Image
+  
+  analysisSummary String? // From AnalisaVet (AI Insight)
+
+  medicalRecordId String
+  medicalRecord   MedicalRecord @relation(fields: [medicalRecordId], references: [id])
+}
+
+// ------------------------------------------------------
+// 6. INTERNMENT (HOSPITAL)
+// ------------------------------------------------------
+
+model Internment {
+  id            String   @id @default(uuid())
+  entryDate     DateTime
+  exitDate      DateTime?
+  status        String   // ACTIVE, DISCHARGED
+  reason        String
+  
+  bedNumber     Int?
+
+  petId         String
+  pet           Pet      @relation(fields: [petId], references: [id])
+
+  clinicId      String
+  clinic        Clinic   @relation(fields: [clinicId], references: [id])
+
+  logs          InternmentLog[] // Daily evolution logs
+  prescriptions Prescription[] // Medications to be administered during stay
+  vitalSigns    VitalSign[]
+
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+}
+
+model DailyRecord {
+  id            String   @id @default(uuid())
+  date          DateTime @default(now())
+  
+  // Checks
+  feed          Boolean  @default(false)
+  water         Boolean  @default(false)
+  urine         Boolean  @default(false)
+  feces         Boolean  @default(false)
+  
+  humor         String?  // ANIMATED, DEPRRESSED, AGGRESSIVE
+  notes         String?  // Clinical evolution
+  
+  internmentId  String
+  internment    Internment @relation(fields: [internmentId], references: [id])
+}
+
+model VitalSign {
+  id            String   @id @default(uuid())
+  dateTime      DateTime @default(now())
+  
+  temperature   Float?
+  heartRate     Int?     // BPM
+  respiratoryRate Int?   // MPM
+  tpc           String?  // Secs
+  
+  internmentId  String
+  internment    Internment @relation(fields: [internmentId], references: [id])
+  
+  recordedById  String?
+}
+
+// ------------------------------------------------------
+// 7. INVENTORY (PRODUCTS)
+// ------------------------------------------------------
+
+model Product {
+  id            String   @id @default(uuid())
+  name          String
+  category      String   // MEDICINE, FOOD, SUPPLY, TOY, CLOTHING
+  barcode       String?  // EAN/GTIN
+  sku           String?  // Internal Code
+  
+  controlType   String   @default("UN") // UNIT, ML, KG
+  totalVolumeMl Float?   // If ML/KG, content per unit
+  
+  currentStock  Decimal  @default(0) // Decimal for fractional
+  minStock      Decimal  @default(5)
+  
+  costPrice     Decimal
+  salePrice     Decimal
+  
+  // Fiscal Data
+  ncm           String?
+  cfop          String?
+  taxRule       String?  // Reference to TaxProfile rule
+  
+  boosterIntervalDays Int? 
+  clinicId      String
+  clinic        Clinic   @relation(fields: [clinicId], references: [id])
+
+  stockMovements StockMovement[]
+
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+}
+
+// ------------------------------------------------------
+// 8. FINANCE & DOCUMENTS
+// ------------------------------------------------------
+
+model FinancialTransaction {
+  id            String   @id @default(uuid())
+  type          String   // INCOME, EXPENSE
+  amount        Decimal
+  description   String
+  status        String   // PENDING, PAID, CANCELED
+  paymentMethod String?  // PIX, CARD, CASH, SPLIT
+  
+  category      String?  
+  
+  tutorId       String?
+  tutor         Tutor?   @relation(fields: [tutorId], references: [id])
+  
+  clinicId      String
+  clinic        Clinic   @relation(fields: [clinicId], references: [id])
+
+  // Revenue Share
+  platformFee   Decimal? @default(0.00) 
+  netAmount     Decimal? // Amount received by clinic
+  
+  createdAt     DateTime @default(now())
+}
+
+model DocumentTemplate {
+  id            String   @id @default(uuid())
+  name          String
+  content       String?  // HTML or Text content
+  fileUrl       String?  // PDF Template
+  
+  triggerType   String?  // SURGERY, INTERNMENT
+  requiresSign  Boolean  @default(true)
+
+  clinicId      String
+  clinic        Clinic   @relation(fields: [clinicId], references: [id])
+}
+
+model SignedDocument {
+  id            String   @id @default(uuid())
+  signedAt      DateTime @default(now())
+  fileUrl       String   // Signed PDF
+  
+  medicalRecordId String?
+  medicalRecord   MedicalRecord? @relation(fields: [medicalRecordId], references: [id])
+}
+
+// ------------------------------------------------------
+// 9. AUDIT
+// ------------------------------------------------------
+
+model AuditLog {
+  id            String   @id @default(uuid())
+  action        String
+  details       String?
+  
+  userId        String
+  user          User     @relation(fields: [userId], references: [id])
+  
+  createdAt     DateTime @default(now())
+}
+
+model StockMovement {
+  id            String   @id @default(uuid())
+  type          String   // IN, OUT, ADJUSTMENT
+  quantity      Decimal
+  reason        String?
+  
+  productId     String
+  product       Product  @relation(fields: [productId], references: [id])
+  
+  clinicId      String
+  clinic        Clinic   @relation(fields: [clinicId], references: [id])
+  
+  createdAt     DateTime @default(now())
+}
+
+model InternmentLog {
+  id            String   @id @default(uuid())
+  date          DateTime @default(now())
+  description   String
+  type          String   // CLINICAL, FEEDING, MEDICATION
+  
+  internmentId  String
+  internment    Internment @relation(fields: [internmentId], references: [id])
+  
+  authorId      String?
+  author        User?    @relation(fields: [authorId], references: [id])
+}

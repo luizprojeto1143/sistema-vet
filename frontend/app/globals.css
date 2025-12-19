@@ -1,0 +1,52 @@
+@import "tailwindcss";
+
+:root {
+  /* Paw Pal Palette */
+  --color-brand-50: #fff1f2;
+  --color-brand-100: #ffe4e6;
+  --color-brand-200: #fecdd3;
+  --color-brand-300: #fda4af;
+  --color-brand-400: #fb7185;
+  --color-brand-500: #f43f5e; /* Rose/Coral */
+  --color-brand-600: #e11d48;
+  --color-brand-700: #be123c;
+
+  --color-secondary-50: #f0fdf4;
+  --color-secondary-100: #dcfce7;
+  --color-secondary-500: #22c55e; /* Green */
+  
+  --color-accent-500: #f59e0b; /* Amber */
+  --color-accent-400: #fbbf24;
+
+  --background: #fffdfa; /* Warm Cream */
+  --foreground: #334155; /* Slate 700 */
+  
+  --radius-box: 1.5rem;
+  --radius-btn: 9999px;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  
+  --color-brand-50: var(--color-brand-50);
+  --color-brand-100: var(--color-brand-100);
+  --color-brand-500: var(--color-brand-500);
+  --color-brand-600: var(--color-brand-600);
+  
+  --color-secondary-50: var(--color-secondary-50);
+  --color-secondary-500: var(--color-secondary-500);
+  
+  --color-accent-500: var(--color-accent-500);
+  
+  --font-sans: var(--font-nunito);
+  
+  --radius-xl: var(--radius-box);
+  --radius-full: var(--radius-btn);
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-nunito), sans-serif;
+}

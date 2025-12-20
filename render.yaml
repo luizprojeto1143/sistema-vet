@@ -5,7 +5,7 @@ services:
     env: node
     rootDir: backend
     buildCommand: npm install && npx prisma generate && npm run build
-    startCommand: echo "STARTING MIGRATION..." && npx prisma db push --accept-data-loss && echo "MIGRATION FINISHED" && node dist/src/main
+    startCommand: npm run start:migrate:prod
     envVars:
       - key: NODE_ENV
         value: production

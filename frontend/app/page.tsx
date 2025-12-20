@@ -1,8 +1,10 @@
 "use client";
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
+import { useRouter } from 'next/navigation';
 
 export default function Home() {
+  const router = useRouter();
   const [stats, setStats] = useState({
     appointmentsToday: 0,
     revenueToday: 0,
@@ -13,7 +15,10 @@ export default function Home() {
   useEffect(() => {
     const fetchStats = async () => {
       const token = localStorage.getItem('token');
-      if (!token) return;
+      if (!token) {
+        router.push('/login');
+        return;
+      }
 
       // In a real app, we would have a dedicated /dashboard/stats endpoint.
       // Here we will do a "smart" aggregation on the client for V1 speed, 

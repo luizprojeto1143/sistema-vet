@@ -291,7 +291,7 @@ export default function InternmentFolioPage() {
                                 {/* Timeline */}
                                 <div className="border-l-2 border-gray-200 ml-4 space-y-8 pl-8 relative">
                                     {internment.dailyRecords?.map((log: any) => {
-                                        const custom = log.customValues ? JSON.parse(log.customValues) : {};
+                                        const custom = (log.customValues ? JSON.parse(log.customValues) : {}) as Record<string, any>;
                                         return (
                                             <div key={log.id} className="relative">
                                                 <div className="absolute -left-[39px] bg-indigo-600 h-5 w-5 rounded-full border-4 border-white shadow-sm"></div>

@@ -4,6 +4,8 @@ import { useRouter } from 'next/navigation';
 
 export default function TutorDashboard() {
     const router = useRouter();
+    const [tutor, setTutor] = useState<any>(null);
+    const [loading, setLoading] = useState(true);
     const [internments, setInternments] = useState<any[]>([]);
 
     useEffect(() => {

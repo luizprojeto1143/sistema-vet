@@ -97,7 +97,7 @@ export default function InternmentBulletin() {
                                     {rec.feces && <span className="text-[10px] bg-amber-100 text-amber-700 px-2 py-1 rounded font-bold">Fezes</span>}
 
                                     {/* Custom Values */}
-                                    {rec.customValues && Object.entries(JSON.parse(rec.customValues)).map(([key, val]) => (
+                                    {rec.customValues && Object.entries((JSON.parse(rec.customValues) || {}) as Record<string, any>).map(([key, val]) => (
                                         val && <span key={key} className="text-[10px] bg-purple-100 text-purple-700 px-2 py-1 rounded font-bold">{key}</span>
                                     ))}
                                 </div>

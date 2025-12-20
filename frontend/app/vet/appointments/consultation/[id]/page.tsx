@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useEffect } from 'react';
-import { useRouter } from 'next/navigation';
+import { useRouter, useParams } from 'next/navigation';
 import KitConsumptionModal from '@/components/stock/kit-consumption-modal';
 import {
    HeartIcon,
@@ -21,7 +21,8 @@ import {
 
 
 
-export default function ConsultationPage({ params }: { params: { id: string } }) {
+export default function ConsultationPage() {
+   const params = useParams();
    const router = useRouter();
    const [appointment, setAppointment] = useState<any>(null);
    const [loading, setLoading] = useState(true);
@@ -43,13 +44,13 @@ export default function ConsultationPage({ params }: { params: { id: string } })
             const token = localStorage.getItem('token');
             // Assuming we have an endpoint to get detailed appointment info for consultation context
             // Ideally: GET /appointments/:id with includes
-            const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000'}/appointments?id=${params.id}`, { // Fallback to list filter if specific endpoint missing
+            const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000'}/appointments?id=${params?.id}`, { // Fallback to list filter if specific endpoint missing
                headers: { 'Authorization': `Bearer ${token}` }
             });
             // Or better, GET /appointments/:id if supported. For now, filter list.
             // Actually, let's try direct fetch if supported or list.
             // Using a specific endpoint is better practice. Let's assume standard REST.
-            const resSpecific = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000'}/appointments/${params.id}`, {
+            const resSpecific = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000'}/appointments/${params?.id}`, {
                headers: { 'Authorization': `Bearer ${token}` }
             });
 
@@ -67,7 +68,7 @@ export default function ConsultationPage({ params }: { params: { id: string } })
          }
       };
       fetchAppointment();
-   }, [params.id]);
+   }, [params?.id]);
 
    const handleFinish = async () => {
       if (!appointment) return;

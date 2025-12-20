@@ -39,11 +39,11 @@
     "passport-local": "^1.0.0",
     "pdf-parse": "^2.4.5",
     "reflect-metadata": "^0.2.2",
-    "rxjs": "^7.8.2"
+    "rxjs": "^7.8.2",
+    "@types/express": "^5.0.6",
+    "@types/multer": "^2.0.0"
   },
   "devDependencies": {
-    "@types/express": "^5.0.6",
-    "@types/multer": "^2.0.0",
     "@types/node": "^25.0.3",
     "prisma": "^5.10.2",
     "ts-node": "^10.9.2",

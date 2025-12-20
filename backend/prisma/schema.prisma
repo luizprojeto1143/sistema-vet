@@ -21,6 +21,7 @@ model Clinic {
   address       String?
   phone         String?
   email         String?
+  website       String?
   logoUrl       String?
   operatingHours String? // JSON Stringified: { monday: { start: '09:00', end: '18:00', closed: false }, ... }
   
@@ -31,6 +32,18 @@ model Clinic {
   hasFiscal     Boolean  @default(false)
   hasAnalisaVet Boolean  @default(false)
   hasTelemedicine Boolean @default(false)
+  
+  // Extended Modules
+  hasClinical     Boolean @default(true)
+  hasAgenda       Boolean @default(true)
+  hasPetshopService Boolean @default(false)
+  hasPetshopRetail Boolean @default(false)
+  hasStockAdvanced Boolean @default(false)
+  hasFinancial    Boolean @default(true)
+  hasContabil     Boolean @default(false)
+  hasAI           Boolean @default(false)
+  hasAppTutor     Boolean @default(false)
+  hasNPS          Boolean @default(false)
 
   // SaaS Fees
   platformFeeRate     Float   @default(5.0) // Standard 5%
@@ -82,6 +95,8 @@ model Clinic {
   referredById   String?
   referredBy     Clinic?  @relation("ClinicReferral", fields: [referredById], references: [id])
   referrals      Clinic[] @relation("ClinicReferral")
+  cashierSessions CashierSession[]
+  auditLogs     AuditLog[]
 }
 
 // ------------------------------------------------------
@@ -153,6 +168,7 @@ model User {
   // Relations Fixed
   medicalRecords MedicalRecord[] // As Vet associated with record
   medicationExecutions MedicationExecution[]
+  cashierSessions CashierSession[]
 
   createdAt     DateTime @default(now())
   updatedAt     DateTime @updatedAt
@@ -180,6 +196,7 @@ model Tutor {
   pets          Pet[]
   invoices      FinancialTransaction[]
   fiscalInvoices Invoice[]
+  appointments  Appointment[]
 
   createdAt     DateTime @default(now())
   updatedAt     DateTime @updatedAt
@@ -311,7 +328,8 @@ model Appointment {
   petId         String
   pet           Pet      @relation(fields: [petId], references: [id])
 
-  tutorId       String?  // Denormalized for query speed
+  tutorId       String?
+  tutor         Tutor?   @relation(fields: [tutorId], references: [id])
   
   vetId         String?
   vet           User?    @relation(fields: [vetId], references: [id])
@@ -582,6 +600,7 @@ model FinancialTransaction {
   paymentMethod String?  // PIX, CARD, CASH, SPLIT
   
   category      String?  
+  description   String?  
   
   tutorId       String?
   tutor         Tutor?   @relation(fields: [tutorId], references: [id])
@@ -624,10 +643,17 @@ model SignedDocument {
 model AuditLog {
   id            String   @id @default(uuid())
   action        String
+  entityType    String?
+  entityId      String?
+  beforeJson    String?
+  afterJson     String?
   details       String?
   
   userId        String
   user          User     @relation(fields: [userId], references: [id])
+  
+  clinicId      String?
+  clinic        Clinic?  @relation(fields: [clinicId], references: [id])
   
   createdAt     DateTime @default(now())
 }
@@ -799,14 +825,30 @@ model CommissionLog {
   providerAmount Decimal
   clinicAmount   Decimal
   
-  status        String   @default("PENDING") // PENDING, PAID, CANCELED
+  status        String   @default("PENDING")
+  createdAt     DateTime @default(now())
   
   clinicId      String
   clinic        Clinic   @relation(fields: [clinicId], references: [id])
-  
-  createdAt     DateTime @default(now())
-  paidAt        DateTime?
 }
+
+model CashierSession {
+  id            String   @id @default(uuid())
+  clinicId      String
+  clinic        Clinic   @relation(fields: [clinicId], references: [id])
+  
+  openedByUserId String
+  openedByUser  User     @relation(fields: [openedByUserId], references: [id])
+  
+  status        String   // OPEN, CLOSED
+  openedAt      DateTime @default(now())
+  closedAt      DateTime?
+  
+  initialAmount Decimal
+  finalAmount   Decimal?
+  notes         String?
+}
+
 
 // ------------------------------------------------------
 // 13. ACCOUNTING LEDGER (DOUBLE ENTRY)

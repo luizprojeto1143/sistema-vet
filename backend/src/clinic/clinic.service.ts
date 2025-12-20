@@ -33,27 +33,29 @@ export class ClinicService {
                 : JSON.stringify(data.operatingHours);
         }
 
-        data: updateData
-    });
-}
+        return this.prisma.clinic.update({
+            where: { id },
+            data: updateData
+        });
+    }
 
     // MARKETING / REFERRALS
     async createReward(clinicId: string, data: any) {
-    return this.prisma.referralReward.create({
-        data: { ...data, clinicId }
-    });
-}
+        return this.prisma.referralReward.create({
+            data: { ...data, clinicId }
+        });
+    }
 
     async getRewards(clinicId: string) {
-    return this.prisma.referralReward.findMany({
-        where: { clinicId, active: true }
-    });
-}
-    
+        return this.prisma.referralReward.findMany({
+            where: { clinicId, active: true }
+        });
+    }
+
     async deleteReward(id: string) {
-    return this.prisma.referralReward.update({
-        where: { id },
-        data: { active: false }
-    });
-}
+        return this.prisma.referralReward.update({
+            where: { id },
+            data: { active: false }
+        });
+    }
 }

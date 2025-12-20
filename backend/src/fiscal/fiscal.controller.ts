@@ -6,7 +6,7 @@ import { FiscalService } from './fiscal.service';
 @Controller('fiscal')
 @UseGuards(AuthGuard('jwt'))
 export class FiscalController {
-    constructor(privatefiscalService: FiscalService) { }
+    constructor(private fiscalService: FiscalService) { }
 
     @Post('emit/:transactionId')
     async emitInvoice(@Param('transactionId') id: string) {

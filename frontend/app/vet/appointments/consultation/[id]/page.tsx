@@ -19,7 +19,7 @@ import {
    ArchiveBoxIcon,
 } from '@heroicons/react/24/outline';
 
-import { LabIcon } from 'lucide-react'; // Using lucide for Lab if Heroicons doesn't have it explicitly named nicely
+
 
 export default function ConsultationPage({ params }: { params: { id: string } }) {
    const router = useRouter();

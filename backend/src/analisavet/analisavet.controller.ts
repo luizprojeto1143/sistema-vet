@@ -19,18 +19,14 @@ export class AnalisaVetController {
         @UploadedFile(
             new ParseFilePipe({
                 validators: [
-                    // Max 5MB, PDF or Images
                     new MaxFileSizeValidator({ maxSize: 5 * 1024 * 1024 }),
-                    // new FileTypeValidator({ fileType: '.(pdf|png|jpeg|jpg)' }), // Strictly type, often causes issues with MIME, keep simple for now
                 ],
                 fileIsRequired: true
             }),
         )
         file: Express.Multer.File,
+        @Body('medicalRecordId') medicalRecordId?: string
     ) {
-        file: Express.Multer.File,
-            @Body('medicalRecordId') medicalRecordId ?: string
-    ) {
-            return this.analisavetService.analyzeFile(file, medicalRecordId);
-        }
+        return this.analisavetService.analyzeFile(file, medicalRecordId);
     }
+}

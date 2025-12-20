@@ -213,4 +213,10 @@ export class StockService {
             });
         }
     }
+
+    async listProducts(clinicId: string) {
+        return this.prisma.product.findMany({
+            where: { clinicId }
+        });
+    }
 }

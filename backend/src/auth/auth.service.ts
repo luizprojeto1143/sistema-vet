@@ -61,7 +61,7 @@ export class AuthService {
                     name: data.clinicName,
                     phone: data.clinicPhone,
                     address: "Endereço não informado",
-                    subscriptionStatus: 'TRIAL', // Default to Trial
+                    planStatus: 'TRIAL', // Default to Trial
                     referralCode: `CLINIC-${Math.random().toString(36).substring(7).toUpperCase()}`,
                     // Handle referral logic if code provided
                     ...(data.referralCode ? {

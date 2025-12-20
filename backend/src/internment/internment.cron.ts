@@ -41,6 +41,7 @@ export class InternmentCronService {
                     status: 'PENDING',
                     tutorId: internment.pet.tutorId,
                     clinicId: internment.clinicId,
+                    paymentMethod: 'PENDING' // Added required field
                 }
             });
         }

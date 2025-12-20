@@ -2,7 +2,7 @@
 import { useState, useEffect } from 'react';
 
 export default function PetShopDashboard() {
-    const [tasks, setTasks] = useState([]);
+    const [tasks, setTasks] = useState<any[]>([]);
     const [loading, setLoading] = useState(true);
     const [showPackages, setShowPackages] = useState(false); // New State
 
@@ -219,4 +219,4 @@ export default function PetShopDashboard() {
         </div>
     );
 }
-```
+

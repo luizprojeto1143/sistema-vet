@@ -1,5 +1,7 @@
+import { Injectable } from '@nestjs/common';
+import { PrismaService } from '../prisma/prisma.service';
+import { CommissionService } from '../finance/commission.service';
 import { StockService } from '../stock/stock.service';
-
 import { LedgerService } from './ledger.service';
 
 @Injectable()
@@ -30,14 +32,11 @@ export class FinanceService {
         // 2. Process Splits (Commissions)
         if (data.splitRules && Array.isArray(data.splitRules) && data.splitRules.length > 0) {
             for (const split of data.splitRules) {
-                await this.commissionService.logCommission({
+                await this.commissionService.recordManualCommission({
                     clinicId: data.clinicId,
                     providerId: split.providerId,
-                    serviceId: null, // Custom Split
                     amountBase: Number(split.amount),
-                    commissionRate: 100, // 100% of the split amount goes to provider
-                    commissionValue: Number(split.amount),
-                    transactionId: transaction.id
+                    commissionValue: Number(split.amount)
                 });
             }
         }
@@ -220,7 +219,7 @@ export class FinanceService {
     async cancelTransaction(id: string, userId: string) {
         // Find transaction
         const tx = await this.prisma.financialTransaction.findUnique({ where: { id } });
-        if (!tx) throw new new Error('Transaction not found');
+        if (!tx) throw new Error('Transaction not found');
         if (tx.status === 'CANCELED') throw new Error('Already canceled');
 
         // Check if cashier is closed? Ideally yes, but let's allow admin override.
@@ -322,7 +321,7 @@ export class FinanceService {
             where: { clinicId },
             include: {
                 provider: { select: { fullName: true, id: true } },
-                service: { select: { name: true, salePrice: true, id: true } }
+                service: { select: { name: true, price: true, id: true } }
             }
         });
     }
@@ -330,4 +329,10 @@ export class FinanceService {
     async deleteCommissionRule(id: string) {
         return this.prisma.commissionRule.delete({ where: { id } });
     }
+
+    // Stub methods for Controller
+    async getSummary(clinicId: string) { return this.getFinancialDashboard(clinicId); }
+    async getCashierStatus(clinicId: string) { return { status: 'OPEN', total: 0 }; } // Stub
+    async openCashier(clinicId: string, userId: string, amount: number) { return { id: 'session-1', status: 'OPEN' }; } // Stub
+    async closeCashier(clinicId: string, amount: number) { return { id: 'session-1', status: 'CLOSED' }; } // Stub
 }

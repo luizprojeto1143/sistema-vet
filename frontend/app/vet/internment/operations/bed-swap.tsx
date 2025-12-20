@@ -33,9 +33,9 @@ export default function BedSwapModal({ onClose }: { onClose: () => void }) {
                                 disabled={bed.status === 'OCCUPIED'}
                                 onClick={() => setSelectedBed(bed.id)}
                                 className={`p-4 rounded-lg border-2 text-left transition-all ${bed.status === 'CURRENT' ? 'border-gray-200 bg-gray-50 opacity-50 cursor-not-allowed' :
-                                        bed.status === 'OCCUPIED' ? 'border-gray-200 bg-gray-100 opacity-40 cursor-not-allowed' :
-                                            selectedBed === bed.id ? 'border-indigo-600 bg-indigo-50 ring-2 ring-indigo-200' :
-                                                'border-gray-200 hover:border-indigo-300'
+                                    bed.status === 'OCCUPIED' ? 'border-gray-200 bg-gray-100 opacity-40 cursor-not-allowed' :
+                                        selectedBed === bed.id ? 'border-indigo-600 bg-indigo-50 ring-2 ring-indigo-200' :
+                                            'border-gray-200 hover:border-indigo-300'
                                     }`}
                             >
                                 <div className="font-bold text-gray-800">{bed.name}</div>
@@ -48,7 +48,7 @@ export default function BedSwapModal({ onClose }: { onClose: () => void }) {
                     </div>
 
                     <div className="bg-blue-50 p-4 rounded-lg text-sm text-blue-800 mb-6">
-                        <strong>Nota:</strong> O histórico de aplicações e prescrições do paciente será mantido automaticamente. A taxa de diária será atualizada se o tipo de leito mudar (Ex: Canil -> Isolamento).
+                        <strong>Nota:</strong> O histórico de aplicações e prescrições do paciente será mantido automaticamente. A taxa de diária será atualizada se o tipo de leito mudar (Ex: Canil &rarr; Isolamento).
                     </div>
 
                     <div className="flex gap-3">

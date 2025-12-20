@@ -109,6 +109,20 @@ export class CommissionService {
     /**
      * Aggregates commission data for the dashboard.
      */
+    async recordManualCommission(data: any) {
+        return this.prisma.commissionLog.create({
+            data: {
+                clinicId: data.clinicId,
+                providerId: data.providerId,
+                serviceName: 'Comissão Manual / Split',
+                salePrice: data.amountBase || 0,
+                providerAmount: data.commissionValue,
+                clinicAmount: 0,
+                status: 'PENDING'
+            }
+        });
+    }
+
     async getCommissionReport(clinicId: string, month: Date) {
         // Month start/end
         const start = new Date(month.getFullYear(), month.getMonth(), 1);

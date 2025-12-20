@@ -1,3 +1,5 @@
+"use client";
+
 import React, { useState, useEffect } from 'react';
 import {
     ArchiveBoxIcon,
@@ -78,27 +80,9 @@ export default function StockPage() {
     // Update the "Novo Produto" button to clear selection
     // onClick={() => { setSelectedProduct(null); setShowProductModal(true); }}
 
-    // ... inside table ...
 
-    <td className="p-4 text-right">
-        <button
-            onClick={() => handleEdit(p)}
-            className="text-indigo-600 hover:text-indigo-800 font-bold text-sm"
-        >
-            Editar / Detalhes
-        </button>
-    </td>
 
-    // ... inside modal render ...
-    {
-        showProductModal && (
-            <ProductModal
-                onClose={() => { setShowProductModal(false); setSelectedProduct(null); }}
-                onSave={handleSaveProduct}
-                initialData={selectedProduct}
-            />
-        )
-    }
+
 
     const filteredProducts = products.filter(p =>
         (activeCategory === 'Todos' || p.category === activeCategory) &&

@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { XMarkIcon, ArrowUpTrayIcon, DocumentTextIcon } from '@heroicons/react/24/outline';
+import { XMarkIcon, ArrowUpTrayIcon, DocumentTextIcon, CheckCircleIcon } from '@heroicons/react/24/outline';
 
 export default function InboundModal({ onClose, products, onConfirm }: any) {
     const [mode, setMode] = useState<'MANUAL' | 'XML'>('MANUAL');

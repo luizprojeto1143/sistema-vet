@@ -1,4 +1,3 @@
-
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 
@@ -82,33 +81,32 @@ export class SaasService {
     }
 
     async updateSettings(data: any) {
-      return this.prisma.saasConfig.update({
-          where: { id: 'global' },
-          data
-      });
-  }
+        return this.prisma.saasConfig.update({
+            where: { id: 'global' },
+            data
+        });
+    }
 
-  async getGrowthMetrics() {
-      // 1. Get Clinics with Referrals
-      const referringClinics = await this.prisma.clinic.findMany({
-          where: { referrals: { some: {} } },
-          include: { 
-              _count: { select: { referrals: true } },
-              referrals: { select: { name: true, createdAt: true } }
-          },
-          orderBy: { referrals: { _count: 'desc' } },
-          take: 10
-      });
-      
-      return {
-          topReferrers: referringClinics.map(c => ({
-              id: c.id,
-              name: c.name,
-              totalReferrals: c._count.referrals,
-              creditsEarned: c.saasCredits
-          })),
-          recentReferrals: [] // mock for now
-      };
-  }
+    async getGrowthMetrics() {
+        // 1. Get Clinics with Referrals
+        const referringClinics = await this.prisma.clinic.findMany({
+            where: { referrals: { some: {} } },
+            include: {
+                _count: { select: { referrals: true } },
+                referrals: { select: { name: true, createdAt: true } }
+            },
+            orderBy: { referrals: { _count: 'desc' } },
+            take: 10
+        });
+
+        return {
+            topReferrers: referringClinics.map(c => ({
+                id: c.id,
+                name: c.name,
+                totalReferrals: c._count.referrals,
+                creditsEarned: c.saasCredits
+            })),
+            recentReferrals: [] // mock for now
+        };
+    }
 }
-```

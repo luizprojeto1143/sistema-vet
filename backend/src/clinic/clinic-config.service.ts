@@ -15,7 +15,7 @@ export class ClinicConfigService {
                 email: data.email,
                 website: data.website,
                 logoUrl: data.logoUrl,
-                opensAt: data.opensAt // JSON
+                operatingHours: data.opensAt // JSON
             }
         });
     }

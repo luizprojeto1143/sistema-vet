@@ -16,7 +16,7 @@ export class AppointmentsService {
             for (let i = 0; i < data.recurrence.times; i++) {
                 appointments.push(this.prisma.appointment.create({
                     data: {
-                        dateTime: new Date(currentDate),
+                        date: new Date(currentDate),
                         type: data.type,
                         status: 'SCHEDULED',
                         notes: i > 0 ? `${data.notes} (Recorrência ${i + 1}/${data.recurrence.times})` : data.notes,
@@ -37,7 +37,7 @@ export class AppointmentsService {
         // Single Appointment
         return this.prisma.appointment.create({
             data: {
-                dateTime: new Date(data.dateTime),
+                date: new Date(data.dateTime),
                 type: data.type,
                 status: 'SCHEDULED', // Default status
                 notes: data.notes,
@@ -49,15 +49,16 @@ export class AppointmentsService {
         });
     }
 
-    async findAll() {
+    async findAll(clinicId: string) {
         return this.prisma.appointment.findMany({
+            where: { clinicId },
             include: {
                 pet: { include: { tutor: true } },
                 vet: true,
                 service: true,
                 medicalRecord: {
                     include: {
-                        consumedItems: true
+                        // consumedItems: true // Scalar field, included by default
                     }
                 }
             },

@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
-import * as pdf from 'pdf-parse';
+const pdf = require('pdf-parse');
 
 @Injectable()
 export class AnalisaVetService {

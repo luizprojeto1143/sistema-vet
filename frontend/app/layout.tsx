@@ -10,6 +10,14 @@ const nunito = Nunito({
 export const metadata: Metadata = {
   title: "VETZ - Sistema Veterinário",
   description: "Gestão completa para clínicas veterinárias com amor e carinho.",
+  manifest: "/manifest.json",
+  themeColor: "#0ea5e9",
+  appleWebApp: {
+    capable: true,
+    statusBarStyle: "default",
+    title: "VETZ",
+  },
+  viewport: "width=device-width, initial-scale=1, maximum-scale=1",
 };
 
 export default function RootLayout({

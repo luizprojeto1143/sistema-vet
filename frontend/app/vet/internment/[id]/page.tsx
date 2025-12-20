@@ -35,10 +35,29 @@ export default function InternmentFolioPage() {
     const [products, setProducts] = useState<any[]>([]);
     const [selectedProductId, setSelectedProductId] = useState('');
 
+    // Dynamic Checklist State
+    const [checklist, setChecklist] = useState<string[]>([]);
+    const [standardChecks, setStandardChecks] = useState({ feed: false, water: false, urine: false, feces: false });
+    const [customChecks, setCustomChecks] = useState<any>({});
+
     useEffect(() => {
         loadData();
         loadProducts();
+        loadSettings();
     }, []);
+
+    const loadSettings = async () => {
+        const token = localStorage.getItem('token');
+        const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000'}/clinics`, {
+            headers: { 'Authorization': `Bearer ${token}` }
+        });
+        if (res.ok) {
+            const clinics = await res.json();
+            if (clinics[0]?.internmentChecklist) {
+                setChecklist(JSON.parse(clinics[0].internmentChecklist));
+            }
+        }
+    };
 
     const loadProducts = async () => {
         const token = localStorage.getItem('token');
@@ -90,14 +109,23 @@ export default function InternmentFolioPage() {
     };
 
     const handleLog = async () => {
-        if (!newLog) return;
+        // Allow saving if at least one check is made OR there is a note
+        if (!newLog && !Object.values(standardChecks).some(Boolean) && !Object.values(customChecks).some(Boolean)) return;
+
         const token = localStorage.getItem('token');
-        await fetch((process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000') + `/internment/log`, {
+        await fetch((process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000') + `/internment/daily-record`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
-            body: JSON.stringify({ internmentId: params.id, notes: newLog })
+            body: JSON.stringify({
+                internmentId: params.id,
+                notes: newLog,
+                ...standardChecks,
+                customValues: customChecks
+            })
         });
         setNewLog('');
+        setStandardChecks({ feed: false, water: false, urine: false, feces: false });
+        setCustomChecks({});
         loadData();
     };
 
@@ -213,6 +241,42 @@ export default function InternmentFolioPage() {
                         activeTab === 'evolution' && (
                             <div className="animate-fadeIn max-w-4xl mx-auto">
                                 <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-200 mb-6">
+
+                                    {/* Standard Checks */}
+                                    <div className="flex gap-4 mb-4">
+                                        {['feed', 'water', 'urine', 'feces'].map(key => (
+                                            <label key={key} className="flex items-center gap-2 cursor-pointer">
+                                                <input
+                                                    type="checkbox"
+                                                    className="w-5 h-5 rounded text-indigo-600 focus:ring-indigo-500"
+                                                    onChange={e => setStandardChecks({ ...standardChecks, [key]: e.target.checked })}
+                                                />
+                                                <span className="text-sm font-bold text-gray-700 uppercase">
+                                                    {key === 'feed' ? 'Comida' : key === 'water' ? 'Água' : key === 'urine' ? 'Urina' : 'Fezes'}
+                                                </span>
+                                            </label>
+                                        ))}
+                                    </div>
+
+                                    {/* Dynamic Checks */}
+                                    {checklist.length > 0 && (
+                                        <div className="mb-4 p-4 bg-gray-50 rounded-lg border border-gray-100">
+                                            <span className="text-xs font-bold text-gray-400 uppercase block mb-2">Controles Personalizados</span>
+                                            <div className="grid grid-cols-2 gap-3">
+                                                {checklist.map(item => (
+                                                    <label key={item} className="flex items-center gap-2 cursor-pointer">
+                                                        <input
+                                                            type="checkbox"
+                                                            className="w-4 h-4 rounded text-purple-600 focus:ring-purple-500"
+                                                            onChange={e => setCustomChecks({ ...customChecks, [item]: e.target.checked })}
+                                                        />
+                                                        <span className="text-sm text-gray-700">{item}</span>
+                                                    </label>
+                                                ))}
+                                            </div>
+                                        </div>
+                                    )}
+
                                     <textarea
                                         className="w-full border border-gray-300 rounded-lg p-4 focus:ring-2 focus:ring-indigo-500 min-h-[120px]"
                                         placeholder="Descreva a evolução do paciente..."
@@ -226,15 +290,35 @@ export default function InternmentFolioPage() {
 
                                 {/* Timeline */}
                                 <div className="border-l-2 border-gray-200 ml-4 space-y-8 pl-8 relative">
-                                    {internment.dailyRecords?.map((log: any) => (
-                                        <div key={log.id} className="relative">
-                                            <div className="absolute -left-[39px] bg-indigo-600 h-5 w-5 rounded-full border-4 border-white shadow-sm"></div>
-                                            <div className="text-xs font-bold text-gray-400 mb-1">{new Date(log.date).toLocaleString()}</div>
-                                            <p className="text-gray-700 bg-white p-4 rounded-lg shadow-sm border border-gray-100">
-                                                {log.notes}
-                                            </p>
-                                        </div>
-                                    ))}
+                                    {internment.dailyRecords?.map((log: any) => {
+                                        const custom = log.customValues ? JSON.parse(log.customValues) : {};
+                                        return (
+                                            <div key={log.id} className="relative">
+                                                <div className="absolute -left-[39px] bg-indigo-600 h-5 w-5 rounded-full border-4 border-white shadow-sm"></div>
+                                                <div className="text-xs font-bold text-gray-400 mb-1">{new Date(log.date).toLocaleString()}</div>
+                                                <div className="bg-white p-4 rounded-lg shadow-sm border border-gray-100">
+                                                    <p className="text-gray-700 mb-2">{log.notes}</p>
+
+                                                    {/* Standard Checks */}
+                                                    <div className="flex flex-wrap gap-2 mb-2">
+                                                        {log.feed && <span className="text-[10px] bg-green-100 text-green-700 px-2 py-1 rounded font-bold">Comeu</span>}
+                                                        {log.water && <span className="text-[10px] bg-blue-100 text-blue-700 px-2 py-1 rounded font-bold">Bebeu</span>}
+                                                        {log.urine && <span className="text-[10px] bg-yellow-100 text-yellow-700 px-2 py-1 rounded font-bold">Urina</span>}
+                                                        {log.feces && <span className="text-[10px] bg-amber-100 text-amber-700 px-2 py-1 rounded font-bold">Fezes</span>}
+                                                    </div>
+
+                                                    {/* Custom Checks */}
+                                                    {Object.keys(custom).length > 0 && (
+                                                        <div className="flex flex-wrap gap-2 pt-2 border-t border-gray-50">
+                                                            {Object.entries(custom).map(([key, val]) => (
+                                                                val && <span key={key} className="text-[10px] bg-purple-100 text-purple-700 px-2 py-1 rounded font-bold">{key}</span>
+                                                            ))}
+                                                        </div>
+                                                    )}
+                                                </div>
+                                            </div>
+                                        );
+                                    })}
                                 </div>
 
                                 {(!internment.dailyRecords || internment.dailyRecords.length === 0) && (

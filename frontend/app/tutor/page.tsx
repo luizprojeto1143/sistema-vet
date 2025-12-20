@@ -4,21 +4,28 @@ import { useRouter } from 'next/navigation';
 
 export default function TutorDashboard() {
     const router = useRouter();
-    const [tutor, setTutor] = useState<any>(null);
-    const [loading, setLoading] = useState(true);
+    const [internments, setInternments] = useState<any[]>([]);
 
     useEffect(() => {
         const fetchMe = async () => {
             try {
                 const token = localStorage.getItem('token');
-                const res = await fetch((process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000') + '/tutors/me', {
-                    headers: { 'Authorization': `Bearer ${token}` }
-                });
+                const headers = { 'Authorization': `Bearer ${token}` };
+                const baseUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000';
+
+                const res = await fetch(baseUrl + '/tutors/me', { headers });
                 if (res.ok) {
                     setTutor(await res.json());
                 } else {
                     router.push('/login');
                 }
+
+                // Fetch Active Internments
+                const resInt = await fetch(baseUrl + '/internment/tutor/active', { headers });
+                if (resInt.ok) {
+                    setInternments(await resInt.json());
+                }
+
             } catch (e) {
                 console.error(e);
             } finally {
@@ -41,13 +48,33 @@ export default function TutorDashboard() {
 
             <div className="p-6 space-y-6">
 
+                {/* Active Internment Alert */}
+                {internments.length > 0 && (
+                    <div className="bg-white border-l-4 border-orange-500 p-4 rounded-r-xl shadow-md animate-pulse-slow">
+                        <h2 className="text-orange-600 font-bold flex items-center gap-2">
+                            🏥 Pet Internado
+                        </h2>
+                        {internments.map(int => (
+                            <div key={int.id} className="mt-2">
+                                <p className="text-gray-800 font-bold">{int.pet.name} está em observação.</p>
+                                <button
+                                    onClick={() => router.push(`/tutor/internment/${int.id}`)}
+                                    className="mt-3 w-full bg-orange-100 text-orange-700 py-2 rounded-lg font-bold text-sm hover:bg-orange-200 transition-colors"
+                                >
+                                    Ver Boletim Diário 📄
+                                </button>
+                            </div>
+                        ))}
+                    </div>
+                )}
+
                 {/* Quick Actions */}
                 <div className="grid grid-cols-2 gap-4">
-                    <button className="bg-white p-4 rounded-2xl shadow-sm border border-gray-100 flex flex-col items-center gap-2 hover:bg-gray-50">
+                    <button onClick={() => router.push('/tutor/appointments/new')} className="bg-white p-4 rounded-2xl shadow-sm border border-gray-100 flex flex-col items-center gap-2 hover:bg-gray-50">
                         <span className="text-2xl">📅</span>
                         <span className="font-bold text-gray-700 text-sm">Agendar</span>
                     </button>
-                    <button className="bg-white p-4 rounded-2xl shadow-sm border border-gray-100 flex flex-col items-center gap-2 hover:bg-gray-50">
+                    <button onClick={() => router.push('/tutor/health')} className="bg-white p-4 rounded-2xl shadow-sm border border-gray-100 flex flex-col items-center gap-2 hover:bg-gray-50">
                         <span className="text-2xl">💉</span>
                         <span className="font-bold text-gray-700 text-sm">Vacinas</span>
                     </button>

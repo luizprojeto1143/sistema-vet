@@ -1,0 +1,21 @@
+{
+    "name": "VETZ - Área do Tutor",
+    "short_name": "VETZ",
+    "description": "Acompanhe a saúde do seu pet",
+    "start_url": "/tutor/dashboard",
+    "display": "standalone",
+    "background_color": "#ffffff",
+    "theme_color": "#0ea5e9",
+    "icons": [
+        {
+            "src": "/logo.png",
+            "sizes": "192x192",
+            "type": "image/png"
+        },
+        {
+            "src": "/logo.png",
+            "sizes": "512x512",
+            "type": "image/png"
+        }
+    ]
+}

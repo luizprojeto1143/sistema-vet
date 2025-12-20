@@ -59,6 +59,32 @@ export class InternmentService {
         });
     }
 
+    async getActiveForTutor(userId: string) {
+        const tutor = await this.prisma.tutor.findUnique({
+            where: { userId }
+        });
+
+        if (!tutor) return [];
+
+        return this.prisma.internment.findMany({
+            where: {
+                pet: { tutorId: tutor.id },
+                status: 'ACTIVE'
+            },
+            include: {
+                pet: true,
+                dailyRecords: {
+                    orderBy: { date: 'desc' },
+                    take: 1
+                },
+                vitalSigns: {
+                    orderBy: { dateTime: 'desc' },
+                    take: 1
+                }
+            }
+        });
+    }
+
     async getOne(id: string) {
         return this.prisma.internment.findUnique({
             where: { id },
@@ -138,6 +164,7 @@ export class InternmentService {
                 feces: data.feces,
                 humor: data.humor,
                 notes: data.notes,
+                customValues: data.customValues ? JSON.stringify(data.customValues) : null,
                 date: new Date()
             }
         });

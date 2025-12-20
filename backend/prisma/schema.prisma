@@ -52,6 +52,7 @@ model Clinic {
 
   // Configuration
   internmentDailyRate Decimal @default(150.00)
+  internmentChecklist String? // JSON: ["Vomitou", "Urinou", "Fezes", "Comeu", "Bebeu"]
 
   // Subscription / Plan
   planId        String?
@@ -496,6 +497,8 @@ model DailyRecord {
   humor         String?  // ANIMATED, DEPRRESSED, AGGRESSIVE
   notes         String?  // Clinical evolution
   
+  customValues  String?  // JSON: { "vomitou": true, "passeou": false }
+
   internmentId  String
   // internment relation fixed below (Internment)
   internment    Internment @relation(fields: [internmentId], references: [id])

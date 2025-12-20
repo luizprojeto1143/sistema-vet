@@ -25,6 +25,11 @@ export class InternmentController {
         return this.internmentService.getActive(clinicId);
     }
 
+    @Get('tutor/active')
+    async getActiveForTutor(@Request() req: any) {
+        return this.internmentService.getActiveForTutor(req.user.id);
+    }
+
     @Get(':id')
     async getOne(@Param('id') id: string) {
         return this.internmentService.getOne(id);

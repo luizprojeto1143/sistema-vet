@@ -31,33 +31,21 @@ export class StockService {
                     type: 'IN_PURCHASE', // Entrada por Compra
                     quantity: data.quantity,
                     reason: `NF ${data.invoiceNumber || 'S/N'} - ${data.provider || 'Fornecedor avulso'}`,
-                    createdBy: data.userId,
+                    // createdBy: data.userId, // REMOVED: Not in schema
                     batchId: batch.id
                 }
             });
 
-            // C. Update Product Stock & Cost (Weighted Average Cost could be implemented here, but using FIFO/Last Cost for MVP)
+            // C. Update Product Stock & Cost
             await tx.product.update({
                 where: { id: data.productId },
                 data: {
                     currentStock: { increment: data.quantity },
-                    costPrice: data.costPrice // Updating last cost price
+                    costPrice: data.costPrice
                 }
             });
 
             return batch;
-        });
-    }
-
-    // Legacy Create Batch (keeping checks just in case)
-    async createBatchOld(data: { productId: string; quantity: number; expirationDate: string; batchNumber: string }) {
-        return this.prisma.productBatch.create({
-            data: {
-                productId: data.productId,
-                quantity: data.quantity,
-                expirationDate: new Date(data.expirationDate),
-                batchNumber: data.batchNumber
-            }
         });
     }
 
@@ -77,7 +65,7 @@ export class StockService {
                 let qtyToDeduct = Number(item.quantity) * data.quantity;
                 const productId = item.productId;
 
-                // FIFO Logic: Get valid batches ordered by expiration (soonest first)
+                // FIFO Logic
                 const batches = await tx.productBatch.findMany({
                     where: { productId, quantity: { gt: 0 } },
                     orderBy: { expirationDate: 'asc' }
@@ -95,7 +83,7 @@ export class StockService {
                         data: { quantity: { decrement: take } }
                     });
 
-                    // Log Movement with Batch Traceability
+                    // Log Movement
                     const move = await tx.stockMovement.create({
                         data: {
                             clinicId: data.clinicId,
@@ -103,9 +91,8 @@ export class StockService {
                             type: 'OUT_CONSUME',
                             quantity: take,
                             reason: `Kit: ${kit.name} (Batch ${batch.batchNumber})`,
-                            createdBy: data.userId,
-                            batchId: batch.id, // Traceability
-                            // referenceId: data.medicalRecordId 
+                            // createdBy: data.userId, // REMOVED
+                            batchId: batch.id
                         }
                     });
                     results.push(move);
@@ -113,9 +100,6 @@ export class StockService {
                     qtyToDeduct -= take;
                 }
 
-                // If qtyToDeduct > 0 here, it means we ran out of batches but still need to deduct. 
-                // We should log a negative adjustment or deduct from "General Stock" if we allow mixed mode.
-                // For now, let's log an untracked movement for the remainder.
                 if (qtyToDeduct > 0) {
                     await tx.stockMovement.create({
                         data: {
@@ -124,7 +108,7 @@ export class StockService {
                             type: 'OUT_CONSUME',
                             quantity: qtyToDeduct,
                             reason: `Kit: ${kit.name} (No Batch)`,
-                            createdBy: data.userId,
+                            // createdBy: data.userId, // REMOVED
                         }
                     });
                 }
@@ -134,7 +118,7 @@ export class StockService {
                 await tx.product.update({
                     where: { id: productId },
                     data: {
-                        currentStock: { decrement: totalDeduct } // Keeping this synced for fast reads
+                        currentStock: { decrement: totalDeduct }
                     }
                 });
             }
@@ -142,12 +126,11 @@ export class StockService {
         });
     }
 
-    // 3. Manual / Ad-hoc Consumption (e.g. Broken item, Internal Use)
+    // 3. Manual / Ad-hoc Consumption
     async manualConsume(data: { clinicId: string; productId: string; quantity: number; reason: string; userId: string }) {
         return this.prisma.$transaction(async (tx) => {
             let qtyToDeduct = data.quantity;
 
-            // FIFO Logic
             const batches = await tx.productBatch.findMany({
                 where: { productId: data.productId, quantity: { gt: 0 } },
                 orderBy: { expirationDate: 'asc' }
@@ -169,10 +152,10 @@ export class StockService {
                     data: {
                         clinicId: data.clinicId,
                         productId: data.productId,
-                        type: 'OUT_CONSUME', // or OUT_LOSS / OUT_INTERNAL
+                        type: 'OUT_CONSUME',
                         quantity: take,
                         reason: `${data.reason} (Batch ${batch.batchNumber})`,
-                        createdBy: data.userId,
+                        // createdBy: data.userId, // REMOVED
                         batchId: batch.id
                     }
                 }));
@@ -180,7 +163,6 @@ export class StockService {
                 qtyToDeduct -= take;
             }
 
-            // Remainder (No Batch)
             if (qtyToDeduct > 0) {
                 movements.push(await tx.stockMovement.create({
                     data: {
@@ -189,12 +171,11 @@ export class StockService {
                         type: 'OUT_CONSUME',
                         quantity: qtyToDeduct,
                         reason: `${data.reason} (No Batch)`,
-                        createdBy: data.userId,
+                        // createdBy: data.userId, // REMOVED
                     }
                 }));
             }
 
-            // Update Product Total
             await tx.product.update({
                 where: { id: data.productId },
                 data: { currentStock: { decrement: data.quantity } }
@@ -209,14 +190,13 @@ export class StockService {
             where: { productId },
             orderBy: { createdAt: 'desc' },
             take: 50,
-            include: { batch: true } // Include Batch info
+            // include: { batch: true } // REMOVED: Relation not defined in schema
         });
     }
 
     // 4. Low Stock Alert Job
     @Cron(CronExpression.EVERY_HOUR)
     async checkLowStock() {
-        // Find products below min stock
         const products = await this.prisma.product.findMany({
             where: {
                 currentStock: { lte: this.prisma.product.fields.minStock }
@@ -225,8 +205,6 @@ export class StockService {
         });
 
         for (const product of products) {
-            // Avoid spamming? Logic could be: check if flexible notification exists recently.
-            // For simplify: Just create alert. Frontend will group or user clears.
             await this.notificationService.create({
                 clinicId: product.clinicId,
                 type: 'ALERT',

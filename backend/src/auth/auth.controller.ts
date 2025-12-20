@@ -7,11 +7,20 @@ export class AuthController {
 
     @Post('login')
     async login(@Body() body: any) {
-        const user = await this.authService.validateUser(body.email, body.password);
-        if (!user) {
-            throw new UnauthorizedException('Invalid credentials');
+        try {
+            const user = await this.authService.validateUser(body.email, body.password);
+            if (!user) {
+                throw new UnauthorizedException('Invalid credentials');
+            }
+            return this.authService.login(user);
+        } catch (error) {
+            console.error('Login Error:', error);
+            throw new HttpException({
+                status: HttpStatus.INTERNAL_SERVER_ERROR,
+                error: error.message || 'Internal Server Error',
+                details: error
+            }, HttpStatus.INTERNAL_SERVER_ERROR);
         }
-        return this.authService.login(user);
     }
 
     @Post('register')

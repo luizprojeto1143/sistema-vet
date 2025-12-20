@@ -1,3 +1,5 @@
+import Link from 'next/link';
+
 export default function VetDashboard() {
     return (
         <div className="p-8">
@@ -9,7 +11,7 @@ export default function VetDashboard() {
                     <ul className="space-y-3">
                         <li className="flex justify-between items-center p-3 bg-gray-50 rounded">
                             <span>Thor - Golden Retriever</span>
-                            <button className="text-teal-600 font-semibold text-sm">Iniciar Atendimento</button>
+                            <Link href="/vet/appointments" className="text-teal-600 font-semibold text-sm hover:underline">Iniciar Atendimento</Link>
                         </li>
                         <li className="flex justify-between items-center p-3 bg-gray-50 rounded">
                             <span>Mia - Persa</span>

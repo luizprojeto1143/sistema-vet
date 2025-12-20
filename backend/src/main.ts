@@ -1,4 +1,5 @@
 import { NestFactory } from '@nestjs/core';
+import { PrismaClient } from '@prisma/client';
 import { AppModule } from './app.module';
 import { ValidationPipe } from '@nestjs/common';
 import { AllExceptionsFilter } from './common/filters/http-exception.filter';
@@ -7,22 +8,19 @@ async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
   // EMERGENCY DB FIX: Manually add missing columns if they don't exist
+  // Using direct PrismaClient to avoid Dependency Injection issues
+  const prisma = new PrismaClient();
   try {
-    const prismaService = app.get('PrismaService'); // Access PrismaService via dependency injection
-    // We can't easily get PrismaService here without importing it or resolving it.
-    // Simpler approach: Use the PrismaClient directly just for this fix.
-  } catch (e) { }
-
-  // Better approach: Resolve PrismaService from the app context
-  const prisma = app.get('PrismaService');
-  try {
-    console.log('RUNNING EMERGENCY MIGRATION...');
+    console.log('RUNNING EMERGENCY MIGRATION (Direct Client)...');
+    await prisma.$connect();
     await prisma.$executeRawUnsafe(`ALTER TABLE "User" ADD COLUMN IF NOT EXISTS "passwordHash" TEXT;`);
     await prisma.$executeRawUnsafe(`ALTER TABLE "Clinic" ADD COLUMN IF NOT EXISTS "internmentChecklist" TEXT;`);
     await prisma.$executeRawUnsafe(`ALTER TABLE "DailyRecord" ADD COLUMN IF NOT EXISTS "customValues" TEXT;`);
     console.log('EMERGENCY MIGRATION COMPLETE.');
   } catch (err) {
     console.error('Migration failed (ignoring if columns exist):', err);
+  } finally {
+    await prisma.$disconnect();
   }
 
   // Enable CORS for frontend

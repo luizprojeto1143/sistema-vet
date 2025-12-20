@@ -14,6 +14,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
         { name: '⚙️ Configurações & Regras', path: '/admin/settings' },
         { name: '📄 Documentos & Templates', path: '/admin/templates' },
         { name: '📦 Produtos (Estoque)', path: '/admin/products' }, // existing
+        { name: '🏥 Internação (Config)', path: '/admin/settings/internment' },
         // Finance moved to sub-menu in real app or kept here
         { name: '💰 Financeiro', path: '/admin/finance/commissions' }, // Shortcut
     ];

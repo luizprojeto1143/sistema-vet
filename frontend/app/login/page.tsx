@@ -54,7 +54,22 @@ export default function LoginPage() {
                 }
             } else {
                 const errData = await res.json().catch(() => ({}));
-                setError(errData.message || 'Credenciais inválidas. Tente novamente.');
+                console.error("Login Error Data:", errData); // Debug log for user
+
+                // Safely extract message, handling objects or arrays
+                let errorMessage = 'Credenciais inválidas. Tente novamente.';
+
+                if (errData.error && typeof errData.error === 'string') {
+                    errorMessage = errData.error;
+                } else if (errData.message) {
+                    errorMessage = typeof errData.message === 'string'
+                        ? errData.message
+                        : JSON.stringify(errData.message);
+                } else if (errData.details) {
+                    errorMessage = JSON.stringify(errData.details);
+                }
+
+                setError(errorMessage);
             }
         } catch (err) {
             setError('Erro de conexão. Verifique sua internet ou contate o suporte.');

@@ -14,6 +14,11 @@ async function bootstrap() {
     console.log('RUNNING EMERGENCY MIGRATION (Direct Client)...');
     await prisma.$connect();
     await prisma.$executeRawUnsafe(`ALTER TABLE "User" ADD COLUMN IF NOT EXISTS "passwordHash" TEXT;`);
+    await prisma.$executeRawUnsafe(`ALTER TABLE "User" ADD COLUMN IF NOT EXISTS "fullName" TEXT;`);
+    await prisma.$executeRawUnsafe(`ALTER TABLE "User" ADD COLUMN IF NOT EXISTS "cpf" TEXT;`);
+    await prisma.$executeRawUnsafe(`ALTER TABLE "User" ADD COLUMN IF NOT EXISTS "phone" TEXT;`);
+    await prisma.$executeRawUnsafe(`ALTER TABLE "User" ADD COLUMN IF NOT EXISTS "photoUrl" TEXT;`);
+
     await prisma.$executeRawUnsafe(`ALTER TABLE "Clinic" ADD COLUMN IF NOT EXISTS "internmentChecklist" TEXT;`);
     await prisma.$executeRawUnsafe(`ALTER TABLE "DailyRecord" ADD COLUMN IF NOT EXISTS "customValues" TEXT;`);
     console.log('EMERGENCY MIGRATION COMPLETE.');

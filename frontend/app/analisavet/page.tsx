@@ -1,14 +1,36 @@
 "use client";
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 
 export default function AnalisaVetPage() {
     const [analysis, setAnalysis] = useState<any>(null);
     const [loading, setLoading] = useState(false);
     const [examText, setExamText] = useState('');
+    const [pets, setPets] = useState<any[]>([]);
+    const [selectedPetId, setSelectedPetId] = useState('');
+
+    useEffect(() => {
+        const fetchPets = async () => {
+            const token = localStorage.getItem('token');
+            if (!token) return;
+            try {
+                const res = await fetch((process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000') + '/pets', {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+                if (res.ok) setPets(await res.json());
+            } catch (e) {
+                console.error(e);
+            }
+        };
+        fetchPets();
+    }, []);
 
     const handleAnalyze = async () => {
         setLoading(true);
         const token = localStorage.getItem('token');
+
+        const selectedPet = pets.find(p => p.id === selectedPetId);
+        const species = selectedPet?.species || 'Cão'; // Default
+
         try {
             const res = await fetch((process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000') + '/analisavet/analyze', {
                 method: 'POST',
@@ -16,7 +38,7 @@ export default function AnalisaVetPage() {
                     'Content-Type': 'application/json',
                     'Authorization': `Bearer ${token}`
                 },
-                body: JSON.stringify({ text: examText })
+                body: JSON.stringify({ text: examText, species })
             });
             if (res.ok) {
                 setAnalysis(await res.json());
@@ -38,6 +60,22 @@ export default function AnalisaVetPage() {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                 <div>
                     <div className="bg-white p-6 rounded-xl shadow-lg border border-purple-100 flex flex-col gap-4">
+
+                        {/* Patient Selector */}
+                        <div>
+                            <label className="block text-sm font-medium text-gray-700 mb-1">Selecione o Paciente (Opcional)</label>
+                            <select
+                                className="w-full p-2 border rounded-lg bg-gray-50 focus:ring-2 focus:ring-purple-500 outline-none"
+                                value={selectedPetId}
+                                onChange={(e) => setSelectedPetId(e.target.value)}
+                            >
+                                <option value="">-- Selecione para calibrar a IA --</option>
+                                {pets.map(pet => (
+                                    <option key={pet.id} value={pet.id}>{pet.name} ({pet.species}) - {pet.tutor?.fullName}</option>
+                                ))}
+                            </select>
+                            <p className="text-xs text-gray-400 mt-1">A IA usará a espécie do paciente para ajustar os valores de referência.</p>
+                        </div>
 
                         {/* File Upload Option */}
                         <div className="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center hover:bg-gray-50 transition-colors cursor-pointer relative">

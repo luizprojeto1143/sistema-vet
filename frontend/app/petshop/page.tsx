@@ -77,60 +77,238 @@ export default function PetShopDashboard() {
 
     if (loading) return <div className="p-10">Carregando Pet Shop...</div>;
 
+    const [viewMode, setViewMode] = useState<'GROOMING' | 'STORE'>('GROOMING');
+    const [products, setProducts] = useState<any[]>([]);
+    const [cart, setCart] = useState<any[]>([]);
+    const [isCartOpen, setIsCartOpen] = useState(false);
+
+    useEffect(() => {
+        if (viewMode === 'STORE') {
+            fetchProducts();
+        }
+    }, [viewMode]);
+
+    const fetchProducts = async () => {
+        const token = localStorage.getItem('token');
+        try {
+            const res = await fetch((process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000') + '/products', {
+                headers: { 'Authorization': `Bearer ${token}` }
+            });
+            if (res.ok) setProducts(await res.json());
+        } catch (e) { console.error(e); }
+    };
+
+    const addToCart = (product: any) => {
+        setCart(prev => {
+            const existing = prev.find(p => p.id === product.id);
+            if (existing) {
+                return prev.map(p => p.id === product.id ? { ...p, qty: p.qty + 1 } : p);
+            }
+            return [...prev, { ...product, qty: 1 }];
+        });
+        setIsCartOpen(true);
+    };
+
+    const removeFromCart = (productId: string) => {
+        setCart(prev => prev.filter(p => p.id !== productId));
+    };
+
+    const checkout = async () => {
+        if (cart.length === 0) return;
+        const token = localStorage.getItem('token');
+
+        // 1. Create Transaction (Income)
+        const total = cart.reduce((acc, item) => acc + (item.salePrice * item.qty), 0);
+
+        try {
+            // Create Finance Transaction
+            await fetch((process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000') + '/finance', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
+                body: JSON.stringify({
+                    type: 'INCOME',
+                    amount: total,
+                    category: 'Venda de Produtos',
+                    description: `Venda Petshop: ${cart.map(i => `${i.qty}x ${i.name}`).join(', ')}`,
+                    date: new Date().toISOString(),
+                    status: 'COMPLETED'
+                })
+            });
+
+            // 2. Deduct Stock
+            for (const item of cart) {
+                await fetch((process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000') + '/stock/consume', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
+                    body: JSON.stringify({
+                        productId: item.id,
+                        quantity: item.qty,
+                        reason: 'Venda Petshop'
+                    })
+                });
+            }
+
+            alert('Venda realizada com sucesso!');
+            setCart([]);
+            setIsCartOpen(false);
+            fetchProducts(); // Refresh stock
+        } catch (e) {
+            console.error(e);
+            alert('Erro ao processar venda.');
+        }
+    };
+
+    if (loading) return <div className="p-10">Carregando Pet Shop...</div>;
+
     return (
-        <div className="p-8 h-screen bg-gray-100 flex flex-col">
+        <div className="p-8 h-screen bg-gray-100 flex flex-col relative">
             <div className="flex justify-between items-center mb-6">
-                <h1 className="text-3xl font-bold text-gray-800">🛁 Pet Shop - Controle de Fluxo</h1>
-                <button
-                    onClick={() => setShowPackages(true)}
-                    className="bg-purple-600 text-white px-4 py-2 rounded-lg font-bold hover:bg-purple-700 shadow-sm flex items-center gap-2"
-                >
-                    🎟️ Pacotes & Assinaturas
-                </button>
+                <div className="flex items-center gap-4">
+                    <h1 className="text-3xl font-bold text-gray-800">🛁 Pet Shop & Store</h1>
+                    <div className="flex bg-white rounded-lg p-1 border border-gray-200">
+                        <button
+                            onClick={() => setViewMode('GROOMING')}
+                            className={`px-4 py-1 rounded-md font-bold text-sm transition-all ${viewMode === 'GROOMING' ? 'bg-purple-100 text-purple-700' : 'text-gray-500 hover:bg-gray-50'}`}
+                        >
+                            Banho & Tosa
+                        </button>
+                        <button
+                            onClick={() => setViewMode('STORE')}
+                            className={`px-4 py-1 rounded-md font-bold text-sm transition-all ${viewMode === 'STORE' ? 'bg-purple-100 text-purple-700' : 'text-gray-500 hover:bg-gray-50'}`}
+                        >
+                            Loja / Vendas
+                        </button>
+                    </div>
+                </div>
+                <div className="flex gap-2">
+                    {viewMode === 'STORE' && (
+                        <button
+                            onClick={() => setIsCartOpen(true)}
+                            className="bg-white border border-purple-200 text-purple-700 px-4 py-2 rounded-lg font-bold hover:bg-purple-50 shadow-sm flex items-center gap-2 relative"
+                        >
+                            🛒 Carrinho
+                            {cart.length > 0 && <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs w-5 h-5 flex items-center justify-center rounded-full">{cart.reduce((a, b) => a + b.qty, 0)}</span>}
+                        </button>
+                    )}
+                    <button
+                        onClick={() => setShowPackages(true)}
+                        className="bg-purple-600 text-white px-4 py-2 rounded-lg font-bold hover:bg-purple-700 shadow-sm flex items-center gap-2"
+                    >
+                        🎟️ Pacotes
+                    </button>
+                </div>
             </div>
 
-            <div className="flex-1 flex gap-4 overflow-x-auto pb-4">
-                {Object.entries(stages).map(([key, label]) => (
-                    <div key={key} className="flex-1 min-w-[280px] bg-gray-50 rounded-xl shadow-sm border border-gray-200 flex flex-col">
-                        {/* Header */}
-                        <div className={`p-4 border-b font-bold text-center uppercase tracking-wide
-                            ${key === 'READY' ? 'bg-green-100 text-green-700' :
-                                key === 'WAITING' ? 'bg-orange-100 text-orange-700' : 'bg-white text-gray-700'}
-                        `}>
-                            {label} <span className="text-xs bg-white px-2 py-0.5 rounded-full ml-2 border">{tasks.filter((t: any) => t.status === key).length}</span>
-                        </div>
+            {viewMode === 'GROOMING' ? (
+                <div className="flex-1 flex gap-4 overflow-x-auto pb-4">
+                    {Object.entries(stages).map(([key, label]) => (
+                        <div key={key} className="flex-1 min-w-[280px] bg-gray-50 rounded-xl shadow-sm border border-gray-200 flex flex-col">
+                            {/* Header */}
+                            <div className={`p-4 border-b font-bold text-center uppercase tracking-wide
+                                ${key === 'READY' ? 'bg-green-100 text-green-700' :
+                                    key === 'WAITING' ? 'bg-orange-100 text-orange-700' : 'bg-white text-gray-700'}
+                            `}>
+                                {label} <span className="text-xs bg-white px-2 py-0.5 rounded-full ml-2 border">{tasks.filter((t: any) => t.status === key).length}</span>
+                            </div>
 
-                        <div className="p-3 flex-1 overflow-y-auto space-y-3">
-                            {tasks.filter((t: any) => t.status === key).map((task: any) => (
-                                <div key={task.id} className="bg-white p-4 rounded-lg shadow hover:shadow-md transition-all border border-gray-100">
-                                    <div className="flex justify-between items-start mb-2">
-                                        <h3 className="font-bold text-lg text-gray-800">{task.pet?.name}</h3>
-                                        <span className="text-xs text-gray-500">{new Date(task.dateTime).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span>
-                                    </div>
-                                    <p className="text-sm text-gray-600 mb-2">{task.pet?.tutor?.fullName}</p>
-                                    <p className="text-xs text-blue-600 bg-blue-50 inline-block px-2 py-1 rounded mb-3">
-                                        {task.service?.name || 'Banho Simples'}
-                                    </p>
+                            <div className="p-3 flex-1 overflow-y-auto space-y-3">
+                                {tasks.filter((t: any) => t.status === key).map((task: any) => (
+                                    <div key={task.id} className="bg-white p-4 rounded-lg shadow hover:shadow-md transition-all border border-gray-100">
+                                        <div className="flex justify-between items-start mb-2">
+                                            <h3 className="font-bold text-lg text-gray-800">{task.pet?.name}</h3>
+                                            <span className="text-xs text-gray-500">{new Date(task.dateTime).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span>
+                                        </div>
+                                        <p className="text-sm text-gray-600 mb-2">{task.pet?.tutor?.fullName}</p>
+                                        <p className="text-xs text-blue-600 bg-blue-50 inline-block px-2 py-1 rounded mb-3">
+                                            {task.service?.name || 'Banho Simples'}
+                                        </p>
 
-                                    <div className="flex gap-2 mt-2">
-                                        {key !== 'COMPLETED' && (
-                                            <button
-                                                onClick={() => moveStage(task.id, key)}
-                                                className="flex-1 py-2 bg-gray-900 text-white text-sm font-bold rounded hover:bg-black transition-colors"
-                                            >
-                                                Mover ➡️
+                                        <div className="flex gap-2 mt-2">
+                                            {key !== 'COMPLETED' && (
+                                                <button
+                                                    onClick={() => moveStage(task.id, key)}
+                                                    className="flex-1 py-2 bg-gray-900 text-white text-sm font-bold rounded hover:bg-black transition-colors"
+                                                >
+                                                    Mover ➡️
+                                                </button>
+                                            )}
+                                            <button onClick={() => openTask(task)} className="px-3 py-2 border border-gray-200 rounded hover:bg-gray-50 text-gray-600">
+                                                ✏️
                                             </button>
-                                        )}
-                                        <button onClick={() => openTask(task)} className="px-3 py-2 border border-gray-200 rounded hover:bg-gray-50 text-gray-600">
-                                            ✏️
-                                        </button>
+                                        </div>
+                                    </div>
+                                ))}
+                            </div>
+                        </div>
+                    ))}
+                </div>
+            ) : (
+                <div className="flex-1 overflow-y-auto bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+                    <div className="grid grid-cols-4 gap-6">
+                        {products.map(product => (
+                            <div key={product.id} className="border border-gray-200 rounded-xl p-4 hover:shadow-lg transition-all flex flex-col">
+                                <div className="h-32 bg-gray-100 rounded-lg mb-4 flex items-center justify-center text-4xl">
+                                    📦
+                                </div>
+                                <h3 className="font-bold text-gray-800 mb-1">{product.name}</h3>
+                                <p className="text-sm text-gray-500 mb-2">{product.category}</p>
+                                <div className="mt-auto flex justify-between items-center">
+                                    <span className="font-bold text-lg text-purple-700">R$ {product.salePrice?.toFixed(2)}</span>
+                                    <button
+                                        onClick={() => addToCart(product)}
+                                        disabled={product.currentStock <= 0}
+                                        className="bg-gray-900 text-white px-3 py-1.5 rounded-lg text-sm font-bold hover:bg-black disabled:opacity-50 disabled:cursor-not-allowed"
+                                    >
+                                        {product.currentStock > 0 ? 'Adicionar' : 'Sem Estoque'}
+                                    </button>
+                                </div>
+                                <p className="text-xs text-gray-400 mt-2 text-center">Estoque: {product.currentStock} {product.unit}</p>
+                            </div>
+                        ))}
+                    </div>
+                </div>
+            )}
+
+            {/* Cart Sidebar */}
+            {isCartOpen && (
+                <div className="absolute top-0 right-0 h-full w-96 bg-white shadow-2xl border-l border-gray-200 z-40 flex flex-col animate-in slide-in-from-right duration-200">
+                    <div className="p-6 border-b bg-purple-50 flex justify-between items-center">
+                        <h2 className="text-xl font-bold text-purple-900">🛒 Carrinho</h2>
+                        <button onClick={() => setIsCartOpen(false)} className="text-gray-500 hover:text-gray-800">✕</button>
+                    </div>
+                    <div className="flex-1 overflow-y-auto p-6 space-y-4">
+                        {cart.length === 0 ? (
+                            <p className="text-center text-gray-500 mt-10">Seu carrinho está vazio.</p>
+                        ) : (
+                            cart.map(item => (
+                                <div key={item.id} className="flex justify-between items-center border-b pb-4">
+                                    <div>
+                                        <p className="font-bold text-gray-800">{item.name}</p>
+                                        <p className="text-sm text-gray-500">{item.qty} x R$ {item.salePrice?.toFixed(2)}</p>
+                                    </div>
+                                    <div className="flex items-center gap-2">
+                                        <span className="font-bold">R$ {(item.qty * item.salePrice).toFixed(2)}</span>
+                                        <button onClick={() => removeFromCart(item.id)} className="text-red-500 hover:bg-red-50 p-1 rounded">🗑️</button>
                                     </div>
                                 </div>
-                            ))}
-                        </div>
+                            ))
+                        )}
                     </div>
-                ))}
-            </div>
+                    <div className="p-6 border-t bg-gray-50">
+                        <div className="flex justify-between items-center mb-4 text-xl font-bold">
+                            <span>Total</span>
+                            <span>R$ {cart.reduce((acc, item) => acc + (item.salePrice * item.qty), 0).toFixed(2)}</span>
+                        </div>
+                        <button
+                            onClick={checkout}
+                            disabled={cart.length === 0}
+                            className="w-full bg-green-600 text-white py-3 rounded-xl font-bold hover:bg-green-700 shadow-lg disabled:opacity-50"
+                        >
+                            Finalizar Venda
+                        </button>
+                    </div>
+                </div>
+            )}
 
             {/* Service Detail Modal */}
             {selectedTask && (

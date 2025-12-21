@@ -6,6 +6,8 @@ import { AppointmentsService } from '../appointments/appointments.service';
 import { EventEmitter2 } from '@nestjs/event-emitter';
 import { MedicalRecordCreatedEvent } from '../events/listeners/medical-record.listener';
 
+import { StockService } from '../stock/stock.service';
+
 @Injectable()
 export class MedicalRecordsService {
     constructor(
@@ -13,7 +15,8 @@ export class MedicalRecordsService {
         private productsService: ProductsService,
         private financeService: FinanceService,
         private appointmentsService: AppointmentsService,
-        private eventEmitter: EventEmitter2
+        private eventEmitter: EventEmitter2,
+        private stockService: StockService // Injected
     ) { }
 
     async create(data: any) {
@@ -40,10 +43,16 @@ export class MedicalRecordsService {
 
         if (data.consumedItems && data.consumedItems.length > 0) {
             for (const item of data.consumedItems) {
-                // Deduct Stock
+                // Deduct Stock via StockService
                 if (item.productId) {
                     try {
-                        await this.productsService.updateStock(item.productId, item.quantity ? -item.quantity : -1);
+                        await this.stockService.manualConsume({
+                            clinicId: 'clinic-1', // Should get from context/appointment
+                            productId: item.productId,
+                            quantity: Number(item.quantity || 1),
+                            reason: `Consumo em Atendimento (Appt ${data.appointmentId})`,
+                            userId: data.vetId
+                        });
                     } catch (e) {
                         console.warn(`Failed to update stock for ${item.productId}`, e);
                     }

@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
     ArchiveBoxIcon,
     ArrowPathIcon,
@@ -27,6 +27,28 @@ export default function StockPage() {
     const [isFormOpen, setIsFormOpen] = useState(false);
     const [isBatchModalOpen, setIsBatchModalOpen] = useState(false);
     const [selectedProductForBatch, setSelectedProductForBatch] = useState<any>(null);
+    const [products, setProducts] = useState<any[]>([]);
+
+    const fetchProducts = async () => {
+        const token = localStorage.getItem('token');
+        if (!token) return;
+
+        try {
+            const res = await fetch((process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000') + '/products', {
+                headers: { 'Authorization': `Bearer ${token}` }
+            });
+            if (res.ok) {
+                const data = await res.json();
+                setProducts(data);
+            }
+        } catch (error) {
+            console.error("Failed to fetch products:", error);
+        }
+    };
+
+    useEffect(() => {
+        fetchProducts();
+    }, []);
 
     const handleOpenBatchModal = (product: any) => {
         setSelectedProductForBatch(product);
@@ -34,9 +56,7 @@ export default function StockPage() {
     };
 
     const handleSaveBatch = (batchData: any) => {
-        console.log("Saving Batch:", batchData);
-        // Call API here: await fetch('/api/stock/batch', { ... })
-        alert(`Lote ${batchData.batchNumber} adicionado com sucesso!`);
+        fetchProducts(); // Refresh list
         setIsBatchModalOpen(false);
     };
 
@@ -44,7 +64,7 @@ export default function StockPage() {
         <div className="p-8 h-screen flex flex-col bg-gray-50 overflow-hidden relative">
 
             {/* MODALS */}
-            {isFormOpen && <ProductForm onClose={() => setIsFormOpen(false)} />}
+            {isFormOpen && <ProductForm onClose={() => setIsFormOpen(false)} onSuccess={fetchProducts} />}
 
             <AddBatchModal
                 isOpen={isBatchModalOpen}
@@ -146,19 +166,19 @@ export default function StockPage() {
                             </tr>
                         </thead>
                         <tbody className="divide-y divide-gray-100">
-                            {MOCK_STOCK.map(item => (
+                            {products.map(item => (
                                 <tr key={item.id} className="hover:bg-indigo-50 transition-colors group">
                                     <td className="p-4">
                                         <div className="font-bold text-gray-800">{item.name}</div>
-                                        <div className="text-xs text-gray-400">SKU: REF-{1000 + item.id}</div>
+                                        <div className="text-xs text-gray-400">SKU: {item.id.slice(0, 8).toUpperCase()}</div>
                                     </td>
                                     <td className="p-4 text-sm text-gray-600">{item.category}</td>
                                     <td className="p-4 text-sm text-gray-600">{item.supplier}</td>
-                                    <td className="p-4 text-center font-bold text-gray-800">{item.stock} un</td>
+                                    <td className="p-4 text-center font-bold text-gray-800">{item.currentStock} {item.unit}</td>
                                     <td className="p-4 text-center">
-                                        {item.status === 'LOW' && <span className="px-2 py-1 bg-orange-100 text-orange-700 text-xs rounded-full font-bold">BAIXO</span>}
-                                        {item.status === 'CRITICAL' && <span className="px-2 py-1 bg-red-100 text-red-700 text-xs rounded-full font-bold">ZERADO</span>}
-                                        {item.status === 'NORMAL' && <span className="px-2 py-1 bg-green-100 text-green-700 text-xs rounded-full font-bold">OK</span>}
+                                        {item.currentStock <= 0 && <span className="px-2 py-1 bg-red-100 text-red-700 text-xs rounded-full font-bold">ZERADO</span>}
+                                        {item.currentStock > 0 && item.currentStock <= item.minStock && <span className="px-2 py-1 bg-orange-100 text-orange-700 text-xs rounded-full font-bold">BAIXO</span>}
+                                        {item.currentStock > item.minStock && <span className="px-2 py-1 bg-green-100 text-green-700 text-xs rounded-full font-bold">OK</span>}
                                     </td>
                                     <td className="p-4 text-right flex gap-2 justify-end">
                                         <button

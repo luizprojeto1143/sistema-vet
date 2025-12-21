@@ -6,7 +6,7 @@ generator client {
 }
 
 datasource db {
-  provider = "postgresql"
+  provider = "sqlite"
   url      = env("DATABASE_URL")
 }
 
@@ -98,6 +98,7 @@ model Clinic {
   referrals      Clinic[] @relation("ClinicReferral")
   cashierSessions CashierSession[]
   auditLogs     AuditLog[]
+  wards         Ward[]
 }
 
 // ------------------------------------------------------
@@ -425,6 +426,11 @@ model Prescription {
   productId       String?
   product         Product?  @relation(fields: [productId], references: [id])
 
+  // Detailed Prescription Fields
+  route           String?   // Oral, IV, IM, SC
+  doseAmount      Decimal?
+  doseUnit        String?   // mg, ml, cp
+  
   executions      MedicationExecution[]
 }
 
@@ -468,6 +474,9 @@ model Internment {
   reason        String
   
   bedNumber     Int?
+  
+  boxId         String?
+  box           Box?     @relation(fields: [boxId], references: [id])
 
   petId         String
   pet           Pet      @relation(fields: [petId], references: [id])
@@ -517,6 +526,35 @@ model VitalSign {
   internment    Internment @relation(fields: [internmentId], references: [id])
   
   recordedById  String?
+}
+
+model Ward {
+  id          String   @id @default(uuid())
+  name        String   // "Internação Geral", "Isolamento"
+  description String?
+  type        String   // GENERAL, INFECTIOUS, FELINE
+  
+  clinicId    String
+  clinic      Clinic   @relation(fields: [clinicId], references: [id])
+  
+  boxes       Box[]
+  
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model Box {
+  id          String   @id @default(uuid())
+  name        String   // "Box 1", "Gaiola A"
+  status      String   @default("AVAILABLE") // AVAILABLE, OCCUPIED, CLEANING, MAINTENANCE
+  
+  wardId      String
+  ward        Ward     @relation(fields: [wardId], references: [id])
+  
+  internments Internment[]
+  
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
 }
 
 // ------------------------------------------------------
@@ -758,8 +796,37 @@ model SupportAccessLog {
 }
 
 // ------------------------------------------------------
-// 11. GROWTH ENGINE (REFERRALS)
+// 12. ANALISAVET TRAINING (AI KNOWLEDGE BASE)
 // ------------------------------------------------------
+
+model AnalisaVetReference {
+  id        String   @id @default(uuid())
+  parameter String   // e.g. "Hemoglobina"
+  species   String   // "Cão", "Gato"
+  min       Float
+  max       Float
+  unit      String?  // "g/dL"
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([parameter, species])
+}
+
+model AnalisaVetRule {
+  id          String   @id @default(uuid())
+  name        String   // "Anemia Ferropriva", "Infecção Bacteriana"
+  
+  // Logic stored as JSON for flexibility
+  // Example: [{ "param": "Hemoglobina", "operator": "<", "ref": "MIN" }, { "param": "VCM", "operator": "<", "ref": "MIN" }]
+  conditions  String   
+  
+  resultText  String   // "Sugere anemia ferropriva (microcítica)..."
+  
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
 
 model ReferralReward {
   id            String   @id @default(uuid())

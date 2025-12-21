@@ -10,14 +10,62 @@ export class InternmentService {
     ) { }
 
     async admit(data: any) {
+        // If boxId is provided, mark it as OCCUPIED
+        if (data.boxId) {
+            await this.prisma.box.update({
+                where: { id: data.boxId },
+                data: { status: 'OCCUPIED' }
+            });
+        }
+
         return this.prisma.internment.create({
             data: {
                 petId: data.petId,
                 clinicId: data.clinicId,
                 reason: data.reason,
                 bedNumber: data.bedNumber,
+                boxId: data.boxId,
                 status: 'ACTIVE',
                 entryDate: new Date()
+            }
+        });
+    }
+
+    async createWard(data: any) {
+        return this.prisma.ward.create({
+            data: {
+                name: data.name,
+                type: data.type,
+                description: data.description,
+                clinicId: data.clinicId
+            }
+        });
+    }
+
+    async createBox(data: any) {
+        return this.prisma.box.create({
+            data: {
+                name: data.name,
+                wardId: data.wardId,
+                status: 'AVAILABLE'
+            }
+        });
+    }
+
+    async getWards(clinicId: string) {
+        return this.prisma.ward.findMany({
+            where: { clinicId },
+            include: {
+                boxes: {
+                    include: {
+                        internments: {
+                            where: { status: 'ACTIVE' },
+                            include: {
+                                pet: { include: { tutor: true } }
+                            }
+                        }
+                    }
+                }
             }
         });
     }
@@ -38,6 +86,15 @@ export class InternmentService {
     }
 
     async discharge(id: string) {
+        const internment = await this.prisma.internment.findUnique({ where: { id } });
+
+        if (internment && internment.boxId) {
+            await this.prisma.box.update({
+                where: { id: internment.boxId },
+                data: { status: 'CLEANING' } // Mark as cleaning after discharge
+            });
+        }
+
         return this.prisma.internment.update({
             where: { id },
             data: {

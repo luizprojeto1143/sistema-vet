@@ -13,6 +13,23 @@ export class InternmentController {
         return this.internmentService.admit(body);
     }
 
+    @Post('wards')
+    async createWard(@Body() body: any) {
+        return this.internmentService.createWard(body);
+    }
+
+    @Get('wards')
+    async getWards(@Request() req: any) {
+        // Mock clinicId or extract from JWT
+        const clinicId = 'clinic-1';
+        return this.internmentService.getWards(clinicId);
+    }
+
+    @Post('boxes')
+    async createBox(@Body() body: any) {
+        return this.internmentService.createBox(body);
+    }
+
     @Put(':id/discharge')
     async discharge(@Param('id') id: string) {
         return this.internmentService.discharge(id);

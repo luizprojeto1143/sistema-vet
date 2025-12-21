@@ -35,6 +35,26 @@ async function main() {
     } else {
         console.log('Admin user already exists.');
     }
+
+    // --- Create Master User ---
+    const masterEmail = 'master@vetz.com';
+    const existingMaster = await prisma.user.findUnique({ where: { email: masterEmail } });
+
+    if (!existingMaster) {
+        const masterPassword = await bcrypt.hash('master123', 10);
+        await prisma.user.create({
+            data: {
+                email: masterEmail,
+                fullName: 'Super Admin VETZ',
+                passwordHash: masterPassword,
+                role: 'MASTER',
+                permissions: JSON.stringify(['*']),
+            },
+        });
+        console.log('Seed completed: Master user created (master@vetz.com / master123)');
+    } else {
+        console.log('Master user already exists.');
+    }
 }
 
 main()

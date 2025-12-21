@@ -8,9 +8,12 @@
     "start": "nest start",
     "start:dev": "nest start --watch",
     "start:debug": "nest start --debug --watch",
-    "start:prod": "node dist/src/main",
-    "start:migrate:prod": "./node_modules/.bin/prisma db push --accept-data-loss --schema=./prisma/schema.prisma && node dist/src/main",
+    "start:prod": "npx prisma db push --accept-data-loss --schema=./prisma/schema.prisma && npx prisma db seed && node dist/src/main",
+    "start:migrate:prod": "npx prisma db push --accept-data-loss --schema=./prisma/schema.prisma && npx prisma db seed && node dist/src/main",
     "lint": "eslint \"{src,apps,libs,test}/**/*.ts\" --fix"
+  },
+  "prisma": {
+    "seed": "ts-node prisma/seed.ts"
   },
   "keywords": [],
   "author": "",

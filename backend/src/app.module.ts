@@ -28,6 +28,8 @@ import { FiscalModule } from './fiscal/fiscal.module';
 
 import { AuditController } from './common/audit.controller';
 
+import { AppController } from './app.controller';
+
 @Module({
     imports: [
         ScheduleModule.forRoot(),
@@ -48,7 +50,7 @@ import { AuditController } from './common/audit.controller';
         EventsModule,
         FiscalModule
     ],
-    controllers: [UploadController, AuditController],
+    controllers: [AppController, UploadController, AuditController],
     providers: [
         {
             provide: APP_INTERCEPTOR,

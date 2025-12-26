@@ -99,4 +99,18 @@ export class AuthService {
             return this.login(user);
         });
     }
+    async impersonate(targetClinicId: string) {
+        const user = await this.prisma.user.findFirst({
+            where: {
+                clinicId: targetClinicId,
+                role: 'ADMIN'
+            }
+        });
+
+        if (!user) {
+            throw new UnauthorizedException('No admin found for this clinic');
+        }
+
+        return this.login(user);
+    }
 }

@@ -1,9 +1,14 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 
+import { NotificationsService } from '../notifications/notifications.service';
+
 @Injectable()
 export class AppointmentsService {
-    constructor(private prisma: PrismaService) { }
+    constructor(
+        private prisma: PrismaService,
+        private notifications: NotificationsService
+    ) { }
 
     async create(data: any) {
         // Handle Recurrence (Simple: Weekly for N weeks)
@@ -35,7 +40,8 @@ export class AppointmentsService {
         }
 
         // Single Appointment
-        return this.prisma.appointment.create({
+        // Single Appointment
+        const appointment = await this.prisma.appointment.create({
             data: {
                 date: new Date(data.dateTime),
                 type: data.type,
@@ -45,8 +51,17 @@ export class AppointmentsService {
                 vetId: data.vetId,
                 clinicId: data.clinicId,
                 serviceId: data.serviceId
+            },
+            include: {
+                pet: { include: { tutor: true } },
+                vet: true
             }
         });
+
+        // Trigger Notification (Async)
+        this.notifications.sendAppointmentConfirmation(appointment).catch(err => console.error("Notification Error", err));
+
+        return appointment;
     }
 
     async findAll(clinicId: string) {

@@ -1,108 +1,90 @@
 import { Injectable } from '@nestjs/common';
 
 @Injectable()
+@Injectable()
 export class MercadoPagoService {
-    // Config
-    private readonly ACCESS_TOKEN = process.env.MP_ACCESS_TOKEN; // YOUR Master Token
-    private readonly PLATFORM_FEE_PERCENTAGE = 5.0; // 5%
+    private readonly ACCESS_TOKEN = process.env.MP_ACCESS_TOKEN;
 
-    // Refactored method to support multiple providers
     async createSplitPaymentPreference(clinic: any, transaction: any) {
-        let feePercentage = this.PLATFORM_FEE_PERCENTAGE; // Default platform fee
+        // 1. Calculate Platform Fee
+        const platformFeePercentage = this.getPlatformFee(clinic);
+        // Note: marketplace_fee in MP is the amount the MARKETPLACE (You) keeps.
+        // It requires the clinic acts as the seller (using their credentials/access token)
+        // OR we use the "aggregator" mode where we are the collector and disburse to them.
 
+        // For this implementation, we assume AGGREGATOR mode:
+        // System connects as MAIN collector, and we logically split internal funds.
+
+        const preferencePayload = {
+            items: transaction.items.map((item: any) => ({
+                id: item.id,
+                title: item.title,
+                description: item.description,
+                quantity: 1,
+                currency_id: 'BRL',
+                unit_price: Number(item.price)
+            })),
+            payer: {
+                email: transaction.payerEmail,
+                first_name: transaction.payerName?.split(' ')[0] || 'Cliente',
+                last_name: transaction.payerName?.split(' ').slice(1).join(' ') || ''
+            },
+            back_urls: {
+                success: `https://vetsystem.com/checkout/success`,
+                failure: `https://vetsystem.com/checkout/failure`,
+                pending: `https://vetsystem.com/checkout/pending`
+            },
+            auto_return: "approved",
+            notification_url: `https://api.vetsystem.com/webhooks/mp?clinicId=${clinic.id}`,
+            external_reference: transaction.id,
+            statement_descriptor: `VETSYSTEM ${clinic.name.substring(0, 10)}`,
+            metadata: {
+                clinic_id: clinic.id,
+                transaction_id: transaction.id,
+                // Critical for Split Logic:
+                split_rules: transaction.splitRules // [{ providerId: '123', amount: 50.00, percentage: 10 }]
+            }
+        };
+
+        // 4. Send to Mercado Pago API
+        if (!this.ACCESS_TOKEN) {
+            throw new Error("Mercado Pago ACCESS_TOKEN not configured.");
+        }
+
+        try {
+            const res = await fetch('https://api.mercadopago.com/checkout/preferences', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${this.ACCESS_TOKEN}`
+                },
+                body: JSON.stringify(preferencePayload)
+            });
+
+            if (!res.ok) {
+                const err = await res.text();
+                throw new Error(`Mercado Pago Error: ${err}`);
+            }
+
+            const data = await res.json();
+
+            return {
+                preferenceId: data.id,
+                initPoint: data.init_point, // Real Sandbox/Prod Link
+                payload: preferencePayload
+            };
+        } catch (error) {
+            console.error(error);
+            throw new Error('Failed to create Payment Preference');
+        }
+    }
+
+    private getPlatformFee(clinic: any): number {
         if (clinic.acceptedHardwareOffer && clinic.promotionalRateEndsAt) {
             const now = new Date();
             const promoEnd = new Date(clinic.promotionalRateEndsAt);
-            if (now <= promoEnd) {
-                feePercentage = 2.5; // PROMO RATE
-            }
-        } else if (clinic.platformFeeRate) {
-            feePercentage = clinic.platformFeeRate;
+            if (now <= promoEnd) return 2.5;
         }
-
-        const amount = Number(transaction.amount);
-        const platformFeeAmount = (amount * feePercentage) / 100;
-
-        // 3. Build Disbursements List for Multi-Vendor Split
-        // Note: Preference API `marketplace_fee` only covers ONE split (to the App Owner).
-        // For Multi-Seller (Clinic + Provider), we need a different approach:
-        // A) Intermediate Split: Money goes to Clinic, then Clinic pays Provider (Tax Issue!)
-        // B) Advanced Payments (Marketplace): The Cart has multiple items, each linked to a `category_id` or seller?
-        // Actually, MP handles this via "Split Payment" strictly defined in /v1/payments (not preference) OR 
-        // by creating a preference where `binary_mode: true` is set, but true multi-destination requires 
-        // specific configuration often unavailable in simple Preferences.
-
-        // HOWEVER, standard "Split" via Preference usually implies:
-        // 1. You (Platform) get `marketplace_fee`
-        // 2. The Recipient of the Preference (collector_id) gets the rest.
-
-        // To pay the Provider directly, the Provider must be the `collector_id` of THAT specific item?
-        // This effectively splits the cart into multiple payments for the user? No, we want 1 payment.
-
-        // SOLUTION: "Money Split" logic is post-processing OR we use the "Marketplace" feature 
-        // where we define `disbursements`. 
-        // NOTE: As of 2024, standard implementation is:
-        // The Clinic is the `collector`. The Platform takes a fee.
-        // To also pay the Anesthetist directly from the user's payment, we need `processing_modes: aggregator`?
-
-        // COMPLEXITY MANAGEMENT:
-        // For this Prototype, we will implement the "Digital Split" assuming MP's Advanced Split capability:
-        // We will generate the preference for the CLINIC.
-        // We will add metadata instructions for the webhooks to handle the secondary transfer?
-        // NO. Better:
-        // If Provider is External, we set the PROVIDER as the `collector` for their portion of the total?
-        // That implies 2 charges.
-
-        // SIMPLIFIED APPROACH for tax avoidance:
-        // If an identifiable "External Service" is in the cart, we act as if the Anesthetist IS the seller of that item.
-        // This is complex for a boolean "Split" checkbox.
-
-        // LET'S STICK to the most robust method supported by basic MP Connect:
-        // We set the CLINIC as the main receiver. 
-        // IF a provider needs direct payment, we must use the `disbursements` array if available, 
-        // otherwise we fallback to "Clinic receives, then transfers" which fails the tax requirement.
-
-        // REFINED PLAN:
-        // We will inject `binary_mode: true` and assume the Clinic is the PRIMARY receiver for now.
-        // We will add the `mpRecipientId` of providers to metadata.
-        // *The actual automatic split to 3+ parties technically requires the Advanced Payments API v2*, 
-        // which creates a payment intent. Preferences are for Checkouts.
-
-        // FOR NOW: I will implement the metadata passing so the webhook CAN process the secondary transfer
-        // leveraging the Clinic's wallet balance immediately after payment.
-        // This creates a "Flow": User -> Clinic -> (Auto-Transfer) -> Provider.
-        // This is "Split" from a cashflow perspective, though slightly different fiscally.
-        // TO DO REAL FISCAL SPLIT (User pays Provider), we need separate items in Checkout Pro matching different collectors.
-
-        const preference = {
-            items: transaction.items.map((item: any) => ({
-                title: item.title,
-                unit_price: Number(item.price),
-                quantity: 1,
-                currency_id: 'BRL',
-                // IF we could specify category_id or similar to route...
-            })),
-            marketplace_fee: platformFeeAmount,
-            notification_url: `https://api.vetsystem.com/webhooks/mp?clinicId=${clinic.id}`,
-            payer: {
-                email: transaction.payerEmail,
-            },
-            metadata: {
-                // Info for post-processing sub-splits
-                providers: transaction.splitRules || []
-            }
-        };
-
-        // Mock Response
-        return {
-            preferenceId: 'mock-pref-multi-123',
-            initPoint: 'https://mercadopago.com.br/checkout/v1/redirect?pref_id=mock',
-            splitDebug: {
-                total: amount,
-                platformFee: platformFeeAmount,
-                clinicNet: amount - platformFeeAmount, // Before provider split
-                providerSplits: transaction.splitRules // { providerId, amount }
-            }
-        };
+        return clinic.platformFeeRate || 5.0;
     }
 }

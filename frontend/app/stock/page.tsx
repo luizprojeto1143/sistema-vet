@@ -13,12 +13,6 @@ import {
 } from '@heroicons/react/24/outline';
 import ProductForm from './product-form'; // Import the form
 
-const MOCK_STOCK = [
-    { id: 1, name: 'Vacina V10 (Vanguard)', category: 'Biologicos', stock: 45, min: 20, status: 'NORMAL', supplier: 'Zoetis' },
-    { id: 2, name: 'Apoquel 16mg (20 comp)', category: 'Farmácia', stock: 4, min: 5, status: 'LOW', supplier: 'Zoetis' },
-    { id: 3, name: 'Seringa 3ml (Agulhada)', category: 'Insumos', stock: 120, min: 50, status: 'NORMAL', supplier: 'BD' },
-    { id: 4, name: 'Ração Royal Canin Renal 10kg', category: 'Alimentação', stock: 0, min: 2, status: 'CRITICAL', supplier: 'Royal Canin' },
-];
 
 import AddBatchModal from './add-batch-modal'; // Import the new modal
 
@@ -34,7 +28,7 @@ export default function StockPage() {
         if (!token) return;
 
         try {
-            const res = await fetch((process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000') + '/products', {
+            const res = await fetch((process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001') + '/products', {
                 headers: { 'Authorization': `Bearer ${token}` }
             });
             if (res.ok) {
@@ -166,36 +160,56 @@ export default function StockPage() {
                             </tr>
                         </thead>
                         <tbody className="divide-y divide-gray-100">
-                            {products.map(item => (
-                                <tr key={item.id} className="hover:bg-indigo-50 transition-colors group">
-                                    <td className="p-4">
-                                        <div className="font-bold text-gray-800">{item.name}</div>
-                                        <div className="text-xs text-gray-400">SKU: {item.id.slice(0, 8).toUpperCase()}</div>
-                                    </td>
-                                    <td className="p-4 text-sm text-gray-600">{item.category}</td>
-                                    <td className="p-4 text-sm text-gray-600">{item.supplier}</td>
-                                    <td className="p-4 text-center font-bold text-gray-800">{item.currentStock} {item.unit}</td>
-                                    <td className="p-4 text-center">
-                                        {item.currentStock <= 0 && <span className="px-2 py-1 bg-red-100 text-red-700 text-xs rounded-full font-bold">ZERADO</span>}
-                                        {item.currentStock > 0 && item.currentStock <= item.minStock && <span className="px-2 py-1 bg-orange-100 text-orange-700 text-xs rounded-full font-bold">BAIXO</span>}
-                                        {item.currentStock > item.minStock && <span className="px-2 py-1 bg-green-100 text-green-700 text-xs rounded-full font-bold">OK</span>}
-                                    </td>
-                                    <td className="p-4 text-right flex gap-2 justify-end">
-                                        <button
-                                            onClick={() => handleOpenBatchModal(item)}
-                                            className="text-indigo-600 font-bold text-xs border border-indigo-200 px-3 py-1.5 rounded-lg hover:bg-indigo-100 opacity-60 group-hover:opacity-100 transition-all"
-                                        >
-                                            + Lote
-                                        </button>
-                                        <button
-                                            onClick={() => setIsFormOpen(true)}
-                                            className="text-slate-500 font-bold text-xs hover:text-indigo-600 opacity-60 group-hover:opacity-100 transition-all"
-                                        >
-                                            Editar
-                                        </button>
+                            {products.length === 0 ? (
+                                <tr>
+                                    <td colSpan={6} className="p-12 text-center">
+                                        <div className="flex flex-col items-center justify-center text-gray-400">
+                                            <div className="bg-gray-100 p-4 rounded-full mb-4">
+                                                <ArchiveBoxIcon className="h-8 w-8 text-gray-400" />
+                                            </div>
+                                            <h3 className="text-lg font-bold text-gray-700">Estoque Vazio</h3>
+                                            <p className="text-sm text-gray-500 mb-4">Nenhum produto encontrado. Comece adicionando itens ou importando um XML.</p>
+                                            <button
+                                                onClick={() => setIsFormOpen(true)}
+                                                className="text-indigo-600 font-bold hover:underline"
+                                            >
+                                                + Cadastrar Primeiro Produto
+                                            </button>
+                                        </div>
                                     </td>
                                 </tr>
-                            ))}
+                            ) : (
+                                products.map(item => (
+                                    <tr key={item.id} className="hover:bg-indigo-50 transition-colors group">
+                                        <td className="p-4">
+                                            <div className="font-bold text-gray-800">{item.name}</div>
+                                            <div className="text-xs text-gray-400">SKU: {item.id.slice(0, 8).toUpperCase()}</div>
+                                        </td>
+                                        <td className="p-4 text-sm text-gray-600">{item.category}</td>
+                                        <td className="p-4 text-sm text-gray-600">{item.supplier}</td>
+                                        <td className="p-4 text-center font-bold text-gray-800">{item.currentStock} {item.unit}</td>
+                                        <td className="p-4 text-center">
+                                            {item.currentStock <= 0 && <span className="px-2 py-1 bg-red-100 text-red-700 text-xs rounded-full font-bold">ZERADO</span>}
+                                            {item.currentStock > 0 && item.currentStock <= item.minStock && <span className="px-2 py-1 bg-orange-100 text-orange-700 text-xs rounded-full font-bold">BAIXO</span>}
+                                            {item.currentStock > item.minStock && <span className="px-2 py-1 bg-green-100 text-green-700 text-xs rounded-full font-bold">OK</span>}
+                                        </td>
+                                        <td className="p-4 text-right flex gap-2 justify-end">
+                                            <button
+                                                onClick={() => handleOpenBatchModal(item)}
+                                                className="text-indigo-600 font-bold text-xs border border-indigo-200 px-3 py-1.5 rounded-lg hover:bg-indigo-100 opacity-60 group-hover:opacity-100 transition-all"
+                                            >
+                                                + Lote
+                                            </button>
+                                            <button
+                                                onClick={() => setIsFormOpen(true)}
+                                                className="text-slate-500 font-bold text-xs hover:text-indigo-600 opacity-60 group-hover:opacity-100 transition-all"
+                                            >
+                                                Editar
+                                            </button>
+                                        </td>
+                                    </tr>
+                                ))
+                            )}
                         </tbody>
                     </table>
                 </div>

@@ -150,8 +150,19 @@ export class AnalisaVetService {
             const pdfData = await pdf(buffer);
             extractedText = pdfData.text;
         } else {
-            // Mock OCR for images for now
-            extractedText = `Simulação de OCR para Imagem ${file.originalname}: \n Leucócitos: 25.000 \n Hemoglobina: 10.0`;
+            // Real OCR with Tesseract.js
+            try {
+                const { createWorker } = require('tesseract.js');
+                const worker = await createWorker('por'); // Portuguese
+
+                const { data: { text } } = await worker.recognize(file.buffer);
+                extractedText = text;
+
+                await worker.terminate();
+            } catch (error) {
+                console.error("OCR Failed", error);
+                throw new Error("Failed to process image OCR");
+            }
         }
 
         // Try to infer species from text or existing record?

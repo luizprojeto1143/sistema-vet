@@ -12,58 +12,39 @@ export default function TransactionsPage() {
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
-        // Fetch Transactions
-        // In real app: fetch(`/finance?clinicId=...`)
-        setTimeout(() => {
-            const mockData = [
-                {
-                    id: 'tx_123456789',
-                    date: '2025-12-19 10:30',
-                    description: 'Consulta Dr. House - Thor',
-                    amount: 150.00,
-                    platformFee: 7.50, // 5%
-                    netAmount: 142.50,
-                    status: 'COMPLETED',
-                    type: 'INCOME',
-                    method: 'CREDIT_CARD'
-                },
-                {
-                    id: 'tx_987654321',
-                    date: '2025-12-19 11:15',
-                    description: 'Vacina V10 - Luna',
-                    amount: 80.00,
-                    platformFee: 4.00, // 5%
-                    netAmount: 76.00,
-                    status: 'COMPLETED',
-                    type: 'INCOME',
-                    method: 'PIX'
-                },
-                {
-                    id: 'tx_456123789',
-                    date: '2025-12-18 16:20',
-                    description: 'Banho e Tosa - Mel',
-                    amount: 60.00,
-                    platformFee: 3.00, // 5%
-                    netAmount: 57.00,
-                    status: 'COMPLETED',
-                    type: 'INCOME',
-                    method: 'DEBIT_CARD'
-                },
-                {
-                    id: 'tx_EXP_001',
-                    date: '2025-12-18 09:00',
-                    description: 'Reposição de Estoque (Fornecedor X)',
-                    amount: 450.00,
-                    platformFee: 0,
-                    netAmount: -450.00,
-                    status: 'COMPLETED',
-                    type: 'EXPENSE',
-                    method: 'TRANSFER'
-                },
-            ];
-            setTransactions(mockData);
-            setLoading(false);
-        }, 800);
+        async function fetchTransactions() {
+            setLoading(true);
+            try {
+                const token = localStorage.getItem('token');
+                if (!token) return;
+
+                const res = await fetch("http://localhost:3001/finance", {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+
+                if (res.ok) {
+                    const data = await res.json();
+                    setTransactions(data.map((t: any) => ({
+                        id: t.id,
+                        date: new Date(t.createdAt).toLocaleString('pt-BR'),
+                        description: t.description,
+                        amount: Number(t.amount),
+                        platformFee: Number(t.platformFee || 0),
+                        netAmount: Number(t.amount - (t.platformFee || 0)),
+                        status: t.status,
+                        type: t.type,
+                        method: t.paymentMethod
+                    })));
+                } else {
+                    console.error("Failed to fetch transactions");
+                }
+            } catch (e) {
+                console.error(e);
+            } finally {
+                setLoading(false);
+            }
+        }
+        fetchTransactions();
     }, []);
 
     return (

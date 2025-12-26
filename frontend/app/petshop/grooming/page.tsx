@@ -1,6 +1,6 @@
 "use client";
 
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import {
     ScissorsIcon,
     ClockIcon,
@@ -16,14 +16,40 @@ const GROOMING_COLUMNS = [
     { id: 'ready', label: 'Pronto / Aguardando', color: 'border-green-500', bg: 'bg-green-50' },
 ];
 
-const MOCK_TASKS = [
-    { id: 1, pet: 'Mel', breed: 'Poodle', service: 'Banho + Tosa', status: 'bathing', groomer: 'Ana', time: '14:00' },
-    { id: 2, pet: 'Thor', breed: 'Golden', service: 'Banho Simples', status: 'drying', groomer: 'Pedro', time: '13:30' },
-    { id: 3, pet: 'Luna', breed: 'Shih-tzu', service: 'Tosa Higiênica', status: 'scheduled', groomer: 'Ana', time: '15:00' },
-    { id: 4, pet: 'Rex', breed: 'Vira-lata', service: 'Banho', status: 'ready', groomer: 'Pedro', time: '11:00' },
-];
-
 export default function GroomingPage() {
+    const [tasks, setTasks] = useState<any[]>([]);
+
+    useEffect(() => {
+        async function loadTasks() {
+            try {
+                const token = localStorage.getItem('token');
+                const res = await fetch('http://localhost:3001/appointments', {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+                if (res.ok) {
+                    const data = await res.json();
+                    setTasks(data.map((t: any) => ({
+                        id: t.id,
+                        pet: t.pet?.name || 'Pet',
+                        breed: t.pet?.breed || 'SRD',
+                        service: t.service?.name || 'Banho',
+                        status: mapStatus(t.status),
+                        groomer: t.vet?.fullName || 'Staff',
+                        time: new Date(t.date).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+                    })));
+                }
+            } catch (e) { console.error(e); }
+        }
+        loadTasks();
+    }, []);
+
+    const mapStatus = (s: string) => {
+        if (s === 'SCHEDULED') return 'scheduled';
+        if (s === 'IN_PROGRESS') return 'bathing';
+        if (s === 'COMPLETED') return 'ready';
+        return 'scheduled';
+    };
+
     return (
         <div className="p-8 h-screen flex flex-col bg-gray-50 overflow-hidden">
 
@@ -53,13 +79,20 @@ export default function GroomingPage() {
                         <div className={`p-4 border-t-4 ${col.color} bg-white rounded-t-xl shadow-sm flex justify-between items-center`}>
                             <h3 className="font-bold text-gray-800 uppercase text-sm">{col.label}</h3>
                             <span className="bg-gray-100 text-gray-500 text-xs font-bold px-2 py-1 rounded-full">
-                                {MOCK_TASKS.filter(t => t.status === col.id).length}
+                                {tasks.filter((t: any) => t.status === col.id).length}
                             </span>
                         </div>
 
                         {/* Drop Zone */}
                         <div className="p-3 flex-1 overflow-y-auto space-y-3">
-                            {MOCK_TASKS.filter(t => t.status === col.id).map(task => (
+                            {tasks.filter((t: any) => t.status === col.id).length === 0 && (
+                                <div className="h-full flex flex-col items-center justify-center opacity-30 min-h-[100px]">
+                                    <div className="text-4xl mb-2">☁️</div>
+                                    <p className="text-xs font-bold text-gray-400">Sem agendamentos</p>
+                                </div>
+                            )}
+
+                            {tasks.filter((t: any) => t.status === col.id).map((task: any) => (
                                 <div key={task.id} className="p-4 bg-white rounded-lg shadow-sm border border-gray-200 hover:shadow-md cursor-grab active:cursor-grabbing transition-all relative group">
                                     <div className="flex justify-between items-start mb-2">
                                         <div className="font-bold text-gray-900 text-lg">{task.pet}</div>

@@ -12,7 +12,9 @@ import {
 export default function SplitPaymentModal({ total, items, onClose, onConfirm }: any) {
     const [loading, setLoading] = useState(true);
     const [simulation, setSimulation] = useState<any>(null);
+    const [paymentData, setPaymentData] = useState<any>(null);
     const [error, setError] = useState('');
+    const [step, setStep] = useState<'SIMULATION' | 'PAYMENT'>('SIMULATION');
 
     useEffect(() => {
         fetchSimulation();
@@ -29,10 +31,22 @@ export default function SplitPaymentModal({ total, items, onClose, onConfirm }: 
             if (!res.ok) throw new Error('Falha ao calcular split');
             const data = await res.json();
             setSimulation(data.splitDetails);
+            setPaymentData(data);
         } catch (err: any) {
             setError(err.message);
         } finally {
             setLoading(false);
+        }
+    };
+
+    const handleGenerateQR = () => {
+        setStep('PAYMENT');
+    };
+
+    const handleCopyPix = () => {
+        if (paymentData?.qrCode) {
+            navigator.clipboard.writeText(paymentData.qrCode);
+            alert('Código Pix copiado!');
         }
     };
 
@@ -60,69 +74,106 @@ export default function SplitPaymentModal({ total, items, onClose, onConfirm }: 
                 <div className="bg-indigo-600 p-6 text-white flex justify-between items-center">
                     <h3 className="text-xl font-bold flex items-center gap-2">
                         <ArrowsRightLeftIcon className="h-6 w-6" />
-                        Repasse Automático
+                        {step === 'SIMULATION' ? 'Repasse Automático' : 'Pagamento via Pix'}
                     </h3>
                     <button onClick={onClose} className="hover:bg-indigo-500 p-1 rounded-full text-indigo-100">✕</button>
                 </div>
 
                 <div className="p-6">
-                    <div className="bg-slate-50 p-4 rounded-xl mb-6 flex justify-between items-center border border-slate-200">
-                        <span className="text-slate-500 font-medium">Valor Total</span>
-                        <span className="text-2xl font-black text-slate-800">R$ {Number(simulation.total).toFixed(2)}</span>
-                    </div>
-
-                    <div className="space-y-3 mb-6">
-                        {/* PLATFORM FEE */}
-                        <div className="flex justify-between items-center p-3 border border-slate-100 rounded-lg bg-gray-50 shadow-sm opacity-75">
-                            <div className="flex items-center gap-3">
-                                <div className="h-8 w-8 rounded-full bg-slate-200 flex items-center justify-center">
-                                    <ServerStackIcon className="h-4 w-4 text-slate-600" />
-                                </div>
-                                <div>
-                                    <div className="text-sm font-bold text-slate-700">Taxa de Serviço</div>
-                                    <div className="text-[10px] text-slate-500">Plataforma ({simulation.platformRate}%)</div>
-                                </div>
+                    {step === 'SIMULATION' ? (
+                        <>
+                            <div className="bg-slate-50 p-4 rounded-xl mb-6 flex justify-between items-center border border-slate-200">
+                                <span className="text-slate-500 font-medium">Valor Total</span>
+                                <span className="text-2xl font-black text-slate-800">R$ {Number(simulation.total).toFixed(2)}</span>
                             </div>
-                            <div className="font-bold text-slate-600">- R$ {Number(simulation.platformFee).toFixed(2)}</div>
-                        </div>
 
-                        {/* PROVIDERS */}
-                        {simulation.providers?.map((split: any, idx: number) => (
-                            <div key={idx} className="flex justify-between items-center p-3 border border-orange-100 rounded-lg bg-orange-50 shadow-sm">
-                                <div className="flex items-center gap-3">
-                                    <div className="h-8 w-8 rounded-full bg-orange-200 flex items-center justify-center">
-                                        <UserIcon className="h-4 w-4 text-orange-600" />
+                            <div className="space-y-3 mb-6">
+                                {/* PLATFORM FEE */}
+                                <div className="flex justify-between items-center p-3 border border-slate-100 rounded-lg bg-gray-50 shadow-sm opacity-75">
+                                    <div className="flex items-center gap-3">
+                                        <div className="h-8 w-8 rounded-full bg-slate-200 flex items-center justify-center">
+                                            <ServerStackIcon className="h-4 w-4 text-slate-600" />
+                                        </div>
+                                        <div>
+                                            <div className="text-sm font-bold text-slate-700">Taxa de Serviço</div>
+                                            <div className="text-[10px] text-slate-500">Plataforma ({simulation.platformRate}%)</div>
+                                        </div>
                                     </div>
-                                    <div>
-                                        <div className="text-sm font-bold text-slate-800">Profissional</div>
-                                        <div className="text-[10px] text-orange-600">{split.reason}</div>
+                                    <div className="font-bold text-slate-600">- R$ {Number(simulation.platformFee).toFixed(2)}</div>
+                                </div>
+
+                                {/* PROVIDERS */}
+                                {simulation.providers?.map((split: any, idx: number) => (
+                                    <div key={idx} className="flex justify-between items-center p-3 border border-orange-100 rounded-lg bg-orange-50 shadow-sm">
+                                        <div className="flex items-center gap-3">
+                                            <div className="h-8 w-8 rounded-full bg-orange-200 flex items-center justify-center">
+                                                <UserIcon className="h-4 w-4 text-orange-600" />
+                                            </div>
+                                            <div>
+                                                <div className="text-sm font-bold text-slate-800">Profissional</div>
+                                                <div className="text-[10px] text-orange-600">{split.reason}</div>
+                                            </div>
+                                        </div>
+                                        <div className="font-bold text-orange-700">- R$ {Number(split.amount).toFixed(2)}</div>
                                     </div>
-                                </div>
-                                <div className="font-bold text-orange-700">- R$ {Number(split.amount).toFixed(2)}</div>
-                            </div>
-                        ))}
+                                ))}
 
-                        {/* CLINIC NET */}
-                        <div className="flex justify-between items-center p-3 border-t-2 border-indigo-100 bg-indigo-50/50 rounded-lg">
-                            <div className="flex items-center gap-3">
-                                <div className="h-8 w-8 rounded-full bg-indigo-100 flex items-center justify-center">
-                                    <BuildingStorefrontIcon className="h-4 w-4 text-indigo-600" />
+                                {/* CLINIC NET */}
+                                <div className="flex justify-between items-center p-3 border-t-2 border-indigo-100 bg-indigo-50/50 rounded-lg">
+                                    <div className="flex items-center gap-3">
+                                        <div className="h-8 w-8 rounded-full bg-indigo-100 flex items-center justify-center">
+                                            <BuildingStorefrontIcon className="h-4 w-4 text-indigo-600" />
+                                        </div>
+                                        <div className="text-sm font-bold text-indigo-900">Saldo Líquido (Clínica)</div>
+                                    </div>
+                                    <div className="font-bold text-indigo-700 text-lg">R$ {Number(simulation.clinicNet).toFixed(2)}</div>
                                 </div>
-                                <div className="text-sm font-bold text-indigo-900">Saldo Líquido (Clínica)</div>
                             </div>
-                            <div className="font-bold text-indigo-700 text-lg">R$ {Number(simulation.clinicNet).toFixed(2)}</div>
+
+                            <button
+                                onClick={handleGenerateQR}
+                                className="w-full bg-indigo-600 hover:bg-indigo-700 text-white py-4 rounded-xl font-bold shadow-lg shadow-indigo-200 transition-all flex items-center justify-center gap-2"
+                            >
+                                Confirmar e Gerar QR Code
+                            </button>
+                            <p className="text-center text-[10px] text-gray-400 mt-2">
+                                Os valores serão divididos automaticamente no momento do pagamento.
+                            </p>
+                        </>
+                    ) : (
+                        <div className="flex flex-col items-center animate-fade-in">
+                            <div className="bg-white p-4 rounded-xl border-2 border-indigo-100 shadow-inner mb-6">
+                                {/* Mock QR Code Display */}
+                                <div className="w-48 h-48 bg-gray-900 flex items-center justify-center text-white text-xs text-center p-2 rounded-lg">
+                                    [QR CODE PIX]
+                                    <br />
+                                    {paymentData?.qrCode?.substring(0, 20)}...
+                                </div>
+                            </div>
+
+                            <div className="w-full space-y-3">
+                                <button
+                                    onClick={handleCopyPix}
+                                    className="w-full bg-slate-100 hover:bg-slate-200 text-slate-700 py-3 rounded-xl font-bold transition-all flex items-center justify-center gap-2"
+                                >
+                                    📋 Copiar Código Pix
+                                </button>
+
+                                <div className="relative flex py-2 items-center">
+                                    <div className="flex-grow border-t border-gray-200"></div>
+                                    <span className="flex-shrink-0 mx-4 text-gray-400 text-xs">SIMULAÇÃO</span>
+                                    <div className="flex-grow border-t border-gray-200"></div>
+                                </div>
+
+                                <button
+                                    onClick={() => onConfirm(simulation.providers)}
+                                    className="w-full bg-green-600 hover:bg-green-700 text-white py-4 rounded-xl font-bold shadow-lg shadow-green-200 transition-all flex items-center justify-center gap-2"
+                                >
+                                    ✅ Simular Pagamento Confirmado
+                                </button>
+                            </div>
                         </div>
-                    </div>
-
-                    <button
-                        onClick={() => onConfirm(simulation.providers)}
-                        className="w-full bg-green-600 hover:bg-green-700 text-white py-4 rounded-xl font-bold shadow-lg shadow-green-200 transition-all flex items-center justify-center gap-2"
-                    >
-                        Confirmar e Gerar QR Code
-                    </button>
-                    <p className="text-center text-[10px] text-gray-400 mt-2">
-                        Os valores serão divididos automaticamente no momento do pagamento via Pix/Cartão.
-                    </p>
+                    )}
                 </div>
             </div>
         </div>

@@ -12,10 +12,12 @@ export default function AppOnboarding() {
     const [step, setStep] = useState('SEARCH'); // SEARCH, RESULTS, CODE
     const [cpf, setCpf] = useState('');
 
-    const MOCK_FOUND_CLINICS = [
-        { id: 1, name: 'Clínica Veterinária São Francisco', pet: 'Thor (Golden)', lastBranch: 'Moema' },
-        { id: 2, name: 'Hospital PetCare 24h', pet: 'Thor (Golden)', lastBranch: 'Morumbi' },
-    ];
+    const [foundClinics, setFoundClinics] = useState<any[]>([]);
+
+    const handleSearch = async () => {
+        setStep('RESULTS');
+        // TODO: POST /tutor/search { cpf }
+    };
 
     return (
         <div className="min-h-screen bg-indigo-600 flex flex-col items-center justify-center p-6 text-white text-center">
@@ -43,7 +45,7 @@ export default function AppOnboarding() {
                     />
 
                     <button
-                        onClick={() => setStep('RESULTS')}
+                        onClick={handleSearch}
                         className="w-full bg-indigo-600 text-white font-bold py-4 rounded-xl hover:bg-indigo-700 shadow-lg transition-transform active:scale-95 flex items-center justify-center gap-2"
                     >
                         <MagnifyingGlassIcon className="h-5 w-5" />
@@ -67,7 +69,7 @@ export default function AppOnboarding() {
                     <p className="text-indigo-100 text-sm mb-4 font-bold">Encontramos você nestas clínicas:</p>
 
                     <div className="space-y-4">
-                        {MOCK_FOUND_CLINICS.map(clinic => (
+                        {foundClinics.map((clinic: any) => (
                             <button
                                 key={clinic.id}
                                 className="w-full bg-white text-left p-4 rounded-xl shadow-lg hover:bg-indigo-50 transition-colors group relative overflow-hidden"

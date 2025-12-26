@@ -56,6 +56,11 @@ export class FinanceController {
     getSummary(@Request() req: any) {
         return this.financeService.getSummary(req.user.clinicId);
     }
+
+    @Get('dre')
+    getDRE(@Query() query: any, @Request() req: any) {
+        return this.financeService.getDRE(req.user.clinicId, query.startDate, query.endDate);
+    }
     @Get('cashier/status')
     getCashierStatus(@Request() req: any) {
         return this.financeService.getCashierStatus(req.user.clinicId);

@@ -188,7 +188,9 @@ export class FinanceService {
                 providers: secondaryReceivers,
                 clinicNet: remainingForClinic.toFixed(2)
             },
-            initPoint: 'https://sandbox.mercadopago.com.br/checkout/v1/redirect?pref_id=mock'
+            initPoint: 'https://sandbox.mercadopago.com.br/checkout/v1/redirect?pref_id=mock',
+            qrCode: '00020126580014BR.GOV.BCB.PIX0136123e4567-e89b-12d3-a456-426614174000520400005303986540510.005802BR5913VET SYSTEM6008BRASILIA62070503***6304ABCD',
+            qrCodeBase64: 'iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8z8BQDwAEhQGAhKmMIQAAAABJRU5ErkJggg==' // 1x1 pixel mock
         };
     }
 
@@ -330,9 +332,126 @@ export class FinanceService {
         return this.prisma.commissionRule.delete({ where: { id } });
     }
 
-    // Stub methods for Controller
+    // ------------------------------------------------
+    // CASHIER / POINT OF SALE
+    // ------------------------------------------------
+    async getCashierStatus(clinicId: string) {
+        // Find latest session
+        const session = await this.prisma.cashierSession.findFirst({
+            where: { clinicId },
+            orderBy: { openedAt: 'desc' },
+            include: { openedByUser: true }
+        });
+
+        if (!session || session.status === 'CLOSED') {
+            return { status: 'CLOSED', session: null };
+        }
+
+        // Calculate current balance based on transactions since opening
+        const transactions = await this.prisma.financialTransaction.findMany({
+            where: {
+                clinicId,
+                createdAt: { gte: session.openedAt }
+            }
+        });
+
+        const income = transactions.filter(t => t.type === 'INCOME').reduce((a, b) => a + Number(b.amount), 0);
+        const expense = transactions.filter(t => t.type === 'EXPENSE').reduce((a, b) => a + Number(b.amount), 0);
+        const currentBalance = Number(session.initialAmount) + income - expense;
+
+        return {
+            status: 'OPEN',
+            session: {
+                ...session,
+                currentBalance
+            }
+        };
+    }
+
+    async openCashier(clinicId: string, userId: string, initialAmount: number) {
+        // Check if already open
+        const active = await this.prisma.cashierSession.findFirst({
+            where: { clinicId, status: 'OPEN' }
+        });
+
+        if (active) throw new Error('Cashier is already OPEN');
+
+        return this.prisma.cashierSession.create({
+            data: {
+                clinicId,
+                openedByUserId: userId,
+                initialAmount: initialAmount,
+                status: 'OPEN',
+                openedAt: new Date()
+            }
+        });
+    }
+
+    async closeCashier(clinicId: string, finalAmount: number) {
+        const active = await this.prisma.cashierSession.findFirst({
+            where: { clinicId, status: 'OPEN' }
+        });
+
+        if (!active) throw new Error('No OPEN cashier found');
+
+        return this.prisma.cashierSession.update({
+            where: { id: active.id },
+            data: {
+                status: 'CLOSED',
+                closedAt: new Date(),
+                finalAmount: finalAmount
+            }
+        });
+    }
+
+    // ------------------------------------------------
+    // REPORTS (DRE)
+    // ------------------------------------------------
+    async getDRE(clinicId: string, startDate?: string, endDate?: string) {
+        const where: any = {
+            clinicId,
+            status: 'COMPLETED'
+        };
+
+        if (startDate || endDate) {
+            where.createdAt = {};
+            if (startDate) where.createdAt.gte = new Date(startDate);
+            if (endDate) where.createdAt.lte = new Date(endDate);
+        }
+
+        const transactions = await this.prisma.financialTransaction.findMany({ where });
+
+        // Group by Category
+        const dre: any = {
+            revenue: { total: 0, items: {} },
+            costs: { total: 0, items: {} },
+            expenses: { total: 0, items: {} },
+            profit: 0
+        };
+
+        for (const tx of transactions) {
+            const amount = Number(tx.amount);
+            const cat = tx.category || 'Outros';
+
+            if (tx.type === 'INCOME') {
+                dre.revenue.total += amount;
+                dre.revenue.items[cat] = (dre.revenue.items[cat] || 0) + amount;
+            } else {
+                // Rough logic: 'Custo' vs 'Despesa' based on category name or just group all as expenses for now
+                // Ideally, mapped via Chart of Accounts
+                if (cat.toLowerCase().includes('custo') || cat.toLowerCase().includes('fornecedor')) {
+                    dre.costs.total += amount;
+                    dre.costs.items[cat] = (dre.costs.items[cat] || 0) + amount;
+                } else {
+                    dre.expenses.total += amount;
+                    dre.expenses.items[cat] = (dre.expenses.items[cat] || 0) + amount;
+                }
+            }
+        }
+
+        dre.profit = dre.revenue.total - dre.costs.total - dre.expenses.total;
+        return dre;
+    }
+
     async getSummary(clinicId: string) { return this.getFinancialDashboard(clinicId); }
-    async getCashierStatus(clinicId: string) { return { status: 'OPEN', total: 0 }; } // Stub
-    async openCashier(clinicId: string, userId: string, amount: number) { return { id: 'session-1', status: 'OPEN' }; } // Stub
-    async closeCashier(clinicId: string, amount: number) { return { id: 'session-1', status: 'CLOSED' }; } // Stub
 }

@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
     UsersIcon,
     GiftIcon,
@@ -9,14 +9,13 @@ import {
     SparklesIcon
 } from '@heroicons/react/24/outline';
 
-const MOCK_REFERRERS = [
-    { id: '1', name: 'Clínica Veterinária Vida Animal', referrals: 12, creditsEarned: 12, lastReferral: 'Há 2 dias' },
-    { id: '2', name: 'Hospital 24h Morumbi', referrals: 8, creditsEarned: 8, lastReferral: 'Há 5 dias' },
-    { id: '3', name: 'PetCare Center SP', referrals: 5, creditsEarned: 5, lastReferral: 'Há 1 semana' },
-];
-
 export default function GrowthPage() {
-    const [referrers] = useState(MOCK_REFERRERS);
+    const [referrers, setReferrers] = useState<any[]>([]);
+
+    useEffect(() => {
+        // Fetch logic
+        // fetch('http://localhost:3001/saas/referrers').then(...)
+    }, []);
 
     return (
         <div className="p-8">

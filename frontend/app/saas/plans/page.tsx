@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
     CheckCircleIcon,
     XCircleIcon,
@@ -11,46 +11,40 @@ import {
 import PlanModal from './plan-modal';
 
 // Mock until API Integration
-const MOCK_PLANS = [
-    {
-        id: '1',
-        name: 'Starter',
-        billingType: 'FIXED',
-        priceMonthly: 199.00,
-        percentageFee: 0,
-        maxUsers: 2,
-        maxPets: 100,
-        hasAiAccess: false,
-        activeClinics: 15
-    },
-    {
-        id: '2',
-        name: 'Growth (Híbrido)',
-        billingType: 'HYBRID',
-        priceMonthly: 499.00,
-        percentageFee: 2.0,
-        maxUsers: 10,
-        maxPets: 1000,
-        hasAiAccess: true,
-        activeClinics: 8
-    },
-    {
-        id: '3',
-        name: 'Enterprise (Parceiro)',
-        billingType: 'PERCENTAGE',
-        priceMonthly: 0.00,
-        percentageFee: 5.0,
-        maxUsers: 999,
-        maxPets: 99999,
-        hasAiAccess: true,
-        activeClinics: 4
-    },
-];
 
 export default function PlansPage() {
-    const [plans, setPlans] = useState(MOCK_PLANS);
+    const [plans, setPlans] = useState<any[]>([]);
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [selectedPlan, setSelectedPlan] = useState<any>(null);
+    const [loading, setLoading] = useState(true); // Add loading state
+
+    useEffect(() => {
+        loadPlans();
+    }, []);
+
+    async function loadPlans() {
+        try {
+            const res = await fetch('http://localhost:3001/saas/plans');
+            if (res.ok) {
+                const data = await res.json();
+                setPlans(data.map((p: any) => ({
+                    id: p.id,
+                    name: p.name,
+                    billingType: p.billingType,
+                    priceMonthly: Number(p.fixedPrice || 0),
+                    percentageFee: Number(p.percentage || 0),
+                    maxUsers: 99, // default if not in model yet
+                    maxPets: 999,
+                    activeClinics: p._count?.clinics || 0,
+                    hasAiAccess: true
+                })));
+            }
+        } catch (e) {
+            console.error(e);
+        } finally {
+            setLoading(false);
+        }
+    }
 
     const handleEdit = (plan: any) => {
         setSelectedPlan(plan);
@@ -86,6 +80,20 @@ export default function PlansPage() {
             )}
 
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                {plans.length === 0 && !loading && (
+                    <div className="col-span-3 border-2 border-dashed border-slate-700 rounded-2xl p-12 text-center flex flex-col items-center justify-center text-slate-500">
+                        <CurrencyDollarIcon className="h-12 w-12 mb-4 opacity-50" />
+                        <h3 className="text-xl font-bold text-white mb-2">Nenhum Plano Ativo</h3>
+                        <p className="max-w-md mx-auto mb-6">Crie planos de assinatura para oferecer aos seus clientes (clínicas).</p>
+                        <button
+                            onClick={handleCreate}
+                            className="px-6 py-2 bg-indigo-600 hover:bg-indigo-500 text-white font-bold rounded-lg"
+                        >
+                            + Criar Primeiro Plano
+                        </button>
+                    </div>
+                )}
+
                 {plans.map((plan) => (
                     <div key={plan.id} className="bg-slate-800 rounded-2xl border border-slate-700 overflow-hidden hover:border-indigo-500 transition-all group relative">
                         {/* Header */}

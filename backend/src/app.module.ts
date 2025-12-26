@@ -25,6 +25,7 @@ import { UploadController } from './common/upload.controller';
 import { TelemedicineModule } from './telemedicine/telemedicine.module';
 import { EventsModule } from './events/events.module';
 import { FiscalModule } from './fiscal/fiscal.module';
+import { NotificationsModule } from './notifications/notifications.module';
 
 import { AuditController } from './common/audit.controller';
 
@@ -48,7 +49,8 @@ import { AppController } from './app.controller';
         GrowthModule,
         TelemedicineModule,
         EventsModule,
-        FiscalModule
+        FiscalModule,
+        NotificationsModule
     ],
     controllers: [AppController, UploadController, AuditController],
     providers: [

@@ -7,56 +7,13 @@ import InternmentMap from '@/components/vet/InternmentMap';
 import Timeline from '@/components/vet/Timeline';
 
 // Mock Data for Demonstration
-const MOCK_PET = {
-    id: '12345',
-    name: 'Pandora',
-    species: 'DOG',
-    breed: 'Border Collie',
-    gender: 'FEMALE',
-    age: '3 anos',
-    weight: 16.5,
-    isCastrated: true,
-    photoUrl: 'https://images.unsplash.com/photo-1543466835-00a7907e9de1?auto=format&fit=crop&q=80&w=200',
-    allergies: 'Dipirona',
-    chronicConditions: null
-};
-
-const MOCK_TUTOR = {
-    fullName: 'Vania Leão Paulino',
-    phone: '(31) 99999-9999'
-};
-
-const [wards, setWards] = useState<any[]>([]);
-
-useEffect(() => {
-    const fetchWards = async () => {
-        const token = localStorage.getItem('token');
-        if (!token) return;
-
-        try {
-            const res = await fetch((process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000') + '/internment/wards', {
-                headers: { 'Authorization': `Bearer ${token}` }
-            });
-            if (res.ok) {
-                const data = await res.json();
-                setWards(data);
-            }
-        } catch (error) {
-            console.error("Failed to fetch wards:", error);
-        }
-    };
-
-    fetchWards();
-}, []);
-
-const MOCK_HISTORY = [
-    { id: '1', date: '2025-12-19', type: 'CONSULTATION', title: 'Consulta de Rotina', description: 'Paciente apresentou leve claudicação.', doctorName: 'Jéssica Goulart' },
-    { id: '2', date: '2025-11-15', type: 'VACCINE', title: 'Vacina V10', description: 'Reforço anual aplicado.', doctorName: 'Roberto Silva' },
-    { id: '3', date: '2025-06-10', type: 'SURGERY', title: 'Castração', description: 'Procedimento realizado sem intercorrências.', doctorName: 'Jéssica Goulart' },
-];
 
 export default function VetPage() {
-    const [selectedPet, setSelectedPet] = useState(MOCK_PET);
+    const [selectedPet, setSelectedPet] = useState<any>(null);
+    const [tutor, setTutor] = useState<any>(null);
+    const [history, setHistory] = useState<any[]>([]);
+    const [wards, setWards] = useState<any[]>([]);
+
 
     const handleAction = (action: string) => {
         console.log('Action triggered:', action);
@@ -85,7 +42,13 @@ export default function VetPage() {
                 {/* Left Column: Active Patient */}
                 <div className="lg:col-span-2 space-y-6">
                     {/* Patient Header */}
-                    <PatientHeader pet={selectedPet} tutor={MOCK_TUTOR} />
+                    {selectedPet ? (
+                        <PatientHeader pet={selectedPet} tutor={tutor || {}} />
+                    ) : (
+                        <div className="bg-white p-6 rounded-xl shadow border border-gray-100 text-center">
+                            <h3 className="text-gray-500">Nenhum paciente selecionado.</h3>
+                        </div>
+                    )}
 
                     {/* Quick Actions */}
                     <ActionButtons onAction={handleAction} />
@@ -95,14 +58,14 @@ export default function VetPage() {
                         <h2 className="text-xl font-bold text-gray-800 mb-4 flex items-center gap-2">
                             🏥 Mapa de Internação
                         </h2>
-                        <InternmentMap wards={MOCK_WARDS} />
+                        <InternmentMap wards={wards} />
                     </div>
                 </div>
 
                 {/* Right Column: History & Queue */}
                 <div className="space-y-6">
                     {/* Timeline */}
-                    <Timeline events={MOCK_HISTORY as any[]} />
+                    <Timeline events={history} />
 
                     {/* Queue (Mini) */}
                     <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6">

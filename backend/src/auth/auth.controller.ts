@@ -34,4 +34,9 @@ export class AuthController {
             throw new HttpException('Registration failed', HttpStatus.BAD_REQUEST);
         }
     }
+    @Post('impersonate')
+    async impersonate(@Body() body: any) {
+        // In a production environment, this endpoint MUST be protected by a Master Guard.
+        return this.authService.impersonate(body.clinicId);
+    }
 }

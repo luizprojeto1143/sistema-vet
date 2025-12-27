@@ -1,3 +1,4 @@
+"use client";
 import React, { useState, useEffect } from 'react';
 import CalendarView from '@/components/agenda/CalendarView';
 import ServiceList from '@/components/agenda/ServiceList';

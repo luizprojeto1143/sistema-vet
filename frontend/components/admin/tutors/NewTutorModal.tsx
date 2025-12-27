@@ -13,8 +13,51 @@ export default function NewTutorModal({ isOpen, onClose, onSuccess }: NewTutorMo
         fullName: '',
         cpf: '',
         phone: '',
-        email: ''
+        email: '',
+        address: {
+            zipCode: '',
+            street: '',
+            number: '',
+            neighborhood: '',
+            city: '',
+            state: ''
+        }
     });
+
+    const handleAddressChange = (field: string, value: string) => {
+        setTutor(prev => ({
+            ...prev,
+            address: { ...prev.address, [field]: value }
+        }));
+    };
+
+    const checkCEP = async (cep: string) => {
+        const cleanCep = cep.replace(/\D/g, '');
+        if (cleanCep.length === 8) {
+            setLoading(true);
+            try {
+                const res = await fetch(`https://viacep.com.br/ws/${cleanCep}/json/`);
+                const data = await res.json();
+                if (!data.erro) {
+                    setTutor(prev => ({
+                        ...prev,
+                        address: {
+                            ...prev.address,
+                            street: data.logradouro,
+                            neighborhood: data.bairro,
+                            city: data.localidade,
+                            state: data.uf,
+                            zipCode: cleanCep
+                        }
+                    }));
+                }
+            } catch (error) {
+                console.error("CEP Error", error);
+            } finally {
+                setLoading(false);
+            }
+        }
+    };
 
     const [pets, setPets] = useState([
         { name: '', species: 'DOG', breed: '', gender: 'MACHO' }
@@ -128,6 +171,64 @@ export default function NewTutorModal({ isOpen, onClose, onSuccess }: NewTutorMo
                                     onChange={e => setTutor({ ...tutor, email: e.target.value })}
                                     placeholder="email@exemplo.com"
                                 />
+                            </div>
+                        </div>
+
+                        {/* Address Section */}
+                        <div className="mt-4">
+                            <h4 className="text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Endereço (Para Nota Fiscal)</h4>
+                            <div className="grid grid-cols-1 md:grid-cols-4 gap-3">
+                                <div className="md:col-span-1">
+                                    <input
+                                        className="w-full p-2 border rounded-lg focus:ring-2 focus:ring-teal-500 outline-none text-sm"
+                                        placeholder="CEP"
+                                        value={tutor.address?.zipCode || ''}
+                                        onChange={e => handleAddressChange('zipCode', e.target.value)}
+                                        onBlur={(e) => checkCEP(e.target.value)}
+                                        maxLength={9}
+                                    />
+                                </div>
+                                <div className="md:col-span-2">
+                                    <input
+                                        className="w-full p-2 border rounded-lg focus:ring-2 focus:ring-teal-500 outline-none text-sm"
+                                        placeholder="Rua / Logradouro"
+                                        value={tutor.address?.street || ''}
+                                        onChange={e => handleAddressChange('street', e.target.value)}
+                                    />
+                                </div>
+                                <div className="md:col-span-1">
+                                    <input
+                                        className="w-full p-2 border rounded-lg focus:ring-2 focus:ring-teal-500 outline-none text-sm"
+                                        placeholder="Número"
+                                        value={tutor.address?.number || ''}
+                                        onChange={e => handleAddressChange('number', e.target.value)}
+                                    />
+                                </div>
+                                <div className="md:col-span-2">
+                                    <input
+                                        className="w-full p-2 border rounded-lg focus:ring-2 focus:ring-teal-500 outline-none text-sm"
+                                        placeholder="Bairro"
+                                        value={tutor.address?.neighborhood || ''}
+                                        onChange={e => handleAddressChange('neighborhood', e.target.value)}
+                                    />
+                                </div>
+                                <div className="md:col-span-1">
+                                    <input
+                                        className="w-full p-2 border rounded-lg focus:ring-2 focus:ring-teal-500 outline-none text-sm"
+                                        placeholder="Cidade"
+                                        value={tutor.address?.city || ''}
+                                        onChange={e => handleAddressChange('city', e.target.value)}
+                                    />
+                                </div>
+                                <div className="md:col-span-1">
+                                    <input
+                                        className="w-full p-2 border rounded-lg focus:ring-2 focus:ring-teal-500 outline-none text-sm"
+                                        placeholder="UF"
+                                        maxLength={2}
+                                        value={tutor.address?.state || ''}
+                                        onChange={e => handleAddressChange('state', e.target.value)}
+                                    />
+                                </div>
                             </div>
                         </div>
                     </div>

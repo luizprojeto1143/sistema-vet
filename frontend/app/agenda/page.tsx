@@ -20,7 +20,7 @@ export default function AgendaPage() {
         if (!token) return;
 
         try {
-            const res = await fetch((process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000') + '/appointments?clinicId=clinic-1', {
+            const res = await fetch((process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000') + '/appointments', {
                 headers: { 'Authorization': `Bearer ${token}` }
             });
             if (res.ok) {

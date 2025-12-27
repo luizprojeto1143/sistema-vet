@@ -170,9 +170,17 @@ export default function ConsultationPage() {
       }
    };
 
+   const removeService = (index: number) => {
+      setServices(prev => prev.filter((_, i) => i !== index));
+   };
+
+   const removeProduct = (index: number) => {
+      setConsumedItems(prev => prev.filter((_, i) => i !== index));
+   };
+
    const totalValue =
-      consumedItems.reduce((acc, item) => acc + (Number(item.price || 0) * Number(item.quantity || 1)), 0) +
-      services.reduce((acc, s) => acc + Number(s.price || 0), 0) +
+      (consumedItems?.reduce((acc, item) => acc + (Number(item.price) * (item.quantity || 1)), 0) || 0) +
+      (services?.reduce((acc, s) => acc + Number(s.price), 0) || 0) +
       (appointment?.service?.price ? Number(appointment.service.price) : 0);
 
    if (loading) return <div className="h-screen flex items-center justify-center bg-gray-50 text-indigo-600 font-bold animate-pulse">Carregando Ambiente Clínico...</div>;
@@ -494,7 +502,12 @@ export default function ConsultationPage() {
                               <span className="block font-medium text-gray-700">{svc.name}</span>
                               <span className="text-xs text-gray-400">Adicional</span>
                            </div>
-                           <span className="font-bold text-gray-900">R$ {Number(svc.price).toFixed(2)}</span>
+                           <div className="flex items-center gap-3">
+                              <span className="font-bold text-gray-900">R$ {Number(svc.price).toFixed(2)}</span>
+                              <button onClick={() => removeService(idx)} className="text-gray-300 hover:text-red-500 opacity-0 group-hover:opacity-100 transition-all p-1">
+                                 <TrashIcon className="w-4 h-4" />
+                              </button>
+                           </div>
                         </div>
                      ))}
                   </div>
@@ -531,11 +544,16 @@ export default function ConsultationPage() {
                   ) : (
                      <div className="space-y-2">
                         {consumedItems.map((item, idx) => (
-                           <div key={idx} className="flex justify-between items-center text-sm p-2 bg-white rounded border border-gray-100">
-                              <span className="text-gray-600 truncate max-w-[150px]">{item.name}</span>
-                              <div className="flex items-center gap-2">
+                           <div key={idx} className="flex justify-between items-center text-sm p-2 bg-white rounded border border-gray-100 group hover:border-green-200 transition-colors">
+                              <div>
+                                 <span className="block font-medium text-gray-600 truncate max-w-[150px]">{item.name}</span>
                                  <span className="text-xs text-gray-400">x{item.quantity}</span>
+                              </div>
+                              <div className="flex items-center gap-2">
                                  <span className="font-bold text-gray-800">R$ {(item.price * item.quantity).toFixed(2)}</span>
+                                 <button onClick={() => removeProduct(idx)} className="text-gray-300 hover:text-red-500 opacity-0 group-hover:opacity-100 transition-all p-1">
+                                    <TrashIcon className="w-4 h-4" />
+                                 </button>
                               </div>
                            </div>
                         ))}

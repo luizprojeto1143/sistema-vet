@@ -25,8 +25,8 @@ export class AppointmentsController {
     }
 
     @Get()
-    findAll(@Query('clinicId') clinicId: string) {
-        return this.appointmentsService.findAll(clinicId || 'clinic-1');
+    findAll(@Request() req: any) {
+        return this.appointmentsService.findAll(req.user.clinicId);
     }
 
     @Get('slots')

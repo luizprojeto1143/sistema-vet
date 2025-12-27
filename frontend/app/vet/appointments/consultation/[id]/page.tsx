@@ -74,14 +74,23 @@ export default function ConsultationPage() {
       <div className="h-screen flex bg-gray-100 font-sans overflow-hidden">
 
          {/* LEFT TOOLBAR (Mini Sidebar) */}
-         <aside className="w-16 bg-white border-r border-gray-200 flex flex-col items-center py-4 gap-6 z-20 shadow-[4px_0_24px_rgba(0,0,0,0.02)]">
-            <button className="p-3 bg-indigo-50 text-indigo-600 rounded-xl hover:bg-indigo-100 transition-colors" title="Histórico">
+         <aside className="w-16 bg-white border-r border-gray-200 flex flex-col items-center py-4 gap-6 z-20 shadow-[4px_0_24px_rgba(0,0,0,0.02)] print:hidden">
+            <button
+               onClick={() => alert("Histórico do paciente será exibido aqui.")}
+               className="p-3 bg-indigo-50 text-indigo-600 rounded-xl hover:bg-indigo-100 transition-colors" title="Histórico"
+            >
                <ClockIcon className="w-6 h-6" />
             </button>
-            <button className="p-3 text-gray-400 hover:text-gray-600 hover:bg-gray-50 rounded-xl transition-colors" title="Modelos">
+            <button
+               onClick={() => alert("Modelos de documentos (Receitas, Atestados) aparecerão aqui.")}
+               className="p-3 text-gray-400 hover:text-gray-600 hover:bg-gray-50 rounded-xl transition-colors" title="Modelos"
+            >
                <DocumentTextIcon className="w-6 h-6" />
             </button>
-            <button className="p-3 text-gray-400 hover:text-gray-600 hover:bg-gray-50 rounded-xl transition-colors" title="Imprimir">
+            <button
+               onClick={() => window.print()}
+               className="p-3 text-gray-400 hover:text-gray-600 hover:bg-gray-50 rounded-xl transition-colors" title="Imprimir"
+            >
                <PrinterIcon className="w-6 h-6" />
             </button>
             <div className="flex-1" />
@@ -94,7 +103,7 @@ export default function ConsultationPage() {
          <main className="flex-1 flex flex-col min-w-0">
 
             {/* HEADER: PATIENT & TUTOR CARDS */}
-            <header className="bg-white border-b border-gray-200 p-4 shadow-sm z-10">
+            <header className="bg-white border-b border-gray-200 p-4 shadow-sm z-10 print:hidden">
                <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
                   {/* Tutor Card */}
                   <div className="flex items-center gap-4 p-3 bg-gray-50 rounded-2xl border border-gray-100">
@@ -142,10 +151,11 @@ export default function ConsultationPage() {
             </header>
 
             {/* TAB NAVIGATION */}
-            <div className="bg-white border-b border-gray-200 px-6 flex gap-6">
+            <div className="bg-white border-b border-gray-200 px-6 flex gap-6 print:hidden">
                {['Anamnese & Exame', 'Histórico', 'Arquivos', 'Vacinas'].map((tab) => (
                   <button
                      key={tab}
+                     onClick={() => activeTab !== 'anamnesis' && alert("Aba em desenvolvimento. Fique na Anamnese por enquanto!")}
                      className={`py-3 text-sm font-bold border-b-2 transition-colors ${tab === 'Anamnese & Exame' ? 'border-indigo-600 text-indigo-600' : 'border-transparent text-gray-400 hover:text-gray-600'}`}
                   >
                      {tab}
@@ -154,14 +164,19 @@ export default function ConsultationPage() {
             </div>
 
             {/* SCROLLABLE WORKSPACE */}
-            <div className="flex-1 overflow-y-auto p-6 bg-slate-50 space-y-4">
+            <div className="flex-1 overflow-y-auto p-6 bg-slate-50 space-y-4 print:p-0 print:bg-white">
 
                {/* Editor Section */}
-               <div className="bg-white rounded-2xl shadow-sm border border-gray-200 overflow-hidden">
+               <div className="bg-white rounded-2xl shadow-sm border border-gray-200 overflow-hidden print:shadow-none print:border-none">
                   <div className="bg-gray-50 px-4 py-2 border-b border-gray-100 flex justify-between items-center">
                      <span className="text-xs font-bold text-gray-500 uppercase tracking-wider">Avaliação Clínica</span>
                      <div className="flex gap-2">
-                        <button className="text-xs font-bold text-indigo-600 bg-indigo-50 px-3 py-1 rounded-lg hover:bg-indigo-100">+ Incluir Cabeçalho</button>
+                        <button
+                           onClick={() => setAnamnesisText(prev => prev + (prev ? '\n\n' : '') + "**Queixa Principal:** \n\n**Histórico:** \n\n**Alimentação:** ")}
+                           className="text-xs font-bold text-indigo-600 bg-indigo-50 px-3 py-1 rounded-lg hover:bg-indigo-100 transition-colors"
+                        >
+                           + Incluir Cabeçalho
+                        </button>
                      </div>
                   </div>
                   <div className="p-6 space-y-6">
@@ -189,7 +204,12 @@ export default function ConsultationPage() {
                   <div className="px-6 py-3 border-t border-gray-100 bg-gray-50/50 flex items-center justify-between">
                      <div className="flex gap-2">
                         {/* AI Button */}
-                        <button className="flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-blue-600 to-indigo-600 text-white rounded-xl shadow-lg shadow-indigo-200 hover:scale-105 transition-transform font-bold text-xs">
+                        <button
+                           onClick={() => {
+                              alert("Recurso de Gravação de Voz (IA) será ativado na próxima etapa!");
+                           }}
+                           className="flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-blue-600 to-indigo-600 text-white rounded-xl shadow-lg shadow-indigo-200 hover:scale-105 transition-transform font-bold text-xs"
+                        >
                            <MicrophoneIcon className="w-4 h-4" /> Iniciar Gravação (IA)
                         </button>
                      </div>
@@ -230,7 +250,10 @@ export default function ConsultationPage() {
                      <h4 className="text-xs font-bold text-indigo-600 uppercase flex items-center gap-1">
                         <BoltIcon className="w-3 h-3" /> Serviços
                      </h4>
-                     <button className="text-[10px] bg-indigo-50 text-indigo-600 px-2 py-1 rounded font-bold hover:bg-indigo-100 transition-colors">
+                     <button
+                        onClick={() => alert("Seleção rápida de serviços será implementada em breve.")}
+                        className="text-[10px] bg-indigo-50 text-indigo-600 px-2 py-1 rounded font-bold hover:bg-indigo-100 transition-colors"
+                     >
                         + Incluir
                      </button>
                   </div>

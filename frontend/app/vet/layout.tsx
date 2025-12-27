@@ -14,7 +14,7 @@ export default function VetLayout({ children }: { children: React.ReactNode }) {
         // { name: '🩺 Telemedicina', path: '/vet/telemedicine' }, // Uncomment when ready
     ];
 
-    const isConsultation = pathname?.includes('/consultation');
+    const isConsultation = pathname?.includes('/consultation') || pathname?.includes('/appointments/consultation');
 
     return (
         <AuthGuard allowedRoles={['VET', 'MASTER', 'ADMIN']}>

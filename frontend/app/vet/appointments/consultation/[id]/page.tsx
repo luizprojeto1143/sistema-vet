@@ -516,7 +516,7 @@ export default function ConsultationPage() {
                            </div>
                            <div className="flex items-center gap-3">
                               <span className="font-bold text-gray-900">R$ {Number(svc.price).toFixed(2)}</span>
-                              <button onClick={() => removeService(idx)} className="text-gray-300 hover:text-red-500 opacity-0 group-hover:opacity-100 transition-all p-1">
+                              <button onClick={() => removeService(idx)} className="text-gray-400 hover:text-red-500 transition-all p-1 hover:bg-red-50 rounded">
                                  <TrashIcon className="w-4 h-4" />
                               </button>
                            </div>
@@ -563,7 +563,7 @@ export default function ConsultationPage() {
                               </div>
                               <div className="flex items-center gap-2">
                                  <span className="font-bold text-gray-800">R$ {(item.price * item.quantity).toFixed(2)}</span>
-                                 <button onClick={() => removeProduct(idx)} className="text-gray-300 hover:text-red-500 opacity-0 group-hover:opacity-100 transition-all p-1">
+                                 <button onClick={() => removeProduct(idx)} className="text-gray-400 hover:text-red-500 transition-all p-1 hover:bg-red-50 rounded">
                                     <TrashIcon className="w-4 h-4" />
                                  </button>
                               </div>

@@ -15,6 +15,11 @@ export class ClinicController {
         return this.clinicService.findAll();
     }
 
+    @Get(':id')
+    findOne(@Param('id') id: string) {
+        return this.clinicService.findOne(id);
+    }
+
     @Put(':id')
     update(@Param('id') id: string, @Body() data: any) {
         return this.clinicService.update(id, data);

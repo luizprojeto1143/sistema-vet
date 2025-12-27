@@ -13,6 +13,10 @@ export class ClinicService {
         return this.prisma.clinic.findMany();
     }
 
+    async findOne(id: string) {
+        return this.prisma.clinic.findUnique({ where: { id } });
+    }
+
     async update(id: string, data: any) {
         const updateData: any = {};
 

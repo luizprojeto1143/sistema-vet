@@ -37,13 +37,15 @@ export default function DocumentSettingsPage() {
 
     const fetchClinic = async (id: string) => {
         try {
-            // This part of the instruction was commented out by the user, indicating
-            // that fetching clinic data is not fully implemented yet due to backend limitations.
-            // I'll assume generic defaults if fetch fails or is not implemented.
-            // For now, we'll just set some mock data or leave it empty.
-            // If a real fetch was implemented, it would update headerName, footerText, and clinicLogo.
-            // const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/clinics`);
-            // ... (logic to find and set clinic data)
+            const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/clinics/${id}`);
+            if (res.ok) {
+                const data = await res.json();
+                if (data) {
+                    setClinicLogo(data.logoUrl || null);
+                    setHeaderName(data.name || '');
+                    setFooterText(data.address || ''); // Using address as footer text for now
+                }
+            }
         } catch (e) {
             console.error(e);
         }

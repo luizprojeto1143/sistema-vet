@@ -42,7 +42,6 @@ export default function NewAppointmentModal({ isOpen, onClose, onSuccess, initia
             setStep(1);
             setSelectedTutor(null);
             setSelectedPet(null);
-            setIsCreatingTutor(false);
             setIsCreatingPet(false);
             if (initialTime) setFormData(prev => ({ ...prev, time: initialTime }));
         }
@@ -60,17 +59,7 @@ export default function NewAppointmentModal({ isOpen, onClose, onSuccess, initia
         return res.ok ? await res.json() : [];
     };
 
-    const handleCreateTutor = () => {
-        // Mock creation for UI flow - in reality we treat "New Tutor" as a flag or create immediately?
-        // Let's create a "Virtual" tutor object to proceed to Step 2
-        setSelectedTutor({
-            id: 'NEW',
-            fullName: newTutorName,
-            phone: newTutorPhone,
-            pets: []
-        });
-        setStep(2); // Move to Pet
-    };
+
 
     const handleCreatePet = () => {
         setSelectedPet({

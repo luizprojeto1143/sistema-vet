@@ -8,8 +8,11 @@ export class TutorsController {
     constructor(private readonly tutorsService: TutorsService) { }
 
     @Post()
-    create(@Body() data: any) {
-        return this.tutorsService.create(data);
+    create(@Body() data: any, @Request() req: any) {
+        return this.tutorsService.create({
+            ...data,
+            clinicId: req.user.clinicId
+        });
     }
 
     @Get()

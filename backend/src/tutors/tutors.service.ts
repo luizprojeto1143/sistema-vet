@@ -6,6 +6,9 @@ export class TutorsService {
     constructor(private prisma: PrismaService) { }
 
     async create(data: any) {
+        if (data.address && typeof data.address === 'object') {
+            data.address = JSON.stringify(data.address);
+        }
         return this.prisma.tutor.create({ data });
     }
 

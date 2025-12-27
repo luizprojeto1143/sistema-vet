@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, UseGuards, Request, Query, Patch, Param } from '@nestjs/common';
+import { Controller, Get, Post, Body, UseGuards, Request, Query, Patch, Param, HttpException, HttpStatus } from '@nestjs/common';
 import { AppointmentsService } from './appointments.service';
 import { AuthGuard } from '@nestjs/passport';
 
@@ -8,10 +8,20 @@ export class AppointmentsController {
     constructor(private readonly appointmentsService: AppointmentsService) { }
 
     @Post()
-    create(@Body() body: any, @Request() req: any) {
-        // Attach clinicId from the logged user
-        const data = { ...body, clinicId: req.user.clinicId };
-        return this.appointmentsService.create(data);
+    async create(@Body() body: any, @Request() req: any) {
+        try {
+            // Attach clinicId from the logged user
+            const data = { ...body, clinicId: req.user.clinicId };
+            return await this.appointmentsService.create(data);
+        } catch (error: any) {
+            console.error("Create Appointment Error:", error);
+            throw new HttpException({
+                status: HttpStatus.INTERNAL_SERVER_ERROR,
+                error: 'Internal Server Error',
+                message: error.message || 'Unknown Error',
+                stack: error.stack
+            }, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 
     @Get()

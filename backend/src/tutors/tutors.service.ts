@@ -28,6 +28,7 @@ export class TutorsService {
         return this.prisma.tutor.findMany({
             where: {
                 OR: [
+                    // @ts-ignore
                     { fullName: { contains: query, mode: 'insensitive' } },
                     { cpf: { contains: query } },
                     { phone: { contains: query } }

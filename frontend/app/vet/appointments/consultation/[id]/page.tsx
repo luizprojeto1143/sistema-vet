@@ -6,6 +6,9 @@ import KitConsumptionModal from '@/components/stock/kit-consumption-modal';
 import ServiceSelectionModal from '@/components/consultation/service-selection-modal';
 import PrintSelectionModal from '@/components/consultation/print-selection-modal';
 import ProductSelectionModal from '@/components/consultation/product-selection-modal';
+import MedicalHistoryTab from '@/components/consultation/tabs/medical-history-tab';
+import VaccinesTab from '@/components/consultation/tabs/vaccines-tab';
+import FilesTab from '@/components/consultation/tabs/files-tab';
 import {
    HeartIcon,
    MicrophoneIcon,
@@ -31,7 +34,7 @@ export default function ConsultationPage() {
    const router = useRouter();
    const [appointment, setAppointment] = useState<any>(null);
    const [loading, setLoading] = useState(true);
-   const [activeTab, setActiveTab] = useState<'anamnesis' | 'exam' | 'history'>('anamnesis');
+   const [activeTab, setActiveTab] = useState<'anamnesis' | 'history' | 'files' | 'vaccines'>('anamnesis');
 
    // Modals State
    const [showKitModal, setShowKitModal] = useState(false);

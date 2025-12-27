@@ -133,19 +133,19 @@ export default function NewTutorModal({ isOpen, onClose, onSuccess }: NewTutorMo
     };
 
     return (
-        <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4">
-            <div className="bg-white rounded-2xl shadow-xl w-full max-w-5xl overflow-hidden animate-in fade-in zoom-in duration-200">
-                <div className="p-6 border-b border-gray-100 flex justify-between items-center bg-gray-50">
+        <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-2">
+            <div className="bg-white rounded-2xl shadow-xl w-full max-w-7xl overflow-hidden animate-in fade-in zoom-in duration-200">
+                <div className="px-6 py-3 border-b border-gray-100 flex justify-between items-center bg-gray-50">
                     <h2 className="text-xl font-bold text-gray-800">Novo Cadastro de Tutor & Pet</h2>
                     <button onClick={onClose} className="text-gray-400 hover:text-red-500 transition-colors">
                         <X size={24} />
                     </button>
                 </div>
 
-                <form onSubmit={handleSubmit} className="p-6 max-h-[80vh] overflow-y-auto">
+                <form onSubmit={handleSubmit} className="p-4 max-h-[90vh] overflow-y-auto">
 
                     {/* Tutor & Address Combined Grid */}
-                    <div className="grid grid-cols-1 md:grid-cols-12 gap-4 mb-6">
+                    <div className="grid grid-cols-1 md:grid-cols-12 gap-3 mb-4">
 
                         {/* Row 1: Personal Data */}
                         <div className="md:col-span-12">
@@ -220,7 +220,7 @@ export default function NewTutorModal({ isOpen, onClose, onSuccess }: NewTutorMo
 
                         <div className="space-y-4">
                             {pets.map((pet, idx) => (
-                                <div key={idx} className="bg-gray-50 p-4 rounded-xl border border-gray-200 relative group animate-in slide-in-from-bottom-2">
+                                <div key={idx} className="bg-gray-50 p-3 rounded-xl border border-gray-200 relative group animate-in slide-in-from-bottom-2">
                                     {pets.length > 1 && (
                                         <button
                                             type="button"

@@ -3,29 +3,25 @@ import { ChevronLeft, ChevronRight, Clock, User, Plus } from 'lucide-react';
 
 interface CalendarViewProps {
     appointments: any[];
+    onNewAppointment: (time?: string) => void;
 }
 
-export default function CalendarView({ appointments = [] }: CalendarViewProps) {
+export default function CalendarView({ appointments = [], onNewAppointment }: CalendarViewProps) {
     const [currentDate, setCurrentDate] = useState(new Date());
     const timeSlots = Array.from({ length: 11 }, (_, i) => i + 8); // 8:00 to 18:00
 
     const getAppointmentStyle = (appt: any) => {
+        // ... (existing logic unchanged)
         const date = new Date(appt.date);
         const hour = date.getHours();
         const minute = date.getMinutes();
-
-        // Filter out appointments not on current date (simple check)
-        // ideally parent filters, but safety check here
-
-        const startOffset = (hour - 8) * 60 + minute; // minutes from 8:00
-        const height = 30; // Default 30 min if no duration (backend needs duration field or we calc)
-
+        const startOffset = (hour - 8) * 60 + minute;
+        const height = 30;
         let colorClass = 'bg-blue-100 border-blue-200 text-blue-700';
         if (appt.type === 'VACCINE') colorClass = 'bg-green-100 border-green-200 text-green-700';
         if (appt.type === 'SURGERY') colorClass = 'bg-red-100 border-red-200 text-red-700';
-
         return {
-            top: `${startOffset * 2}px`, // 2px per minute
+            top: `${startOffset * 2}px`,
             height: `${height * 2}px`,
             className: `absolute w-[95%] left-1 rounded-lg border p-2 text-xs shadow-sm hover:shadow-md transition-all cursor-pointer z-10 ${colorClass}`
         };
@@ -36,6 +32,7 @@ export default function CalendarView({ appointments = [] }: CalendarViewProps) {
             {/* Header */}
             <div className="p-4 border-b border-gray-100 flex justify-between items-center bg-gray-50">
                 <div className="flex items-center gap-4">
+                    {/* ... (existing header) ... */}
                     <h2 className="text-lg font-bold text-gray-800 flex items-center gap-2">
                         <Clock size={20} className="text-teal-600" /> Agenda do Dia
                     </h2>
@@ -45,7 +42,10 @@ export default function CalendarView({ appointments = [] }: CalendarViewProps) {
                         <button className="p-1 hover:bg-gray-100 rounded text-gray-500"><ChevronRight size={16} /></button>
                     </div>
                 </div>
-                <button className="bg-teal-600 text-white px-3 py-1.5 rounded-lg text-sm font-medium hover:bg-teal-700 flex items-center gap-1 shadow-sm">
+                <button
+                    onClick={() => onNewAppointment()}
+                    className="bg-teal-600 text-white px-3 py-1.5 rounded-lg text-sm font-medium hover:bg-teal-700 flex items-center gap-1 shadow-sm"
+                >
                     <Plus size={16} /> Novo Agendamento
                 </button>
             </div>
@@ -61,11 +61,20 @@ export default function CalendarView({ appointments = [] }: CalendarViewProps) {
                     ))}
                 </div>
 
-                {/* Grid Lines & Appointments */}
-                <div className="ml-16 relative min-h-[1320px]"> {/* 11 hours * 120px/hour */}
+                {/* Grid Lines & Clickable Slots */}
+                <div className="ml-16 relative min-h-[1320px]">
                     {timeSlots.map(hour => (
-                        <div key={hour} className="h-[120px] border-b border-gray-100 relative group">
-                            <div className="absolute top-1/2 w-full border-t border-dashed border-gray-50 group-hover:border-gray-100"></div>
+                        <div
+                            key={hour}
+                            onClick={() => onNewAppointment(`${hour}:00`)}
+                            className="h-[120px] border-b border-gray-100 relative group cursor-pointer hover:bg-gray-50 transition-colors"
+                            title={`Agendar para ${hour}:00`}
+                        >
+                            <div className="absolute top-1/2 w-full border-t border-dashed border-gray-50 group-hover:border-gray-200"></div>
+                            {/* Hover Add Button hint */}
+                            <div className="hidden group-hover:flex absolute right-4 top-4 bg-teal-50 text-teal-600 p-1 rounded-md text-xs font-bold items-center gap-1">
+                                <Plus size={12} /> Agendar
+                            </div>
                         </div>
                     ))}
 

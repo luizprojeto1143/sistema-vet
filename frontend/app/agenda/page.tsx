@@ -7,9 +7,11 @@ import { Plus } from 'lucide-react';
 
 export default function AgendaPage() {
     const [isModalOpen, setIsModalOpen] = useState(false);
+    const [selectedTime, setSelectedTime] = useState<string | undefined>(undefined);
     const [appointments, setAppointments] = useState([]);
 
     const fetchAppointments = async () => {
+        // ... (fetch logic same)
         const token = localStorage.getItem('token');
         if (!token) return;
 
@@ -30,6 +32,11 @@ export default function AgendaPage() {
         fetchAppointments();
     }, []);
 
+    const handleNewAppointment = (time?: string) => {
+        setSelectedTime(time);
+        setIsModalOpen(true);
+    };
+
     return (
         <div className="min-h-screen bg-gray-50 p-8 font-sans">
             {/* Top Bar */}
@@ -39,7 +46,7 @@ export default function AgendaPage() {
                     <p className="text-gray-500">Gerencie seus horários e catálogo de procedimentos</p>
                 </div>
                 <button
-                    onClick={() => setIsModalOpen(true)}
+                    onClick={() => handleNewAppointment()}
                     className="bg-teal-600 text-white px-4 py-2 rounded-lg font-medium hover:bg-teal-700 shadow-sm flex items-center gap-2"
                 >
                     <Plus size={18} /> Novo Agendamento
@@ -49,11 +56,12 @@ export default function AgendaPage() {
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
                 {/* Left Column: Calendar (2/3 width) */}
                 <div className="lg:col-span-2">
-                    <CalendarView appointments={appointments} />
+                    <CalendarView appointments={appointments} onNewAppointment={handleNewAppointment} />
                 </div>
 
                 {/* Right Column: Services & Quick Stats (1/3 width) */}
                 <div className="space-y-6">
+                    {/* ... (stats and service list same) ... */}
                     {/* Mini Stats */}
                     <div className="grid grid-cols-2 gap-4">
                         <div className="bg-white p-4 rounded-xl shadow-sm border border-gray-100">
@@ -77,6 +85,7 @@ export default function AgendaPage() {
                 isOpen={isModalOpen}
                 onClose={() => setIsModalOpen(false)}
                 onSuccess={fetchAppointments}
+                initialTime={selectedTime}
             />
         </div>
     );

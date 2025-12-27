@@ -5,19 +5,27 @@ interface NewAppointmentModalProps {
     isOpen: boolean;
     onClose: () => void;
     onSuccess?: () => void;
+    initialTime?: string;
 }
 
-export default function NewAppointmentModal({ isOpen, onClose, onSuccess }: NewAppointmentModalProps) {
+export default function NewAppointmentModal({ isOpen, onClose, onSuccess, initialTime }: NewAppointmentModalProps) {
     const [loading, setLoading] = useState(false);
     const [formData, setFormData] = useState({
         patientName: '', // For MVP, simple string. Ideally search patient.
         tutorName: '',
         serviceId: '', // Ideally select from services
         date: new Date().toISOString().split('T')[0],
-        time: '09:00',
+        time: initialTime || '09:00',
         notes: '',
         type: 'CONSULTATION'
     });
+
+    // Reset or update time when modal opens with a specific time
+    React.useEffect(() => {
+        if (isOpen && initialTime) {
+            setFormData(prev => ({ ...prev, time: initialTime }));
+        }
+    }, [isOpen, initialTime]);
 
     if (!isOpen) return null;
 

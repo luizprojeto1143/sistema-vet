@@ -11,6 +11,74 @@ export class AppointmentsService {
     ) { }
 
     async create(data: any) {
+        // 1. Resolve Clinic (Fallback to first found)
+        let clinicId = data.clinicId;
+        if (!clinicId || clinicId === 'clinic-1') {
+            const clinic = await this.prisma.clinic.findFirst();
+            if (clinic) clinicId = clinic.id;
+        }
+
+        // 2. Resolve Vet (Fallback to first found)
+        let vetId = data.vetId;
+        if (!vetId || vetId === 'user-1') {
+            const vet = await this.prisma.user.findFirst({ where: { clinicId } });
+            if (vet) vetId = vet.id;
+        }
+
+        // 3. Resolve Service (Fallback to first found or Create Default)
+        let serviceId = data.serviceId;
+        if (!serviceId || serviceId === 'service-1') {
+            const service = await this.prisma.service.findFirst({ where: { clinicId } });
+            if (service) {
+                serviceId = service.id;
+            } else {
+                // Create Default Service
+                if (clinicId) {
+                    const newService = await this.prisma.service.create({
+                        data: {
+                            name: 'Consulta Geral',
+                            price: 150.00,
+                            durationMin: 30,
+                            type: 'CONSULTATION',
+                            clinicId
+                        }
+                    });
+                    serviceId = newService.id;
+                }
+            }
+        }
+
+        // 4. Resolve Pet/Tutor (Handle Placeholder or Missing)
+        let petId = data.petId;
+        if (!petId || petId === 'pet-1' || data.patientName) {
+            // Create "Jackpot" - New Tutor & Pet on the fly
+            // Check if we can find by name (optional, skipping for MVP simplicity - just create new to allow duplicates/homonyms)
+
+            if (clinicId) {
+                const tutor = await this.prisma.tutor.create({
+                    data: {
+                        fullName: data.tutorName || 'Tutor Visitante',
+                        phone: '00000000000',
+                        clinicId,
+                        pets: {
+                            create: {
+                                name: data.patientName || 'Pet Visitante',
+                                species: 'DOG', // Default
+                                clinicId
+                            }
+                        }
+                    },
+                    include: { pets: true }
+                });
+                petId = tutor.pets[0].id;
+            }
+        }
+
+        // Validate Critical IDs
+        if (!clinicId || !petId) {
+            throw new Error(`Failed to resolve Clinic (${clinicId}) or Pet (${petId}). Ensure system is initialized.`);
+        }
+
         // Handle Recurrence (Simple: Weekly for N weeks)
         // data.recurrence = { frequency: 'WEEKLY', times: 4 }
 
@@ -25,32 +93,29 @@ export class AppointmentsService {
                         type: data.type,
                         status: 'SCHEDULED',
                         notes: i > 0 ? `${data.notes} (Recorrência ${i + 1}/${data.recurrence.times})` : data.notes,
-                        petId: data.petId,
-                        vetId: data.vetId,
-                        clinicId: data.clinicId,
-                        serviceId: data.serviceId
+                        petId,
+                        vetId,
+                        clinicId,
+                        serviceId
                     }
                 }));
                 // Add 7 days
                 currentDate.setDate(currentDate.getDate() + 7);
             }
-            // Execute all transactions
-            // Ideally use prisma.$transaction but await Promise.all is okay for V1
             return Promise.all(appointments);
         }
 
-        // Single Appointment
         // Single Appointment
         const appointment = await this.prisma.appointment.create({
             data: {
                 date: new Date(data.dateTime),
                 type: data.type,
-                status: 'SCHEDULED', // Default status
+                status: 'SCHEDULED',
                 notes: data.notes,
-                petId: data.petId,
-                vetId: data.vetId,
-                clinicId: data.clinicId,
-                serviceId: data.serviceId
+                petId,
+                vetId,
+                clinicId,
+                serviceId // Can be optional in schema? Schema says optional `serviceId String?`
             },
             include: {
                 pet: { include: { tutor: true } },

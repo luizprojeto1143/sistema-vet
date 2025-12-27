@@ -45,19 +45,13 @@ export default function NewAppointmentModal({ isOpen, onClose, onSuccess, initia
                 body: JSON.stringify({
                     dateTime: dateTime.toISOString(),
                     type: formData.type,
-                    notes: `${formData.notes} (Paciente: ${formData.patientName}, Tutor: ${formData.tutorName})`, // Quick hack for MVP
-                    // For MVP we might not have real petId/vetId/serviceId if we don't fetch them.
-                    // Sending nulls or defaults might fail if backend enforces foreign keys.
-                    // Let's assume backend allows loose data or we hardcode a "Walk-in" pet/tutor for now if not selected.
-                    // Actually, let's just send the notes and type for now and let backend handle or fail.
-                    // Wait, backend schema requires petId, vetId, clinicId.
-                    // I need to fetch pets/tutors or create them on the fly?
-                    // For this integration step, let's assume we are just testing the "Happy Path" with existing IDs if possible,
-                    // OR we update the backend to allow optional relations (which is not ideal).
-                    // BETTER: Let's hardcode a known PetID/VetID from the seed for now to prove connectivity.
-                    petId: 'pet-1', // From seed?
-                    vetId: 'user-1', // Admin
-                    serviceId: 'service-1', // From seed?
+                    notes: formData.notes,
+                    patientName: formData.patientName,
+                    tutorName: formData.tutorName,
+                    // Backend will resolve these if missing or placeholders
+                    petId: 'pet-1',
+                    vetId: 'user-1',
+                    serviceId: 'service-1',
                     clinicId: 'clinic-1'
                 })
             });

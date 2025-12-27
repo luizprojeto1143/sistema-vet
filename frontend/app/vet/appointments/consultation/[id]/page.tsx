@@ -54,7 +54,37 @@ export default function ConsultationPage() {
 
    // Fetch Data
    useEffect(() => {
-      // ... existing fetch ...
+      const fetchAppointment = async () => {
+         if (!params?.id) return;
+
+         try {
+            setLoading(true);
+            const token = localStorage.getItem('token');
+            const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000'}/appointments/${params.id}`, {
+               headers: {
+                  'Authorization': `Bearer ${token}`
+               }
+            });
+
+            if (res.ok) {
+               const data = await res.json();
+               setAppointment(data);
+               // Pre-fill existing data if continuing an appointment?
+               // For V1, we assume new consultation mainly.
+            } else {
+               console.error("Failed to fetch appointment");
+               alert("Erro ao carregar agendamento. Retornando...");
+               router.push('/vet');
+            }
+         } catch (error) {
+            console.error("Error loading appointment", error);
+            alert("Erro de conexão.");
+         } finally {
+            setLoading(false);
+         }
+      };
+
+      fetchAppointment();
    }, [params?.id]);
 
 

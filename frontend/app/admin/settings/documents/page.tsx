@@ -14,19 +14,84 @@ import { useRouter } from 'next/navigation';
 export default function DocumentSettingsPage() {
     const router = useRouter();
 
-    // Mock State
+    const [loading, setLoading] = useState(false);
+    const [clinicId, setClinicId] = useState<string | null>(null);
     const [clinicLogo, setClinicLogo] = useState<string | null>(null);
+    const [headerName, setHeaderName] = useState('');
+    const [footerText, setFooterText] = useState('');
+
     const [templates, setTemplates] = useState([
         { id: 1, name: 'Receita Padrão', type: 'PRESCRIPTION', fileName: 'fundo_receita_A4.pdf', size: '1.2 MB' },
-        { id: 2, name: 'Termo de Cirurgia', type: 'CONSENT', fileName: 'termo_cirurgia_v2.pdf', size: '2.5 MB' },
     ]);
+
+    useEffect(() => {
+        const userStr = localStorage.getItem('user');
+        if (userStr) {
+            const user = JSON.parse(userStr);
+            if (user.clinicId) {
+                setClinicId(user.clinicId);
+                fetchClinic(user.clinicId);
+            }
+        }
+    }, []);
+
+    const fetchClinic = async (id: string) => {
+        try {
+            // This part of the instruction was commented out by the user, indicating
+            // that fetching clinic data is not fully implemented yet due to backend limitations.
+            // I'll assume generic defaults if fetch fails or is not implemented.
+            // For now, we'll just set some mock data or leave it empty.
+            // If a real fetch was implemented, it would update headerName, footerText, and clinicLogo.
+            // const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/clinics`);
+            // ... (logic to find and set clinic data)
+        } catch (e) {
+            console.error(e);
+        }
+    };
+
+    const handleSave = async () => {
+        if (!clinicId) {
+            alert("ID da clínica não encontrado. Não é possível salvar.");
+            return;
+        }
+        setLoading(true);
+        try {
+            const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/clinics/${clinicId}`, {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    name: headerName || undefined,
+                    logoUrl: clinicLogo,
+                    address: footerText // reusing address field for footer text for now
+                })
+            });
+
+            if (res.ok) {
+                alert("Configurações salvas com sucesso!");
+            } else {
+                alert("Erro ao salvar.");
+            }
+        } catch (err) {
+            alert("Erro de conexão.");
+        } finally {
+            setLoading(false);
+        }
+    };
 
     const handleLogoUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files?.[0];
         if (file) {
-            // Create fake URL for preview
-            const url = URL.createObjectURL(file);
-            setClinicLogo(url);
+            if (file.size > 1024 * 1024 * 2) {
+                alert("Arquivo muito grande (Max 2MB)");
+                return;
+            }
+            const reader = new FileReader();
+            reader.onloadend = () => {
+                setClinicLogo(reader.result as string);
+                // Also set header name defaults if empty
+                if (!headerName) setHeaderName(file.name.split('.')[0]);
+            };
+            reader.readAsDataURL(file);
         }
     };
 
@@ -54,8 +119,12 @@ export default function DocumentSettingsPage() {
                     <h1 className="text-2xl font-bold text-gray-900">Personalização de Documentos</h1>
                     <p className="text-gray-500">Defina a identidade visual e os modelos de documentos da sua clínica.</p>
                 </div>
-                <button className="bg-indigo-600 text-white px-6 py-2 rounded-lg font-bold shadow hover:bg-indigo-700 transition-colors flex items-center gap-2">
-                    <CheckCircleIcon className="w-5 h-5" /> Salvar Alterações
+                <button
+                    onClick={handleSave}
+                    disabled={loading}
+                    className="bg-indigo-600 text-white px-6 py-2 rounded-lg font-bold shadow hover:bg-indigo-700 transition-colors flex items-center gap-2 disabled:opacity-50"
+                >
+                    <CheckCircleIcon className="w-5 h-5" /> {loading ? 'Salvando...' : 'Salvar Alterações'}
                 </button>
             </div>
 
@@ -93,66 +162,77 @@ export default function DocumentSettingsPage() {
                         </div>
                         <div className="mt-4">
                             <label className="block text-xs font-bold text-gray-500 uppercase mb-1">Nome no Cabeçalho</label>
-                            <input type="text" className="w-full p-2 border border-gray-200 rounded-lg text-sm" placeholder="Ex: Clínica Veterinária PetLove" defaultValue="Minha Clínica Vet" />
+                            <input
+                                type="text"
+                                className="w-full p-2 border border-gray-200 rounded-lg text-sm"
+                                placeholder="Ex: Clínica Veterinária PetLove"
+                                value={headerName}
+                                onChange={e => setHeaderName(e.target.value)}
+                            />
                         </div>
                         <div className="mt-4">
-                            <label className="block text-xs font-bold text-gray-500 uppercase mb-1">Rodapé Padrão</label>
-                            <textarea className="w-full p-2 border border-gray-200 rounded-lg text-sm h-20 resize-none" placeholder="Endereço, Telefone, CRMV..." defaultValue="Rua dos Animais, 123 - Centro | (11) 99999-9999 | CRMV-SP 12345" />
-                        </div>
-                    </div>
+                            <label className="block text-xs font-bold text-gray-500 uppercase mb-1">Rodapé Padrão (Endereço/Contato)</label>
+                            <textarea
+                                className="w-full p-2 border border-gray-200 rounded-lg text-sm h-20 resize-none"
+                                placeholder="Endereço, Telefone, CRMV..."
+                                value={footerText}
+                                onChange={e => setFooterText(e.target.value)}
+                            />
+                        </div>         </div>
                 </div>
+            </div>
 
-                {/* Templates Section */}
-                <div className="lg:col-span-2">
-                    <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
-                        <div className="flex justify-between items-center mb-6">
-                            <div>
-                                <h3 className="font-bold text-gray-900 flex items-center gap-2">
-                                    <DocumentTextIcon className="w-5 h-5 text-indigo-600" /> Modelos de Documentos
-                                </h3>
-                                <p className="text-xs text-gray-500 mt-1">Envie PDFs de fundo ou use nossos modelos.</p>
-                            </div>
-                            <label className="bg-indigo-50 text-indigo-600 px-4 py-2 rounded-lg font-bold text-sm hover:bg-indigo-100 transition-colors cursor-pointer flex items-center gap-2">
-                                <CloudArrowUpIcon className="w-4 h-4" /> Novo Modelo
-                                <input type="file" accept=".pdf" className="hidden" onChange={handleTemplateUpload} />
-                            </label>
+            {/* Templates Section */}
+            <div className="lg:col-span-2">
+                <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+                    <div className="flex justify-between items-center mb-6">
+                        <div>
+                            <h3 className="font-bold text-gray-900 flex items-center gap-2">
+                                <DocumentTextIcon className="w-5 h-5 text-indigo-600" /> Modelos de Documentos
+                            </h3>
+                            <p className="text-xs text-gray-500 mt-1">Envie PDFs de fundo ou use nossos modelos.</p>
                         </div>
+                        <label className="bg-indigo-50 text-indigo-600 px-4 py-2 rounded-lg font-bold text-sm hover:bg-indigo-100 transition-colors cursor-pointer flex items-center gap-2">
+                            <CloudArrowUpIcon className="w-4 h-4" /> Novo Modelo
+                            <input type="file" accept=".pdf" className="hidden" onChange={handleTemplateUpload} />
+                        </label>
+                    </div>
 
-                        <div className="space-y-3">
-                            {templates.map((template) => (
-                                <div key={template.id} className="flex items-center justify-between p-4 border border-gray-100 rounded-xl hover:border-indigo-200 hover:shadow-sm transition-all bg-gray-50/50">
-                                    <div className="flex items-center gap-4">
-                                        <div className="bg-white p-3 rounded-lg border border-gray-200 shadow-sm">
-                                            <DocumentTextIcon className="w-6 h-6 text-red-500" />
-                                        </div>
-                                        <div>
-                                            <h4 className="font-bold text-gray-800">{template.name}</h4>
-                                            <p className="text-xs text-gray-500">{template.fileName} • {template.size}</p>
-                                        </div>
+                    <div className="space-y-3">
+                        {templates.map((template) => (
+                            <div key={template.id} className="flex items-center justify-between p-4 border border-gray-100 rounded-xl hover:border-indigo-200 hover:shadow-sm transition-all bg-gray-50/50">
+                                <div className="flex items-center gap-4">
+                                    <div className="bg-white p-3 rounded-lg border border-gray-200 shadow-sm">
+                                        <DocumentTextIcon className="w-6 h-6 text-red-500" />
                                     </div>
-                                    <div className="flex items-center gap-2">
-                                        <span className="text-[10px] font-bold uppercase bg-gray-200 text-gray-600 px-2 py-1 rounded">{template.type}</span>
-                                        <button className="p-2 text-gray-400 hover:text-red-500 transition-colors">
-                                            <TrashIcon className="w-4 h-4" />
-                                        </button>
+                                    <div>
+                                        <h4 className="font-bold text-gray-800">{template.name}</h4>
+                                        <p className="text-xs text-gray-500">{template.fileName} • {template.size}</p>
                                     </div>
                                 </div>
-                            ))}
-                        </div>
-
-                        <div className="mt-8 bg-blue-50 p-4 rounded-xl border border-blue-100 text-blue-800 text-sm">
-                            <strong>💡 Como funciona?</strong>
-                            <ul className="list-disc ml-5 mt-2 space-y-1 text-blue-700/80">
-                                <li>Envie um arquivo PDF com a arte da sua clínica (fundo).</li>
-                                <li>O sistema irá sobrepor o texto da receita/atestado sobre este fundo na hora da impressão.</li>
-                                <li>Você pode ter fundos diferentes para Receitas, Atestados e Termos.</li>
-                            </ul>
-                        </div>
-
+                                <div className="flex items-center gap-2">
+                                    <span className="text-[10px] font-bold uppercase bg-gray-200 text-gray-600 px-2 py-1 rounded">{template.type}</span>
+                                    <button className="p-2 text-gray-400 hover:text-red-500 transition-colors">
+                                        <TrashIcon className="w-4 h-4" />
+                                    </button>
+                                </div>
+                            </div>
+                        ))}
                     </div>
-                </div>
 
+                    <div className="mt-8 bg-blue-50 p-4 rounded-xl border border-blue-100 text-blue-800 text-sm">
+                        <strong>💡 Como funciona?</strong>
+                        <ul className="list-disc ml-5 mt-2 space-y-1 text-blue-700/80">
+                            <li>Envie um arquivo PDF com a arte da sua clínica (fundo).</li>
+                            <li>O sistema irá sobrepor o texto da receita/atestado sobre este fundo na hora da impressão.</li>
+                            <li>Você pode ter fundos diferentes para Receitas, Atestados e Termos.</li>
+                        </ul>
+                    </div>
+
+                </div>
             </div>
+
         </div>
+        </div >
     );
 }

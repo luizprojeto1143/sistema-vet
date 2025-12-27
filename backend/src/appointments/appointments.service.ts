@@ -141,6 +141,22 @@ export class AppointmentsService {
         return appointment;
     }
 
+    async findOne(id: string) {
+        return this.prisma.appointment.findUnique({
+            where: { id },
+            include: {
+                pet: { include: { tutor: true } },
+                vet: true,
+                service: true,
+                medicalRecord: {
+                    include: {
+                        consumedItems: true
+                    }
+                }
+            }
+        });
+    }
+
     async findAll(clinicId: string) {
         return this.prisma.appointment.findMany({
             where: { clinicId },

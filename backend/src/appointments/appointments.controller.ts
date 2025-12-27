@@ -39,6 +39,11 @@ export class AppointmentsController {
         return this.appointmentsService.getAvailableSlots(clinicId, date, vetId, serviceId);
     }
 
+    @Get(':id')
+    findOne(@Param('id') id: string) {
+        return this.appointmentsService.findOne(id);
+    }
+
     @Patch(':id/status')
     updateStatus(@Param('id') id: string, @Body('status') status: string) {
         return this.appointmentsService.updateStatus(id, status);

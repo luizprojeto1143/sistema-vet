@@ -1,3 +1,5 @@
+"use client";
+
 import React, { useState } from 'react';
 import { XMarkIcon, DocumentPlusIcon, PlusIcon, PrinterIcon } from '@heroicons/react/24/outline';
 

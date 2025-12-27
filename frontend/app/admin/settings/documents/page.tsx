@@ -174,59 +174,57 @@ export default function DocumentSettingsPage() {
                         </div>
                     </div>
                 </div>
+
+                {/* Templates Section */}
+                <div className="lg:col-span-2">
+                    <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+                        <div className="flex justify-between items-center mb-6">
+                            <div>
+                                <h3 className="font-bold text-gray-900 flex items-center gap-2">
+                                    <DocumentTextIcon className="w-5 h-5 text-indigo-600" /> Modelos de Documentos
+                                </h3>
+                                <p className="text-xs text-gray-500 mt-1">Envie PDFs de fundo ou use nossos modelos.</p>
+                            </div>
+                            <label className="bg-indigo-50 text-indigo-600 px-4 py-2 rounded-lg font-bold text-sm hover:bg-indigo-100 transition-colors cursor-pointer flex items-center gap-2">
+                                <CloudArrowUpIcon className="w-4 h-4" /> Novo Modelo
+                                <input type="file" accept=".pdf" className="hidden" onChange={handleTemplateUpload} />
+                            </label>
+                        </div>
+
+                        <div className="space-y-3">
+                            {templates.map((template) => (
+                                <div key={template.id} className="flex items-center justify-between p-4 border border-gray-100 rounded-xl hover:border-indigo-200 hover:shadow-sm transition-all bg-gray-50/50">
+                                    <div className="flex items-center gap-4">
+                                        <div className="bg-white p-3 rounded-lg border border-gray-200 shadow-sm">
+                                            <DocumentTextIcon className="w-6 h-6 text-red-500" />
+                                        </div>
+                                        <div>
+                                            <h4 className="font-bold text-gray-800">{template.name}</h4>
+                                            <p className="text-xs text-gray-500">{template.fileName} • {template.size}</p>
+                                        </div>
+                                    </div>
+                                    <div className="flex items-center gap-2">
+                                        <span className="text-[10px] font-bold uppercase bg-gray-200 text-gray-600 px-2 py-1 rounded">{template.type}</span>
+                                        <button className="p-2 text-gray-400 hover:text-red-500 transition-colors">
+                                            <TrashIcon className="w-4 h-4" />
+                                        </button>
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
+
+                        <div className="mt-8 bg-blue-50 p-4 rounded-xl border border-blue-100 text-blue-800 text-sm">
+                            <strong>💡 Como funciona?</strong>
+                            <ul className="list-disc ml-5 mt-2 space-y-1 text-blue-700/80">
+                                <li>Envie um arquivo PDF com a arte da sua clínica (fundo).</li>
+                                <li>O sistema irá sobrepor o texto da receita/atestado sobre este fundo na hora da impressão.</li>
+                                <li>Você pode ter fundos diferentes para Receitas, Atestados e Termos.</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
             </div>
         </div>
-            </div >
-
-        {/* Templates Section */ }
-        < div className = "lg:col-span-2" >
-            <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
-                <div className="flex justify-between items-center mb-6">
-                    <div>
-                        <h3 className="font-bold text-gray-900 flex items-center gap-2">
-                            <DocumentTextIcon className="w-5 h-5 text-indigo-600" /> Modelos de Documentos
-                        </h3>
-                        <p className="text-xs text-gray-500 mt-1">Envie PDFs de fundo ou use nossos modelos.</p>
-                    </div>
-                    <label className="bg-indigo-50 text-indigo-600 px-4 py-2 rounded-lg font-bold text-sm hover:bg-indigo-100 transition-colors cursor-pointer flex items-center gap-2">
-                        <CloudArrowUpIcon className="w-4 h-4" /> Novo Modelo
-                        <input type="file" accept=".pdf" className="hidden" onChange={handleTemplateUpload} />
-                    </label>
-                </div>
-
-                <div className="space-y-3">
-                    {templates.map((template) => (
-                        <div key={template.id} className="flex items-center justify-between p-4 border border-gray-100 rounded-xl hover:border-indigo-200 hover:shadow-sm transition-all bg-gray-50/50">
-                            <div className="flex items-center gap-4">
-                                <div className="bg-white p-3 rounded-lg border border-gray-200 shadow-sm">
-                                    <DocumentTextIcon className="w-6 h-6 text-red-500" />
-                                </div>
-                                <div>
-                                    <h4 className="font-bold text-gray-800">{template.name}</h4>
-                                    <p className="text-xs text-gray-500">{template.fileName} • {template.size}</p>
-                                </div>
-                            </div>
-                            <div className="flex items-center gap-2">
-                                <span className="text-[10px] font-bold uppercase bg-gray-200 text-gray-600 px-2 py-1 rounded">{template.type}</span>
-                                <button className="p-2 text-gray-400 hover:text-red-500 transition-colors">
-                                    <TrashIcon className="w-4 h-4" />
-                                </button>
-                            </div>
-                        </div>
-                    ))}
-                </div>
-
-                <div className="mt-8 bg-blue-50 p-4 rounded-xl border border-blue-100 text-blue-800 text-sm">
-                    <strong>💡 Como funciona?</strong>
-                    <ul className="list-disc ml-5 mt-2 space-y-1 text-blue-700/80">
-                        <li>Envie um arquivo PDF com a arte da sua clínica (fundo).</li>
-                        <li>O sistema irá sobrepor o texto da receita/atestado sobre este fundo na hora da impressão.</li>
-                        <li>Você pode ter fundos diferentes para Receitas, Atestados e Termos.</li>
-                    </ul>
-                </div>
-
-            </div>
-            </div >
-      </div >
-   );
+    );
 }

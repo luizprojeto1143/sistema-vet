@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import { XMarkIcon, DocumentPlusIcon, PlusIcon, PrinterIcon } from '@heroicons/react/24/outline';
 
+import { printDocument } from '@/utils/print';
+
 interface PrescriptionModalProps {
     isOpen: boolean;
     onClose: () => void;
@@ -20,6 +22,15 @@ export default function PrescriptionModal({ isOpen, onClose }: PrescriptionModal
         setDrugName('');
         setDosage('');
         setInstructions('');
+    };
+
+    const handlePrint = () => {
+        const content = medications.map(m =>
+            `• ${m.drugName} (${m.dosage})\n  ${m.instructions}`
+        ).join('\n\n');
+
+        printDocument('Receituário Médico Veterinário', content);
+        onClose();
     };
 
     return (
@@ -108,7 +119,7 @@ export default function PrescriptionModal({ isOpen, onClose }: PrescriptionModal
                     <div className="flex gap-2">
                         <button onClick={onClose} className="px-4 py-2 text-sm font-bold text-gray-500 hover:bg-gray-100 rounded-lg transition-colors">Fechar</button>
                         <button
-                            onClick={() => { alert("Imprimindo receita..."); onClose(); }}
+                            onClick={handlePrint}
                             className="px-6 py-2 text-sm font-bold text-white bg-emerald-600 hover:bg-emerald-700 rounded-lg shadow-lg shadow-emerald-200 transition-colors flex items-center gap-2"
                         >
                             <PrinterIcon className="w-4 h-4" /> Imprimir Receita

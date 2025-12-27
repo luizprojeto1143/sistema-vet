@@ -5,9 +5,9 @@ import { usePathname } from 'next/navigation';
 import Sidebar from './Sidebar';
 
 export default function Shell({ children }: { children: React.ReactNode }) {
-    const pathname = usePathname();
+    const pathname = usePathname() || '';
     const isLoginPage = pathname === '/login';
-    const isSaasPage = pathname?.startsWith('/saas');
+    const isSaasPage = pathname.startsWith('/saas');
     const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
 
     if (isLoginPage || isSaasPage) {

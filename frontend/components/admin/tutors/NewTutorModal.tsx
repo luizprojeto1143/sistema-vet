@@ -122,7 +122,8 @@ export default function NewTutorModal({ isOpen, onClose, onSuccess }: NewTutorMo
                 onClose();
             } else {
                 const err = await res.json();
-                alert(`Erro ao cadastrar: ${err.message || 'Erro desconhecido'}`);
+                console.error("Error creating tutor:", err);
+                alert(`Erro ao cadastrar: ${err.message || JSON.stringify(err)}`);
             }
         } catch (error) {
             console.error(error);

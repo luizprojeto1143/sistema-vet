@@ -225,6 +225,11 @@ model Pet {
   photoUrl      String?
   allergies     String? // Free text, highlighted in red
   chronicConditions String?
+  
+  // Enhanced Fields
+  microchip     String?
+  coatColor     String?
+  temperament   String? // DOCILE, AGGRESSIVE, SCARED
 
   tutorId       String
   tutor         Tutor    @relation(fields: [tutorId], references: [id])

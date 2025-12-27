@@ -60,20 +60,34 @@ export default function NewTutorModal({ isOpen, onClose, onSuccess }: NewTutorMo
     };
 
     const [pets, setPets] = useState([
-        { name: '', species: 'DOG', breed: '', gender: 'MACHO' }
+        {
+            name: '',
+            species: 'DOG',
+            breed: '',
+            gender: 'MACHO',
+            birthDate: '',
+            weight: '',
+            microchip: '',
+            coatColor: '',
+            temperament: 'DOCILE',
+            isCastrated: false // New Checkbox
+        }
     ]);
 
     if (!isOpen) return null;
 
     const handleAddPet = () => {
-        setPets([...pets, { name: '', species: 'DOG', breed: '', gender: 'MACHO' }]);
+        setPets([...pets, {
+            name: '', species: 'DOG', breed: '', gender: 'MACHO',
+            birthDate: '', weight: '', microchip: '', coatColor: '', temperament: 'DOCILE', isCastrated: false
+        }]);
     };
 
     const handleRemovePet = (index: number) => {
         setPets(pets.filter((_, i) => i !== index));
     };
 
-    const handlePetChange = (index: number, field: string, value: string) => {
+    const handlePetChange = (index: number, field: string, value: any) => {
         const newPets = [...pets];
         newPets[index] = { ...newPets[index], [field]: value };
         setPets(newPets);

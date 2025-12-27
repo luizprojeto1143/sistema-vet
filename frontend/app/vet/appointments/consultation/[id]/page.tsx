@@ -343,32 +343,39 @@ export default function ConsultationPage() {
                         <div className="flex items-center gap-4">
                            <span className="text-xs font-bold text-gray-500 uppercase tracking-wider">Avaliação Clínica</span>
 
-                           {/* QUICK ACTIONS TOOLBAR */}
-                           <div className="flex items-center gap-1 bg-white border border-gray-200 rounded-lg p-1 shadow-sm">
-                              <button onClick={() => alert("Internação: Redirecionar para mapa de leitos")} title="Internar Animal" className="p-1.5 text-gray-400 hover:text-indigo-600 hover:bg-indigo-50 rounded-md transition-colors">
-                                 <HomeModernIcon className="w-4 h-4" />
-                              </button>
-                              <div className="w-px h-3 bg-gray-200 mx-0.5"></div>
-                              <button onClick={() => alert("Adicionar Peso: Abrir modal de sinais vitais")} title="Adicionar Peso" className="p-1.5 text-gray-400 hover:text-indigo-600 hover:bg-indigo-50 rounded-md transition-colors">
-                                 <ScaleIcon className="w-4 h-4" />
-                              </button>
-                              <div className="w-px h-3 bg-gray-200 mx-0.5"></div>
-                              <button onClick={() => alert("Receitas: Abrir gerador de receitas")} title="Adicionar Receita" className="p-1.5 text-gray-400 hover:text-indigo-600 hover:bg-indigo-50 rounded-md transition-colors">
-                                 <DocumentPlusIcon className="w-4 h-4" />
-                              </button>
-                              <button onClick={() => alert("Exames: Solicitar exames laboratoriais/imagem")} title="Solicitar Exames" className="p-1.5 text-gray-400 hover:text-indigo-600 hover:bg-indigo-50 rounded-md transition-colors">
-                                 <BeakerIcon className="w-4 h-4" />
-                              </button>
-                              <div className="w-px h-3 bg-gray-200 mx-0.5"></div>
-                              <button onClick={() => setActiveTab('files')} title="Adicionar Documentos" className="p-1.5 text-gray-400 hover:text-indigo-600 hover:bg-indigo-50 rounded-md transition-colors">
-                                 <PaperClipIcon className="w-4 h-4" />
-                              </button>
-                              <button onClick={() => alert("Termos: Gerar termo de consentimento")} title="Adicionar Termos" className="p-1.5 text-gray-400 hover:text-indigo-600 hover:bg-indigo-50 rounded-md transition-colors">
-                                 <ClipboardDocumentCheckIcon className="w-4 h-4" />
-                              </button>
-                              <button onClick={() => alert("Certificados: Gerar atestado/certificado")} title="Adicionar Certificado" className="p-1.5 text-gray-400 hover:text-indigo-600 hover:bg-indigo-50 rounded-md transition-colors">
-                                 <StarIcon className="w-4 h-4" />
-                              </button>
+                           {/* QUICK ACTIONS TOOLBAR (PREMIUM) */}
+                           <div className="flex items-center bg-white border border-indigo-100/50 rounded-full shadow-[0_2px_8px_rgba(99,102,241,0.08)] p-1.5 gap-1 transition-all hover:shadow-indigo-100/50">
+                              {[
+                                 { icon: HomeModernIcon, label: 'Internar', action: () => alert("Internação: Redirecionar para mapa de leitos"), color: 'hover:text-amber-500 hover:bg-amber-50' },
+                                 { icon: ScaleIcon, label: 'Sinais Vitais', action: () => alert("Adicionar Peso: Abrir modal de sinais vitais"), color: 'hover:text-blue-500 hover:bg-blue-50' },
+                                 { separator: true },
+                                 { icon: DocumentPlusIcon, label: 'Receituário', action: () => alert("Receitas: Abrir gerador de receitas"), color: 'hover:text-emerald-500 hover:bg-emerald-50' },
+                                 { icon: BeakerIcon, label: 'Exames', action: () => alert("Exames: Solicitar exames laboratoriais/imagem"), color: 'hover:text-purple-500 hover:bg-purple-50' },
+                                 { separator: true },
+                                 { icon: PaperClipIcon, label: 'Anexos', action: () => setActiveTab('files'), color: 'hover:text-indigo-500 hover:bg-indigo-50' },
+                                 { icon: ClipboardDocumentCheckIcon, label: 'Termos', action: () => alert("Termos: Gerar termo de consentimento"), color: 'hover:text-slate-500 hover:bg-slate-50' },
+                                 { icon: StarIcon, label: 'Atestado', action: () => alert("Certificados: Gerar atestado/certificado"), color: 'hover:text-yellow-500 hover:bg-yellow-50' },
+                              ].map((item: any, idx) => (
+                                 item.separator ? (
+                                    <div key={idx} className="w-px h-4 bg-gray-100 mx-1"></div>
+                                 ) : (
+                                    <button
+                                       key={idx}
+                                       onClick={item.action}
+                                       className={`relative group p-2 rounded-full text-gray-400 transition-all duration-200 hover:-translate-y-0.5 ${item.color}`}
+                                    >
+                                       <item.icon className="w-5 h-5" />
+
+                                       {/* Premium Tooltip */}
+                                       <span className="absolute -bottom-8 left-1/2 -translate-x-1/2 px-2 py-1 bg-gray-800 text-white text-[10px] font-bold rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap pointer-events-none shadow-xl z-20">
+                                          {item.label}
+                                          <svg className="absolute text-gray-800 h-2 w-full left-0 top-full" x="0px" y="0px" viewBox="0 0 255 255"><polygon className="fill-current" points="0,0 127.5,127.5 255,0" /></svg>
+                                          {/* Triangle pointing up actually... sticky header means tooltip might need to be below. changed to below logic. */}
+                                          <div className="absolute -top-1 left-1/2 -translate-x-1/2 w-2 h-2 bg-gray-800 rotate-45"></div>
+                                       </span>
+                                    </button>
+                                 )
+                              ))}
                            </div>
                         </div>
 

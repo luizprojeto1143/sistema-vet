@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { X, Save, Plus, Trash } from 'lucide-react';
+import { X, Save, Plus, Trash, User } from 'lucide-react';
 
 interface NewTutorModalProps {
     isOpen: boolean;

@@ -134,7 +134,7 @@ export default function NewTutorModal({ isOpen, onClose, onSuccess }: NewTutorMo
 
     return (
         <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4">
-            <div className="bg-white rounded-2xl shadow-xl w-full max-w-2xl overflow-hidden animate-in fade-in zoom-in duration-200">
+            <div className="bg-white rounded-2xl shadow-xl w-full max-w-5xl overflow-hidden animate-in fade-in zoom-in duration-200">
                 <div className="p-6 border-b border-gray-100 flex justify-between items-center bg-gray-50">
                     <h2 className="text-xl font-bold text-gray-800">Novo Cadastro</h2>
                     <button onClick={onClose} className="text-gray-400 hover:text-red-500 transition-colors">
@@ -144,107 +144,62 @@ export default function NewTutorModal({ isOpen, onClose, onSuccess }: NewTutorMo
 
                 <form onSubmit={handleSubmit} className="p-6 max-h-[80vh] overflow-y-auto">
 
-                    {/* Tutor Section */}
-                    <div className="mb-6">
-                        <h3 className="text-sm font-bold text-teal-600 uppercase mb-4 tracking-wider">Dados do Responsável</h3>
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                            <div className="md:col-span-2">
-                                <label className="block text-sm font-medium text-gray-700 mb-1">Nome Completo *</label>
-                                <input
-                                    required
-                                    className="w-full p-2 border rounded-lg focus:ring-2 focus:ring-teal-500 outline-none"
-                                    value={tutor.fullName}
-                                    onChange={e => setTutor({ ...tutor, fullName: e.target.value })}
-                                    placeholder="Ex: Maria Silva"
-                                />
-                            </div>
-                            <div>
-                                <label className="block text-sm font-medium text-gray-700 mb-1">CPF</label>
-                                <input
-                                    className="w-full p-2 border rounded-lg focus:ring-2 focus:ring-teal-500 outline-none"
-                                    value={tutor.cpf}
-                                    onChange={e => setTutor({ ...tutor, cpf: e.target.value })}
-                                    placeholder="000.000.000-00"
-                                />
-                            </div>
-                            <div>
-                                <label className="block text-sm font-medium text-gray-700 mb-1">Telefone/WhatsApp *</label>
-                                <input
-                                    required
-                                    className="w-full p-2 border rounded-lg focus:ring-2 focus:ring-teal-500 outline-none"
-                                    value={tutor.phone}
-                                    onChange={e => setTutor({ ...tutor, phone: e.target.value })}
-                                    placeholder="(00) 00000-0000"
-                                />
-                            </div>
-                            <div className="md:col-span-2">
-                                <label className="block text-sm font-medium text-gray-700 mb-1">Email</label>
-                                <input
-                                    type="email"
-                                    className="w-full p-2 border rounded-lg focus:ring-2 focus:ring-teal-500 outline-none"
-                                    value={tutor.email}
-                                    onChange={e => setTutor({ ...tutor, email: e.target.value })}
-                                    placeholder="email@exemplo.com"
-                                />
-                            </div>
+                    {/* Tutor & Address Combined Grid */}
+                    <div className="grid grid-cols-1 md:grid-cols-12 gap-4 mb-6">
+
+                        {/* Row 1: Personal Data */}
+                        <div className="md:col-span-12">
+                            <h3 className="text-xs font-bold text-teal-600 uppercase mb-2 tracking-wider flex items-center gap-2">
+                                <User size={16} /> Dados do Responsável
+                            </h3>
                         </div>
 
-                        {/* Address Section */}
-                        <div className="mt-4">
-                            <h4 className="text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Endereço (Para Nota Fiscal)</h4>
-                            <div className="grid grid-cols-1 md:grid-cols-4 gap-3">
-                                <div className="md:col-span-1">
-                                    <input
-                                        className="w-full p-2 border rounded-lg focus:ring-2 focus:ring-teal-500 outline-none text-sm"
-                                        placeholder="CEP"
-                                        value={tutor.address?.zipCode || ''}
-                                        onChange={e => handleAddressChange('zipCode', e.target.value)}
-                                        onBlur={(e) => checkCEP(e.target.value)}
-                                        maxLength={9}
-                                    />
-                                </div>
-                                <div className="md:col-span-2">
-                                    <input
-                                        className="w-full p-2 border rounded-lg focus:ring-2 focus:ring-teal-500 outline-none text-sm"
-                                        placeholder="Rua / Logradouro"
-                                        value={tutor.address?.street || ''}
-                                        onChange={e => handleAddressChange('street', e.target.value)}
-                                    />
-                                </div>
-                                <div className="md:col-span-1">
-                                    <input
-                                        className="w-full p-2 border rounded-lg focus:ring-2 focus:ring-teal-500 outline-none text-sm"
-                                        placeholder="Número"
-                                        value={tutor.address?.number || ''}
-                                        onChange={e => handleAddressChange('number', e.target.value)}
-                                    />
-                                </div>
-                                <div className="md:col-span-2">
-                                    <input
-                                        className="w-full p-2 border rounded-lg focus:ring-2 focus:ring-teal-500 outline-none text-sm"
-                                        placeholder="Bairro"
-                                        value={tutor.address?.neighborhood || ''}
-                                        onChange={e => handleAddressChange('neighborhood', e.target.value)}
-                                    />
-                                </div>
-                                <div className="md:col-span-1">
-                                    <input
-                                        className="w-full p-2 border rounded-lg focus:ring-2 focus:ring-teal-500 outline-none text-sm"
-                                        placeholder="Cidade"
-                                        value={tutor.address?.city || ''}
-                                        onChange={e => handleAddressChange('city', e.target.value)}
-                                    />
-                                </div>
-                                <div className="md:col-span-1">
-                                    <input
-                                        className="w-full p-2 border rounded-lg focus:ring-2 focus:ring-teal-500 outline-none text-sm"
-                                        placeholder="UF"
-                                        maxLength={2}
-                                        value={tutor.address?.state || ''}
-                                        onChange={e => handleAddressChange('state', e.target.value)}
-                                    />
-                                </div>
-                            </div>
+                        <div className="md:col-span-4">
+                            <label className="block text-xs font-bold text-gray-500 mb-1">Nome Completo *</label>
+                            <input required className="w-full p-2 border rounded-lg text-sm bg-gray-50 focus:bg-white transition-colors outline-none focus:ring-2 focus:ring-teal-500"
+                                value={tutor.fullName} onChange={e => setTutor({ ...tutor, fullName: e.target.value })} placeholder="Ex: Maria Silva" />
+                        </div>
+                        <div className="md:col-span-3">
+                            <label className="block text-xs font-bold text-gray-500 mb-1">Telefone *</label>
+                            <input required className="w-full p-2 border rounded-lg text-sm bg-gray-50 focus:bg-white transition-colors outline-none focus:ring-2 focus:ring-teal-500"
+                                value={tutor.phone} onChange={e => setTutor({ ...tutor, phone: e.target.value })} placeholder="(00) 00000-0000" />
+                        </div>
+                        <div className="md:col-span-3">
+                            <label className="block text-xs font-bold text-gray-500 mb-1">CPF</label>
+                            <input className="w-full p-2 border rounded-lg text-sm bg-gray-50 focus:bg-white transition-colors outline-none focus:ring-2 focus:ring-teal-500"
+                                value={tutor.cpf} onChange={e => setTutor({ ...tutor, cpf: e.target.value })} placeholder="000.000.000-00" />
+                        </div>
+                        <div className="md:col-span-2">
+                            <label className="block text-xs font-bold text-gray-500 mb-1">Email</label>
+                            <input type="email" className="w-full p-2 border rounded-lg text-sm bg-gray-50 focus:bg-white transition-colors outline-none focus:ring-2 focus:ring-teal-500"
+                                value={tutor.email} onChange={e => setTutor({ ...tutor, email: e.target.value })} placeholder="email@..." />
+                        </div>
+
+                        {/* Row 2: Address */}
+                        <div className="md:col-span-12 mt-2">
+                            <h4 className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-2">Endereço (Fiscal)</h4>
+                        </div>
+
+                        <div className="md:col-span-2">
+                            <input className="w-full p-2 border rounded-lg text-sm outline-none focus:ring-2 focus:ring-teal-500"
+                                placeholder="CEP" value={tutor.address?.zipCode || ''}
+                                onChange={e => handleAddressChange('zipCode', e.target.value)} onBlur={(e) => checkCEP(e.target.value)} maxLength={9} />
+                        </div>
+                        <div className="md:col-span-4">
+                            <input className="w-full p-2 border rounded-lg text-sm outline-none focus:ring-2 focus:ring-teal-500"
+                                placeholder="Logradouro" value={tutor.address?.street || ''} onChange={e => handleAddressChange('street', e.target.value)} />
+                        </div>
+                        <div className="md:col-span-1">
+                            <input className="w-full p-2 border rounded-lg text-sm outline-none focus:ring-2 focus:ring-teal-500"
+                                placeholder="Nº" value={tutor.address?.number || ''} onChange={e => handleAddressChange('number', e.target.value)} />
+                        </div>
+                        <div className="md:col-span-3">
+                            <input className="w-full p-2 border rounded-lg text-sm outline-none focus:ring-2 focus:ring-teal-500"
+                                placeholder="Bairro" value={tutor.address?.neighborhood || ''} onChange={e => handleAddressChange('neighborhood', e.target.value)} />
+                        </div>
+                        <div className="md:col-span-2">
+                            <input className="w-full p-2 border rounded-lg text-sm outline-none focus:ring-2 focus:ring-teal-500"
+                                placeholder="Cidade/UF" value={tutor.address?.city ? `${tutor.address.city}/${tutor.address.state}` : ''} readOnly />
                         </div>
                     </div>
 

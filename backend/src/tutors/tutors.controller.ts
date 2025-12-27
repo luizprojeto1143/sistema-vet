@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, UseGuards, Request } from '@nestjs/common';
+import { Controller, Get, Post, Body, UseGuards, Request, Query } from '@nestjs/common';
 import { TutorsService } from './tutors.service';
 import { AuthGuard } from '@nestjs/passport';
 
@@ -15,6 +15,11 @@ export class TutorsController {
     @Get()
     findAll() {
         return this.tutorsService.findAll();
+    }
+
+    @Get('search')
+    search(@Query('q') q: string) {
+        return this.tutorsService.search(q);
     }
 
     @Get('me')

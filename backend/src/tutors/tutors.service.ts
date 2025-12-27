@@ -21,4 +21,20 @@ export class TutorsService {
             include: { pets: true }
         });
     }
+
+    async search(query: string) {
+        if (!query || query.length < 2) return [];
+
+        return this.prisma.tutor.findMany({
+            where: {
+                OR: [
+                    { fullName: { contains: query, mode: 'insensitive' } },
+                    { cpf: { contains: query } },
+                    { phone: { contains: query } }
+                ]
+            },
+            include: { pets: true },
+            take: 10 // Limit results
+        });
+    }
 }

@@ -4,7 +4,7 @@ import { X, Save, Plus, Trash } from 'lucide-react';
 interface NewTutorModalProps {
     isOpen: boolean;
     onClose: () => void;
-    onSuccess: () => void;
+    onSuccess: (createdTutor?: any) => void;
 }
 
 export default function NewTutorModal({ isOpen, onClose, onSuccess }: NewTutorModalProps) {
@@ -116,8 +116,9 @@ export default function NewTutorModal({ isOpen, onClose, onSuccess }: NewTutorMo
             });
 
             if (res.ok) {
+                const createdData = await res.json();
                 alert('Tutor cadastrado com sucesso!');
-                onSuccess();
+                onSuccess(createdData);
                 onClose();
             } else {
                 const err = await res.json();

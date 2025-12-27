@@ -92,9 +92,45 @@ export default function ConsultationPage() {
    };
 
    const handleFinish = async () => {
-      // Logic to save medical record and finish appointment
-      alert('Salvando atendimento e gerando cobrança...');
-      router.push('/vet');
+      // 1. Prepare Payload
+      const mixedItems = [
+         ...consumedItems.map(i => ({ ...i, productId: i.id || i.productId })),
+         ...services.map(s => ({ name: s.name, price: Number(s.price), quantity: 1 }))
+      ];
+
+      const payload = {
+         appointmentId: appointment.id,
+         petId: appointment.pet?.id,
+         anamnesis: anamnesisText,
+         diagnosis: diagnosisText,
+         // Physical exam data could be added here if we had fields for it
+         consumedItems: mixedItems
+      };
+
+      try {
+         setLoading(true);
+         const token = localStorage.getItem('token');
+         const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000'}/medical-records`, {
+            method: 'POST',
+            headers: {
+               'Content-Type': 'application/json',
+               'Authorization': `Bearer ${token}`
+            },
+            body: JSON.stringify(payload)
+         });
+
+         if (!res.ok) throw new Error('Falha ao salvar atendimento');
+
+         // 2. Success Feedback
+         // In a real app we might redirect to a "Checkout" page or just Agenda
+         alert('Atendimento finalizado com sucesso! Débito gerado no financeiro.');
+         router.push('/vet');
+      } catch (error) {
+         console.error(error);
+         alert('Erro ao finalizar atendimento. Tente novamente.');
+      } finally {
+         setLoading(false);
+      }
    };
 
    const totalValue =
@@ -305,8 +341,8 @@ export default function ConsultationPage() {
                            <button
                               onClick={toggleRecording}
                               className={`flex items-center gap-2 px-4 py-2 rounded-xl shadow-lg transition-all font-bold text-xs ${isRecording
-                                    ? 'bg-red-50 text-red-600 border border-red-200 animate-pulse'
-                                    : 'bg-gradient-to-r from-blue-600 to-indigo-600 text-white shadow-indigo-200 hover:scale-105'
+                                 ? 'bg-red-50 text-red-600 border border-red-200 animate-pulse'
+                                 : 'bg-gradient-to-r from-blue-600 to-indigo-600 text-white shadow-indigo-200 hover:scale-105'
                                  }`}
                            >
                               <MicrophoneIcon className={`w-4 h-4 ${isRecording ? 'animate-bounce' : ''}`} />

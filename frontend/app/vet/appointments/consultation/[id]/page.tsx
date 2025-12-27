@@ -3,23 +3,12 @@
 import React, { useState, useEffect } from 'react';
 import { useRouter, useParams } from 'next/navigation';
 import KitConsumptionModal from '@/components/stock/kit-consumption-modal';
+import ServiceSelectionModal from '@/components/consultation/service-selection-modal';
+import PrintSelectionModal from '@/components/consultation/print-selection-modal';
+import ProductSelectionModal from '@/components/consultation/product-selection-modal';
 import {
    HeartIcon,
-   MicrophoneIcon,
-   ClockIcon,
-   PrinterIcon,
-   ArchiveBoxIcon,
-   UserIcon,
-   PhoneIcon,
-   MapPinIcon,
-   TagIcon,
-   CurrencyDollarIcon,
-   ShoppingCartIcon,
-   EllipsisVerticalIcon,
-   ChevronDownIcon,
-   PlayIcon,
-   CreditCardIcon,
-   DocumentTextIcon
+   // ... (keep icon imports)
 } from '@heroicons/react/24/outline';
 import { BoltIcon, PlusIcon, TrashIcon } from 'lucide-react';
 
@@ -29,12 +18,18 @@ export default function ConsultationPage() {
    const [appointment, setAppointment] = useState<any>(null);
    const [loading, setLoading] = useState(true);
    const [activeTab, setActiveTab] = useState<'anamnesis' | 'exam' | 'history'>('anamnesis');
+
+   // Modals State
    const [showKitModal, setShowKitModal] = useState(false);
+   const [showServiceModal, setShowServiceModal] = useState(false);
+   const [showPrintModal, setShowPrintModal] = useState(false);
+   const [showProductModal, setShowProductModal] = useState(false);
 
    // Clinical Data
    const [anamnesisText, setAnamnesisText] = useState('');
    const [diagnosisText, setDiagnosisText] = useState('');
    const [consumedItems, setConsumedItems] = useState<any[]>([]);
+   const [services, setServices] = useState<any[]>([]); // New state for added services
 
    // Fetch Data
    useEffect(() => {
@@ -65,7 +60,10 @@ export default function ConsultationPage() {
       router.push('/vet');
    };
 
-   const totalValue = consumedItems.reduce((acc, item) => acc + (Number(item.price || 0) * Number(item.quantity || 1)), 0);
+   const totalValue =
+      consumedItems.reduce((acc, item) => acc + (Number(item.price || 0) * Number(item.quantity || 1)), 0) +
+      services.reduce((acc, s) => acc + Number(s.price || 0), 0) +
+      (appointment?.service?.price ? Number(appointment.service.price) : 0);
 
    if (loading) return <div className="h-screen flex items-center justify-center bg-gray-50 text-indigo-600 font-bold animate-pulse">Carregando Ambiente Clínico...</div>;
    if (!appointment) return <div>Erro ao carregar dados.</div>;
@@ -88,7 +86,7 @@ export default function ConsultationPage() {
                <DocumentTextIcon className="w-6 h-6" />
             </button>
             <button
-               onClick={() => window.print()}
+               onClick={() => setShowPrintModal(true)}
                className="p-3 text-gray-400 hover:text-gray-600 hover:bg-gray-50 rounded-xl transition-colors" title="Imprimir"
             >
                <PrinterIcon className="w-6 h-6" />
@@ -251,21 +249,34 @@ export default function ConsultationPage() {
                         <BoltIcon className="w-3 h-3" /> Serviços
                      </h4>
                      <button
-                        onClick={() => alert("Seleção rápida de serviços será implementada em breve.")}
+                        onClick={() => setShowServiceModal(true)}
                         className="text-[10px] bg-indigo-50 text-indigo-600 px-2 py-1 rounded font-bold hover:bg-indigo-100 transition-colors"
                      >
                         + Incluir
                      </button>
                   </div>
                   <div className="space-y-2">
-                     {/* Appointment Service */}
-                     <div className="flex justify-between items-center text-sm p-3 bg-gray-50 rounded-lg border border-gray-100 group hover:border-indigo-200 transition-colors">
-                        <div>
-                           <span className="block font-medium text-gray-700">Consulta Geral</span>
-                           <span className="text-xs text-gray-400">Dr. André Luis</span>
+                     {/* Base Appointment Service (if exists) */}
+                     {appointment.service && (
+                        <div className="flex justify-between items-center text-sm p-3 bg-gray-50 rounded-lg border border-gray-100 group hover:border-indigo-200 transition-colors">
+                           <div>
+                              <span className="block font-medium text-gray-700">{appointment.service.name}</span>
+                              <span className="text-xs text-gray-400">Agendado</span>
+                           </div>
+                           <span className="font-bold text-gray-900">R$ {Number(appointment.service.price).toFixed(2)}</span>
                         </div>
-                        <span className="font-bold text-gray-900">R$ 150,00</span>
-                     </div>
+                     )}
+
+                     {/* Added Services */}
+                     {services.map((svc, idx) => (
+                        <div key={idx} className="flex justify-between items-center text-sm p-3 bg-white rounded-lg border border-gray-100 group hover:border-indigo-200 transition-colors">
+                           <div>
+                              <span className="block font-medium text-gray-700">{svc.name}</span>
+                              <span className="text-xs text-gray-400">Adicional</span>
+                           </div>
+                           <span className="font-bold text-gray-900">R$ {Number(svc.price).toFixed(2)}</span>
+                        </div>
+                     ))}
                   </div>
                </div>
 
@@ -275,12 +286,22 @@ export default function ConsultationPage() {
                      <h4 className="text-xs font-bold text-green-600 uppercase flex items-center gap-1">
                         <ArchiveBoxIcon className="w-3 h-3" /> Produtos / Consumo
                      </h4>
-                     <button
-                        onClick={() => setShowKitModal(true)}
-                        className="text-[10px] bg-green-50 text-green-600 px-2 py-1 rounded font-bold hover:bg-green-100 transition-colors"
-                     >
-                        + Incluir
-                     </button>
+                     <div className="flex gap-1">
+                        <button
+                           onClick={() => setShowKitModal(true)}
+                           className="text-[10px] bg-amber-50 text-amber-600 px-2 py-1 rounded font-bold hover:bg-amber-100 transition-colors"
+                           title="Usar Kit Prornto"
+                        >
+                           + Kit
+                        </button>
+                        <button
+                           onClick={() => setShowProductModal(true)}
+                           className="text-[10px] bg-green-50 text-green-600 px-2 py-1 rounded font-bold hover:bg-green-100 transition-colors"
+                           title="Buscar Produto no Estoque"
+                        >
+                           + Produto
+                        </button>
+                     </div>
                   </div>
 
                   {consumedItems.length === 0 ? (

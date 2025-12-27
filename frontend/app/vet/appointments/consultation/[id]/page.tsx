@@ -10,6 +10,8 @@ import MedicalHistoryTab from '@/components/consultation/tabs/medical-history-ta
 import VaccinesTab from '@/components/consultation/tabs/vaccines-tab';
 import FilesTab from '@/components/consultation/tabs/files-tab';
 import TemplatesModal from '@/components/consultation/templates-modal';
+import VitalsModal from '@/components/consultation/vitals-modal';
+import PrescriptionModal from '@/components/consultation/prescription-modal';
 import {
    HeartIcon,
    MicrophoneIcon,
@@ -54,6 +56,8 @@ export default function ConsultationPage() {
    const [showPrintModal, setShowPrintModal] = useState(false);
    const [showProductModal, setShowProductModal] = useState(false);
    const [showTemplatesModal, setShowTemplatesModal] = useState(false);
+   const [showVitalsModal, setShowVitalsModal] = useState(false);
+   const [showPrescriptionModal, setShowPrescriptionModal] = useState(false);
 
    // Clinical Data
    const [anamnesisText, setAnamnesisText] = useState('');
@@ -357,9 +361,9 @@ export default function ConsultationPage() {
                            <div className="flex items-center bg-white border border-indigo-100/50 rounded-full shadow-[0_2px_8px_rgba(99,102,241,0.08)] p-1.5 gap-1 transition-all hover:shadow-indigo-100/50">
                               {[
                                  { icon: HomeModernIcon, label: 'Internar', action: () => alert("Internação: Redirecionar para mapa de leitos"), color: 'hover:text-amber-500 hover:bg-amber-50' },
-                                 { icon: ScaleIcon, label: 'Sinais Vitais', action: () => alert("Adicionar Peso: Abrir modal de sinais vitais"), color: 'hover:text-blue-500 hover:bg-blue-50' },
+                                 { icon: ScaleIcon, label: 'Sinais Vitais', action: () => setShowVitalsModal(true), color: 'hover:text-blue-500 hover:bg-blue-50' },
                                  { separator: true },
-                                 { icon: DocumentPlusIcon, label: 'Receituário', action: () => alert("Receitas: Abrir gerador de receitas"), color: 'hover:text-emerald-500 hover:bg-emerald-50' },
+                                 { icon: DocumentPlusIcon, label: 'Receituário', action: () => setShowPrescriptionModal(true), color: 'hover:text-emerald-500 hover:bg-emerald-50' },
                                  { icon: BeakerIcon, label: 'Exames', action: () => alert("Exames: Solicitar exames laboratoriais/imagem"), color: 'hover:text-purple-500 hover:bg-purple-50' },
                                  { separator: true },
                                  { icon: PaperClipIcon, label: 'Anexos', action: () => setActiveTab('files'), color: 'hover:text-indigo-500 hover:bg-indigo-50' },
@@ -613,6 +617,16 @@ export default function ConsultationPage() {
             onClose={() => setShowTemplatesModal(false)}
             onSelect={(text) => setAnamnesisText(prev => prev + (prev ? '\n\n' : '') + text)}
          />
+         <VitalsModal
+            isOpen={showVitalsModal}
+            onClose={() => setShowVitalsModal(false)}
+            onSave={(vitals) => setAnamnesisText(prev => prev + `\n\n**Sinais Vitais:**\nPeso: ${vitals.weight}kg | Temp: ${vitals.temp}°C | FC: ${vitals.bpm}bpm`)}
+         />
+         <PrescriptionModal
+            isOpen={showPrescriptionModal}
+            onClose={() => setShowPrescriptionModal(false)}
+         />
       </div>
    );
 }
+```

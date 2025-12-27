@@ -148,11 +148,7 @@ export class AppointmentsService {
                 pet: { include: { tutor: true } },
                 vet: true,
                 service: true,
-                medicalRecord: {
-                    include: {
-                        consumedItems: true
-                    }
-                }
+                medicalRecord: true
             }
         });
     }

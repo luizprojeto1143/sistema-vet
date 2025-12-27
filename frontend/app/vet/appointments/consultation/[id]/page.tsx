@@ -26,6 +26,13 @@ import {
    PlayIcon,
    CreditCardIcon,
    DocumentTextIcon,
+   HomeModernIcon,
+   ScaleIcon,
+   DocumentPlusIcon,
+   BeakerIcon,
+   PaperClipIcon,
+   ClipboardDocumentCheckIcon,
+   StarIcon,
 } from '@heroicons/react/24/outline';
 import { BoltIcon, PlusIcon, TrashIcon } from 'lucide-react';
 
@@ -332,8 +339,39 @@ export default function ConsultationPage() {
 
                {activeTab === 'anamnesis' ? (
                   <div className="bg-white rounded-2xl shadow-sm border border-gray-200 overflow-hidden print:shadow-none print:border-none">
-                     <div className="bg-gray-50 px-4 py-2 border-b border-gray-100 flex justify-between items-center">
-                        <span className="text-xs font-bold text-gray-500 uppercase tracking-wider">Avaliação Clínica</span>
+                     <div className="bg-gray-50 px-4 py-2 border-b border-gray-100 flex justify-between items-center flex-wrap gap-2">
+                        <div className="flex items-center gap-4">
+                           <span className="text-xs font-bold text-gray-500 uppercase tracking-wider">Avaliação Clínica</span>
+
+                           {/* QUICK ACTIONS TOOLBAR */}
+                           <div className="flex items-center gap-1 bg-white border border-gray-200 rounded-lg p-1 shadow-sm">
+                              <button onClick={() => alert("Internação: Redirecionar para mapa de leitos")} title="Internar Animal" className="p-1.5 text-gray-400 hover:text-indigo-600 hover:bg-indigo-50 rounded-md transition-colors">
+                                 <HomeModernIcon className="w-4 h-4" />
+                              </button>
+                              <div className="w-px h-3 bg-gray-200 mx-0.5"></div>
+                              <button onClick={() => alert("Adicionar Peso: Abrir modal de sinais vitais")} title="Adicionar Peso" className="p-1.5 text-gray-400 hover:text-indigo-600 hover:bg-indigo-50 rounded-md transition-colors">
+                                 <ScaleIcon className="w-4 h-4" />
+                              </button>
+                              <div className="w-px h-3 bg-gray-200 mx-0.5"></div>
+                              <button onClick={() => alert("Receitas: Abrir gerador de receitas")} title="Adicionar Receita" className="p-1.5 text-gray-400 hover:text-indigo-600 hover:bg-indigo-50 rounded-md transition-colors">
+                                 <DocumentPlusIcon className="w-4 h-4" />
+                              </button>
+                              <button onClick={() => alert("Exames: Solicitar exames laboratoriais/imagem")} title="Solicitar Exames" className="p-1.5 text-gray-400 hover:text-indigo-600 hover:bg-indigo-50 rounded-md transition-colors">
+                                 <BeakerIcon className="w-4 h-4" />
+                              </button>
+                              <div className="w-px h-3 bg-gray-200 mx-0.5"></div>
+                              <button onClick={() => setActiveTab('files')} title="Adicionar Documentos" className="p-1.5 text-gray-400 hover:text-indigo-600 hover:bg-indigo-50 rounded-md transition-colors">
+                                 <PaperClipIcon className="w-4 h-4" />
+                              </button>
+                              <button onClick={() => alert("Termos: Gerar termo de consentimento")} title="Adicionar Termos" className="p-1.5 text-gray-400 hover:text-indigo-600 hover:bg-indigo-50 rounded-md transition-colors">
+                                 <ClipboardDocumentCheckIcon className="w-4 h-4" />
+                              </button>
+                              <button onClick={() => alert("Certificados: Gerar atestado/certificado")} title="Adicionar Certificado" className="p-1.5 text-gray-400 hover:text-indigo-600 hover:bg-indigo-50 rounded-md transition-colors">
+                                 <StarIcon className="w-4 h-4" />
+                              </button>
+                           </div>
+                        </div>
+
                         <div className="flex gap-2">
                            <button
                               onClick={() => setAnamnesisText(prev => prev + (prev ? '\n\n' : '') + "**Queixa Principal:** \n\n**Histórico:** \n\n**Alimentação:** ")}

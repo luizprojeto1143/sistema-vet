@@ -10,9 +10,22 @@ export default function CalendarView({ appointments = [], onNewAppointment }: Ca
     const [currentDate, setCurrentDate] = useState(new Date());
     const timeSlots = Array.from({ length: 11 }, (_, i) => i + 8); // 8:00 to 18:00
 
+    const changeDate = (days: number) => {
+        const newDate = new Date(currentDate);
+        newDate.setDate(currentDate.getDate() + days);
+        setCurrentDate(newDate);
+    };
+
     const getAppointmentStyle = (appt: any) => {
-        // ... (existing logic unchanged)
         const date = new Date(appt.date);
+
+        // Filter: Check if appointment is on correct day
+        if (date.getDate() !== currentDate.getDate() ||
+            date.getMonth() !== currentDate.getMonth() ||
+            date.getFullYear() !== currentDate.getFullYear()) {
+            return { display: 'none', top: '0px', height: '0px', className: '' };
+        }
+
         const hour = date.getHours();
         const minute = date.getMinutes();
         const startOffset = (hour - 8) * 60 + minute;
@@ -37,9 +50,9 @@ export default function CalendarView({ appointments = [], onNewAppointment }: Ca
                         <Clock size={20} className="text-teal-600" /> Agenda do Dia
                     </h2>
                     <div className="flex items-center bg-white rounded-lg border border-gray-200 p-1">
-                        <button className="p-1 hover:bg-gray-100 rounded text-gray-500"><ChevronLeft size={16} /></button>
-                        <span className="px-3 text-sm font-medium text-gray-700">{currentDate.toLocaleDateString('pt-BR', { weekday: 'long', day: 'numeric', month: 'long' })}</span>
-                        <button className="p-1 hover:bg-gray-100 rounded text-gray-500"><ChevronRight size={16} /></button>
+                        <button onClick={() => changeDate(-1)} className="p-1 hover:bg-gray-100 rounded text-gray-500 hover:text-teal-600 transition-colors"><ChevronLeft size={16} /></button>
+                        <span className="px-3 text-sm font-medium text-gray-700 capitalize min-w-[200px] text-center">{currentDate.toLocaleDateString('pt-BR', { weekday: 'long', day: 'numeric', month: 'long' })}</span>
+                        <button onClick={() => changeDate(1)} className="p-1 hover:bg-gray-100 rounded text-gray-500 hover:text-teal-600 transition-colors"><ChevronRight size={16} /></button>
                     </div>
                 </div>
                 <button

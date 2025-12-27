@@ -18,10 +18,15 @@ export class AllExceptionsFilter implements ExceptionFilter {
                 ? exception.getStatus()
                 : HttpStatus.INTERNAL_SERVER_ERROR;
 
+        // DEBUG: Extract real error details even for unknown exceptions
+        const realError = exception as any;
+        const debugMessage = realError.message || 'Unknown Error';
+        const debugStack = realError.stack || '';
+
         const message =
             exception instanceof HttpException
                 ? exception.getResponse()
-                : 'Internal Server Error';
+                : { error: 'Internal Server Error', message: debugMessage, stack: debugStack };
 
         console.error('⚠️ Error:', exception);
 
@@ -29,7 +34,7 @@ export class AllExceptionsFilter implements ExceptionFilter {
             statusCode: status,
             timestamp: new Date().toISOString(),
             path: request.url,
-            message: message,
+            message: message, // Will now contain object with details
         });
     }
 }

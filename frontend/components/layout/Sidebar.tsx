@@ -24,7 +24,7 @@ export default function Sidebar() {
         { href: '/agenda', label: 'Agenda', icon: Calendar },
         { href: '/finance', label: 'Financeiro', icon: DollarSign },
         { href: '/stock', label: 'Estoque', icon: Package },
-        { href: '/tutor', label: 'Tutores', icon: Users },
+        { href: '/admin/tutors', label: 'Tutores', icon: Users },
         { href: '/analisavet', label: 'AnalisaVet AI', icon: Activity },
         { href: '/settings', label: 'Configurações', icon: Settings },
     ];
@@ -53,8 +53,8 @@ export default function Sidebar() {
                             key={item.href}
                             href={item.href}
                             className={`flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 group ${isActive
-                                    ? 'bg-teal-50 text-teal-700 font-bold shadow-sm'
-                                    : 'text-gray-500 hover:bg-gray-50 hover:text-gray-900'
+                                ? 'bg-teal-50 text-teal-700 font-bold shadow-sm'
+                                : 'text-gray-500 hover:bg-gray-50 hover:text-gray-900'
                                 }`}
                         >
                             <Icon

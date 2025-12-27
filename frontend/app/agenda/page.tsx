@@ -1,4 +1,4 @@
-"use client";
+"use client"; // Force rebuild
 import React, { useState, useEffect } from 'react';
 import CalendarView from '@/components/agenda/CalendarView';
 import ServiceList from '@/components/agenda/ServiceList';

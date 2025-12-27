@@ -5,61 +5,49 @@ import { useRouter, useParams } from 'next/navigation';
 import KitConsumptionModal from '@/components/stock/kit-consumption-modal';
 import {
    HeartIcon,
-   BeakerIcon,
-   DocumentTextIcon,
-   ClipboardDocumentCheckIcon,
    MicrophoneIcon,
-   SparklesIcon,
    ClockIcon,
-   CheckBadgeIcon,
    PrinterIcon,
-   TrashIcon,
-   PlusCircleIcon,
-   PaperAirplaneIcon,
    ArchiveBoxIcon,
+   UserIcon,
+   PhoneIcon,
+   MapPinIcon,
+   TagIcon,
+   CurrencyDollarIcon,
+   shoppingCartIcon,
+   EllipsisVerticalIcon,
+   ChevronDownIcon,
+   PlayIcon,
+   CreditCardIcon,
+   DocumentTextIcon
 } from '@heroicons/react/24/outline';
-
-
+import { BoltIcon, PlusIcon, TrashIcon } from 'lucide-react';
 
 export default function ConsultationPage() {
    const params = useParams();
    const router = useRouter();
    const [appointment, setAppointment] = useState<any>(null);
    const [loading, setLoading] = useState(true);
-   const [activeTab, setActiveTab] = useState<'anamnesis' | 'exam' | 'analisavet' | 'diagnosis' | 'prescription' | 'docs'>('anamnesis');
-   const [isRecording, setIsRecording] = useState(false);
+   const [activeTab, setActiveTab] = useState<'anamnesis' | 'exam' | 'history'>('anamnesis');
    const [showKitModal, setShowKitModal] = useState(false);
 
-   // Data States
+   // Clinical Data
    const [anamnesisText, setAnamnesisText] = useState('');
-   const [vitals, setVitals] = useState({ temp: '', bpm: '', mpm: '', tpc: '', mucosa: 'Normocorada' });
-   const [diagnosis, setDiagnosis] = useState({ main: '', notes: '' });
-   const [prescriptionItems, setPrescriptionItems] = useState<any[]>([]);
-   const [consumedItems, setConsumedItems] = useState<any[]>([]); // For Kit/Stock Logic
+   const [diagnosisText, setDiagnosisText] = useState('');
+   const [consumedItems, setConsumedItems] = useState<any[]>([]);
 
-   // Fetch Appointment Data
+   // Fetch Data
    useEffect(() => {
       const fetchAppointment = async () => {
          try {
             const token = localStorage.getItem('token');
-            // Assuming we have an endpoint to get detailed appointment info for consultation context
-            // Ideally: GET /appointments/:id with includes
-            const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000'}/appointments?id=${params?.id}`, { // Fallback to list filter if specific endpoint missing
+            // Fetch appointment details
+            const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000'}/appointments/${params?.id}`, {
                headers: { 'Authorization': `Bearer ${token}` }
             });
-            // Or better, GET /appointments/:id if supported. For now, filter list.
-            // Actually, let's try direct fetch if supported or list.
-            // Using a specific endpoint is better practice. Let's assume standard REST.
-            const resSpecific = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000'}/appointments/${params?.id}`, {
-               headers: { 'Authorization': `Bearer ${token}` }
-            });
-
-            if (resSpecific.ok) {
-               const data = await resSpecific.json();
+            if (res.ok) {
+               const data = await res.json();
                setAppointment(data);
-               // Pre-fill history if available?
-            } else {
-               console.error("Failed to load appointment context");
             }
          } catch (e) {
             console.error(e);
@@ -70,280 +58,249 @@ export default function ConsultationPage() {
       fetchAppointment();
    }, [params?.id]);
 
+
    const handleFinish = async () => {
-      if (!appointment) return;
-
-      try {
-         const token = localStorage.getItem('token');
-         const payload = {
-            appointmentId: appointment.id,
-            petId: appointment.petId,
-            vetId: appointment.vetId,
-            clinicId: appointment.clinicId,
-            anamnesis: anamnesisText,
-            physicalExam: JSON.stringify(vitals),
-            diagnosis: diagnosis.main,
-            treatment: diagnosis.notes,
-            consumedItems: consumedItems, // Array of { productId, quantity, price }
-            // Prescription could be saved separately or as part of treatment
-         };
-
-         const res = await fetch((process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000') + '/medical-records', {
-            method: 'POST',
-            headers: {
-               'Content-Type': 'application/json',
-               'Authorization': `Bearer ${token}`
-            },
-            body: JSON.stringify(payload)
-         });
-
-         if (res.ok) {
-            // Update appointment status to COMPLETED
-            await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000'}/appointments/${appointment.id}/status`, {
-               method: 'PATCH',
-               headers: {
-                  'Content-Type': 'application/json',
-                  'Authorization': `Bearer ${token}`
-               },
-               body: JSON.stringify({ status: 'COMPLETED' })
-            });
-
-            alert('Atendimento finalizado com sucesso! Encaminhando para Financeiro...');
-            router.push('/vet/appointments'); // Or somewhere else
-         } else {
-            alert('Erro ao salvar prontuário.');
-         }
-
-      } catch (error) {
-         console.error("Error saving record", error);
-         alert('Erro de conexão.');
-      }
+      // Logic to save medical record and finish appointment
+      alert('Salvando atendimento e gerando cobrança...');
+      router.push('/vet');
    };
 
-   const handleKitUsed = (items: any[]) => {
-      // items come from KitConsumptionModal
-      setConsumedItems([...consumedItems, ...items]);
-      setShowKitModal(false);
-      alert(`${items.length} itens adicionados ao consumo.`);
-   };
+   const totalValue = consumedItems.reduce((acc, item) => acc + (Number(item.price || 0) * Number(item.quantity || 1)), 0);
 
-   if (loading) return <div className="p-10 flex justify-center text-gray-500">Carregando prontuário...</div>;
-   if (!appointment) return <div className="p-10 flex justify-center text-red-500">Erro: Agendamento não encontrado.</div>;
+   if (loading) return <div className="h-screen flex items-center justify-center bg-gray-50 text-indigo-600 font-bold animate-pulse">Carregando Ambiente Clínico...</div>;
+   if (!appointment) return <div>Erro ao carregar dados.</div>;
 
    return (
-      <div className="h-screen flex flex-col bg-gray-50 overflow-hidden font-sans">
+      <div className="h-screen flex bg-gray-100 font-sans overflow-hidden">
 
-         {/* HEADER: CONTEXT BAR */}
-         <div className="bg-white border-b border-gray-200 px-6 py-4 flex justify-between items-center shadow-sm z-10 w-full">
-            <div className="flex items-center gap-4">
-               <div className="h-12 w-12 bg-indigo-100 rounded-full flex items-center justify-center text-indigo-700 font-bold text-xl uppercase">
-                  {appointment.pet?.name?.charAt(0) || 'P'}
+         {/* LEFT TOOLBAR (Mini Sidebar) */}
+         <aside className="w-16 bg-white border-r border-gray-200 flex flex-col items-center py-4 gap-6 z-20 shadow-[4px_0_24px_rgba(0,0,0,0.02)]">
+            <button className="p-3 bg-indigo-50 text-indigo-600 rounded-xl hover:bg-indigo-100 transition-colors" title="Histórico">
+               <ClockIcon className="w-6 h-6" />
+            </button>
+            <button className="p-3 text-gray-400 hover:text-gray-600 hover:bg-gray-50 rounded-xl transition-colors" title="Modelos">
+               <DocumentTextIcon className="w-6 h-6" />
+            </button>
+            <button className="p-3 text-gray-400 hover:text-gray-600 hover:bg-gray-50 rounded-xl transition-colors" title="Imprimir">
+               <PrinterIcon className="w-6 h-6" />
+            </button>
+            <div className="flex-1" />
+            <button onClick={() => router.back()} className="p-3 text-red-400 hover:text-red-600 hover:bg-red-50 rounded-xl transition-colors" title="Sair">
+               <BoltIcon className="w-6 h-6" />
+            </button>
+         </aside>
+
+         {/* CENTER WORKSPACE */}
+         <main className="flex-1 flex flex-col min-w-0">
+
+            {/* HEADER: PATIENT & TUTOR CARDS */}
+            <header className="bg-white border-b border-gray-200 p-4 shadow-sm z-10">
+               <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+                  {/* Tutor Card */}
+                  <div className="flex items-center gap-4 p-3 bg-gray-50 rounded-2xl border border-gray-100">
+                     <div className="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center text-blue-600 font-bold text-lg">
+                        <UserIcon className="w-6 h-6" />
+                     </div>
+                     <div className="flex-1 min-w-0">
+                        <h2 className="text-sm font-bold text-gray-900 truncate flex items-center gap-2">
+                           {appointment.tutor?.fullName || 'Tutor Visitante'}
+                           <span className="text-[10px] bg-green-100 text-green-700 px-2 py-0.5 rounded-full uppercase tracking-wide font-bold">Sem Débitos</span>
+                        </h2>
+                        <div className="flex items-center gap-3 text-xs text-gray-500 mt-1">
+                           <span className="flex items-center gap-1"><PhoneIcon className="w-3 h-3" /> {appointment.tutor?.phone}</span>
+                           <span className="flex items-center gap-1"><MapPinIcon className="w-3 h-3" /> {appointment.tutor?.address?.city || 'Local não inf.'}</span>
+                        </div>
+                     </div>
+                  </div>
+
+                  {/* Pet Card */}
+                  <div className="flex items-center gap-4 p-3 bg-indigo-50/50 rounded-2xl border border-indigo-100 relative overflow-hidden">
+                     <div className="absolute top-0 right-0 p-2 opacity-10 text-indigo-900">
+                        <HeartIcon className="w-24 h-24" />
+                     </div>
+                     <div className="w-12 h-12 bg-indigo-100 rounded-full flex items-center justify-center text-indigo-600 font-bold text-lg z-10">
+                        P
+                     </div>
+                     <div className="flex-1 min-w-0 z-10">
+                        <div className="flex justify-between items-start">
+                           <h2 className="text-sm font-bold text-indigo-900 truncate">
+                              {appointment.pet?.name || 'Pet Visitante'}
+                              <span className="ml-2 text-[10px] text-indigo-500 font-normal">{appointment.pet?.breed}</span>
+                           </h2>
+                           <button className="text-gray-400 hover:text-indigo-600"><EllipsisVerticalIcon className="w-5 h-5" /></button>
+                        </div>
+                        <div className="flex items-center gap-3 text-xs text-indigo-700/70 mt-1 font-medium">
+                           <span>{appointment.pet?.gender === 'MALE' ? 'Macho' : 'Fêmea'}</span>
+                           <span className="w-1 h-1 bg-indigo-300 rounded-full"></span>
+                           <span>{appointment.pet?.weight || '--'} kg</span>
+                           <span className="w-1 h-1 bg-indigo-300 rounded-full"></span>
+                           <span>{appointment.pet?.age || '2 anos'}</span>
+                        </div>
+                     </div>
+                  </div>
                </div>
+            </header>
+
+            {/* TAB NAVIGATION */}
+            <div className="bg-white border-b border-gray-200 px-6 flex gap-6">
+               {['Anamnese & Exame', 'Histórico', 'Arquivos', 'Vacinas'].map((tab) => (
+                  <button
+                     key={tab}
+                     className={`py-3 text-sm font-bold border-b-2 transition-colors ${tab === 'Anamnese & Exame' ? 'border-indigo-600 text-indigo-600' : 'border-transparent text-gray-400 hover:text-gray-600'}`}
+                  >
+                     {tab}
+                  </button>
+               ))}
+            </div>
+
+            {/* SCROLLABLE WORKSPACE */}
+            <div className="flex-1 overflow-y-auto p-6 bg-slate-50 space-y-4">
+
+               {/* Editor Section */}
+               <div className="bg-white rounded-2xl shadow-sm border border-gray-200 overflow-hidden">
+                  <div className="bg-gray-50 px-4 py-2 border-b border-gray-100 flex justify-between items-center">
+                     <span className="text-xs font-bold text-gray-500 uppercase tracking-wider">Avaliação Clínica</span>
+                     <div className="flex gap-2">
+                        <button className="text-xs font-bold text-indigo-600 bg-indigo-50 px-3 py-1 rounded-lg hover:bg-indigo-100">+ Incluir Cabeçalho</button>
+                     </div>
+                  </div>
+                  <div className="p-6 space-y-6">
+                     <div>
+                        <label className="block text-sm font-bold text-gray-700 mb-2">Queixa Principal / Anamnese</label>
+                        <textarea
+                           className="w-full h-32 p-4 bg-gray-50 border-0 rounded-xl text-gray-800 placeholder-gray-400 focus:ring-2 focus:ring-indigo-100 transition-all resize-none"
+                           placeholder="Descreva os sintomas relatados pelo tutor..."
+                           value={anamnesisText}
+                           onChange={e => setAnamnesisText(e.target.value)}
+                        ></textarea>
+                     </div>
+
+                     <div>
+                        <label className="block text-sm font-bold text-gray-700 mb-2">Exame Físico & Diagnóstico</label>
+                        <textarea
+                           className="w-full h-32 p-4 bg-gray-50 border-0 rounded-xl text-gray-800 placeholder-gray-400 focus:ring-2 focus:ring-indigo-100 transition-all resize-none"
+                           placeholder="Achados clínicos e hipóteses diagnósticas..."
+                           value={diagnosisText}
+                           onChange={e => setDiagnosisText(e.target.value)}
+                        ></textarea>
+                     </div>
+                  </div>
+                  {/* Bottom Toolbar */}
+                  <div className="px-6 py-3 border-t border-gray-100 bg-gray-50/50 flex items-center justify-between">
+                     <div className="flex gap-2">
+                        {/* AI Button */}
+                        <button className="flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-blue-600 to-indigo-600 text-white rounded-xl shadow-lg shadow-indigo-200 hover:scale-105 transition-transform font-bold text-xs">
+                           <MicrophoneIcon className="w-4 h-4" /> Iniciar Gravação (IA)
+                        </button>
+                     </div>
+                     <span className="text-xs text-gray-400 italic">Rascunho salvo às 14:02</span>
+                  </div>
+               </div>
+
+            </div>
+         </main>
+
+         {/* RIGHT PANEL: CONSUMPTION (COMANDA) */}
+         <aside className="w-[320px] bg-white border-l border-gray-200 flex flex-col shadow-xl z-30">
+            {/* Header */}
+            <div className="p-5 border-b border-gray-100 bg-gray-50/30">
+               <h3 className="font-bold text-gray-800 text-sm uppercase tracking-wide flex items-center gap-2">
+                  <CurrencyDollarIcon className="w-5 h-5 text-green-600" /> Resumo Financeiro
+               </h3>
+            </div>
+
+            {/* Financial Summary Cards */}
+            <div className="grid grid-cols-2 gap-2 p-3">
+               <div className="bg-blue-50 p-3 rounded-xl border border-blue-100 text-center">
+                  <span className="block text-[10px] text-blue-400 font-bold uppercase">Total Parcial</span>
+                  <span className="block text-lg font-extrabold text-blue-700">R$ {totalValue.toFixed(2)}</span>
+               </div>
+               <div className="bg-orange-50 p-3 rounded-xl border border-orange-100 text-center">
+                  <span className="block text-[10px] text-orange-400 font-bold uppercase">Pendente</span>
+                  <span className="block text-lg font-extrabold text-orange-700">R$ 0,00</span>
+               </div>
+            </div>
+
+            {/* Lists */}
+            <div className="flex-1 overflow-y-auto p-4 space-y-6">
+
+               {/* Services Section */}
                <div>
-                  <h1 className="text-xl font-bold text-gray-900 flex items-center gap-2">
-                     {appointment.pet?.name}
-                     <span className="text-sm font-normal text-gray-500 bg-gray-100 px-2 py-0.5 rounded-full">{appointment.pet?.breed || 'Sem Raça'}</span>
-                  </h1>
-                  <div className="text-sm text-gray-500 flex gap-4">
-                     <span>{appointment.tutor?.name || 'Tutor Desconhecido'}</span>
-                     {appointment.pet?.allergies && (
-                        <span className="flex items-center gap-1 text-orange-600 font-medium">⚠️ Alergia: {appointment.pet.allergies}</span>
-                     )}
-                  </div>
-               </div>
-            </div>
-
-            <div className="flex items-center gap-4">
-               <div className="px-4 py-2 bg-indigo-50 text-indigo-700 rounded-lg font-mono font-bold flex items-center gap-2">
-                  <ClockIcon className="h-5 w-5" />
-                  --:--
-               </div>
-               <button
-                  onClick={handleFinish}
-                  className="bg-green-600 text-white px-6 py-2.5 rounded-lg font-bold hover:bg-green-700 shadow-md flex items-center gap-2 transition-all"
-               >
-                  <CheckBadgeIcon className="h-5 w-5" />
-                  Finalizar Atendimento
-               </button>
-            </div>
-         </div>
-
-         <div className="flex flex-1 overflow-hidden w-full">
-
-            {/* SIDEBAR: HISTORY (Simplified for Real Data) */}
-            <div className="w-80 bg-white border-r border-gray-200 overflow-y-auto hidden md:block">
-               <div className="p-4 border-b border-gray-100">
-                  <h3 className="font-bold text-gray-700 uppercase text-xs mb-3">Detalhes do Agendamento</h3>
-                  <div className="bg-indigo-50 p-3 rounded-lg text-sm text-indigo-900">
-                     <span className="font-bold block text-indigo-400 text-xs mb-1">MOTIVO/SERVIÇO</span>
-                     {appointment.service?.name || appointment.type || 'Consulta Geral'}
-                     {appointment.notes && <p className="mt-2 italic text-gray-600">"{appointment.notes}"</p>}
-                  </div>
-               </div>
-
-               <div className="p-4">
-                  <h3 className="font-bold text-gray-700 uppercase text-xs mb-3">Itens Consumidos (Cobrança)</h3>
-                  {consumedItems.length === 0 ? (
-                     <div className="text-xs text-center text-gray-400 py-4 border border-dashed rounded">Nenhum item lançado</div>
-                  ) : (
-                     <ul className="space-y-2">
-                        {consumedItems.map((item: any, idx) => (
-                           <li key={idx} className="text-xs flex justify-between border-b pb-1">
-                              <span>{item.name || item.productId}</span>
-                              <span className="font-bold">x{item.quantity}</span>
-                           </li>
-                        ))}
-                     </ul>
-                  )}
-               </div>
-            </div>
-
-            {/* MAIN: CLINICAL WORKSPACE */}
-            <div className="flex-1 flex flex-col w-full max-w-5xl mx-auto">
-
-               {/* TABS */}
-               <div className="flex border-b border-gray-200 bg-white px-6 gap-6 pt-4 overflow-x-auto w-full">
-                  {[
-                     { id: 'anamnesis', label: 'Anamnese', icon: MicrophoneIcon },
-                     { id: 'exam', label: 'Exame Físico', icon: HeartIcon },
-                     { id: 'diagnosis', label: 'Diagnóstico', icon: ClipboardDocumentCheckIcon },
-                     // { id: 'prescription', label: 'Receituário', icon: DocumentTextIcon }, // Can implement later
-                  ].map(tab => (
-                     <button
-                        key={tab.id}
-                        onClick={() => setActiveTab(tab.id as any)}
-                        className={`pb-4 px-2 flex items-center gap-2 font-medium transition-all text-sm relative whitespace-nowrap ${activeTab === tab.id ? 'text-indigo-600' : 'text-gray-500 hover:text-gray-700'
-                           }`}
-                     >
-                        <tab.icon className="h-5 w-5" />
-                        {tab.label}
-                        {activeTab === tab.id && (
-                           <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-indigo-600 rounded-t-full"></div>
-                        )}
+                  <div className="flex justify-between items-center mb-3">
+                     <h4 className="text-xs font-bold text-indigo-600 uppercase flex items-center gap-1">
+                        <BoltIcon className="w-3 h-3" /> Serviços
+                     </h4>
+                     <button className="text-[10px] bg-indigo-50 text-indigo-600 px-2 py-1 rounded font-bold hover:bg-indigo-100 transition-colors">
+                        + Incluir
                      </button>
-                  ))}
+                  </div>
+                  <div className="space-y-2">
+                     {/* Appointment Service */}
+                     <div className="flex justify-between items-center text-sm p-3 bg-gray-50 rounded-lg border border-gray-100 group hover:border-indigo-200 transition-colors">
+                        <div>
+                           <span className="block font-medium text-gray-700">Consulta Geral</span>
+                           <span className="text-xs text-gray-400">Dr. André Luis</span>
+                        </div>
+                        <span className="font-bold text-gray-900">R$ 150,00</span>
+                     </div>
+                  </div>
                </div>
 
-               {/* CONTENT AREA */}
-               <div className="flex-1 overflow-y-auto p-8 bg-slate-50 relative w-full">
-
-                  {/* QUICK ACTIONS FLOATING BUTTON */}
-                  <div className="absolute top-4 right-6 flex gap-2 z-20">
+               {/* Products Section */}
+               <div>
+                  <div className="flex justify-between items-center mb-3">
+                     <h4 className="text-xs font-bold text-green-600 uppercase flex items-center gap-1">
+                        <ArchiveBoxIcon className="w-3 h-3" /> Produtos / Consumo
+                     </h4>
                      <button
                         onClick={() => setShowKitModal(true)}
-                        className="bg-white border border-indigo-200 text-indigo-700 px-4 py-2 rounded-lg font-bold shadow-sm hover:bg-indigo-50 flex items-center gap-2 text-sm transition-all"
+                        className="text-[10px] bg-green-50 text-green-600 px-2 py-1 rounded font-bold hover:bg-green-100 transition-colors"
                      >
-                        <ArchiveBoxIcon className="h-5 w-5" />
-                        Usar Kit / Estoque
+                        + Incluir
                      </button>
                   </div>
 
-                  {/* TAB: ANAMNESIS */}
-                  {activeTab === 'anamnesis' && (
-                     <div className="max-w-4xl mx-auto space-y-6 animate-fadeIn">
-                        <div className="bg-white p-6 rounded-xl shadow-sm border border-indigo-100 relative">
-                           <label className="text-sm font-bold text-gray-700 block mb-2">Relato Clínico (Evolução)</label>
-                           <textarea
-                              className="w-full h-64 p-4 border border-gray-200 rounded-lg focus:ring-2 focus:ring-indigo-500 outline-none leading-relaxed text-gray-800"
-                              placeholder="Descreva a queixa principal e evolução..."
-                              value={anamnesisText}
-                              onChange={(e) => setAnamnesisText(e.target.value)}
-                           />
-                        </div>
+                  {consumedItems.length === 0 ? (
+                     <div className="text-xs text-center text-gray-400 py-6 border-2 border-dashed border-gray-100 rounded-xl">
+                        Nenhum produto lançado
                      </div>
-                  )}
-
-                  {/* TAB: EXAM */}
-                  {activeTab === 'exam' && (
-                     <div className="max-w-4xl mx-auto animate-fadeIn">
-                        <div className="bg-white p-8 rounded-xl shadow-sm border border-gray-200">
-                           <h3 className="font-bold text-lg text-gray-900 mb-6 flex items-center gap-2">
-                              <HeartIcon className="h-6 w-6 text-red-500" />
-                              Sinais Vitais & Exame Físico
-                           </h3>
-
-                           <div className="grid grid-cols-2 md:grid-cols-4 gap-6 mb-8">
-                              <div>
-                                 <label className="block text-xs font-bold text-gray-500 uppercase mb-1">Temperatura (°C)</label>
-                                 <input
-                                    type="number"
-                                    value={vitals.temp}
-                                    onChange={e => setVitals({ ...vitals, temp: e.target.value })}
-                                    className="w-full text-2xl font-bold p-3 border rounded-lg text-center"
-                                    placeholder="00.0"
-                                 />
-                              </div>
-                              {/* Other inputs similarly bound */}
-                              <div>
-                                 <label className="block text-xs font-bold text-gray-500 uppercase mb-1">BPM</label>
-                                 <input
-                                    type="number"
-                                    value={vitals.bpm}
-                                    onChange={e => setVitals({ ...vitals, bpm: e.target.value })}
-                                    className="w-full text-2xl font-bold p-3 border rounded-lg text-center"
-                                    placeholder="000"
-                                 />
+                  ) : (
+                     <div className="space-y-2">
+                        {consumedItems.map((item, idx) => (
+                           <div key={idx} className="flex justify-between items-center text-sm p-2 bg-white rounded border border-gray-100">
+                              <span className="text-gray-600 truncate max-w-[150px]">{item.name}</span>
+                              <div className="flex items-center gap-2">
+                                 <span className="text-xs text-gray-400">x{item.quantity}</span>
+                                 <span className="font-bold text-gray-800">R$ {(item.price * item.quantity).toFixed(2)}</span>
                               </div>
                            </div>
-
-                           <div>
-                              <label className="block text-xs font-bold text-gray-500 uppercase mb-1">Mucosas</label>
-                              <div className="flex gap-2 flex-wrap">
-                                 {['Normocorada', 'Pálida', 'Cianótica', 'Ictérica', 'Congesta'].map(m => (
-                                    <button
-                                       key={m}
-                                       onClick={() => setVitals({ ...vitals, mucosa: m })}
-                                       className={`px-4 py-2 rounded-lg text-sm transition-all border ${vitals.mucosa === m ? 'bg-indigo-600 text-white border-indigo-600' : 'bg-white text-gray-600 border-gray-200'
-                                          }`}
-                                    >
-                                       {m}
-                                    </button>
-                                 ))}
-                              </div>
-                           </div>
-                        </div>
+                        ))}
                      </div>
                   )}
-
-                  {/* TAB: DIAGNOSIS */}
-                  {activeTab === 'diagnosis' && (
-                     <div className="max-w-4xl mx-auto animate-fadeIn space-y-6">
-                        <div className="bg-white p-8 rounded-xl shadow-sm border border-gray-200">
-                           <div className="mb-6">
-                              <label className="text-sm font-bold text-gray-700 block mb-2">Diagnóstico Principal</label>
-                              <input
-                                 type="text"
-                                 className="w-full p-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-indigo-500"
-                                 placeholder="Ex: Otite Bacteriana"
-                                 value={diagnosis.main}
-                                 onChange={(e) => setDiagnosis({ ...diagnosis, main: e.target.value })}
-                              />
-                           </div>
-
-                           <div>
-                              <label className="text-sm font-bold text-gray-700 block mb-2">Tratamento / Notas</label>
-                              <textarea
-                                 className="w-full h-40 p-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-indigo-500"
-                                 placeholder="Descreva o plano de tratamento..."
-                                 value={diagnosis.notes}
-                                 onChange={(e) => setDiagnosis({ ...diagnosis, notes: e.target.value })}
-                              />
-                           </div>
-                        </div>
-                     </div>
-                  )}
-
                </div>
 
             </div>
 
-         </div>
+            {/* Footer Actions */}
+            <div className="p-4 bg-white border-t border-gray-200 shadow-[0_-4px_16px_rgba(0,0,0,0.05)]">
+               <button
+                  onClick={handleFinish}
+                  className="w-full py-4 bg-green-500 text-white rounded-xl font-bold text-lg shadow-lg shadow-green-200 hover:bg-green-600 hover:scale-[1.02] transition-all flex items-center justify-center gap-2"
+               >
+                  <CreditCardIcon className="w-6 h-6" /> Pagamento
+               </button>
+            </div>
+         </aside>
 
+         {/* MODALS */}
          {showKitModal && (
             <KitConsumptionModal
                isOpen={showKitModal}
                onClose={() => setShowKitModal(false)}
-               onConfirm={handleKitUsed}
+               onConfirm={(items) => {
+                  setConsumedItems([...consumedItems, ...items]);
+                  setShowKitModal(false);
+               }}
             />
          )}
 

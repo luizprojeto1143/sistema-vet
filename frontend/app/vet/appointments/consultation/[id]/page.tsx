@@ -9,6 +9,7 @@ import ProductSelectionModal from '@/components/consultation/product-selection-m
 import MedicalHistoryTab from '@/components/consultation/tabs/medical-history-tab';
 import VaccinesTab from '@/components/consultation/tabs/vaccines-tab';
 import FilesTab from '@/components/consultation/tabs/files-tab';
+import TemplatesModal from '@/components/consultation/templates-modal';
 import {
    HeartIcon,
    MicrophoneIcon,
@@ -52,6 +53,7 @@ export default function ConsultationPage() {
    const [showServiceModal, setShowServiceModal] = useState(false);
    const [showPrintModal, setShowPrintModal] = useState(false);
    const [showProductModal, setShowProductModal] = useState(false);
+   const [showTemplatesModal, setShowTemplatesModal] = useState(false);
 
    // Clinical Data
    const [anamnesisText, setAnamnesisText] = useState('');
@@ -389,6 +391,12 @@ export default function ConsultationPage() {
 
                         <div className="flex gap-2">
                            <button
+                              onClick={() => setShowTemplatesModal(true)}
+                              className="text-xs font-bold text-gray-500 bg-white border border-gray-200 px-3 py-1 rounded-lg hover:bg-gray-50 hover:text-indigo-600 transition-colors flex items-center gap-1"
+                           >
+                              <DocumentTextIcon className="w-3 h-3" /> Modelos
+                           </button>
+                           <button
                               onClick={() => setAnamnesisText(prev => prev + (prev ? '\n\n' : '') + "**Queixa Principal:** \n\n**Histórico:** \n\n**Alimentação:** ")}
                               className="text-xs font-bold text-indigo-600 bg-indigo-50 px-3 py-1 rounded-lg hover:bg-indigo-100 transition-colors"
                            >
@@ -576,6 +584,35 @@ export default function ConsultationPage() {
 
 
 
-      </div >
+         <ServiceSelectionModal
+            isOpen={showServiceModal}
+            onClose={() => setShowServiceModal(false)}
+            onConfirm={(service) => {
+               setServices([...services, service]);
+               setShowServiceModal(false);
+            }}
+         />
+         <ProductSelectionModal
+            isOpen={showProductModal}
+            onClose={() => setShowProductModal(false)}
+            onConfirm={(products) => {
+               setConsumedItems([...consumedItems, ...products]);
+               setShowProductModal(false);
+            }}
+         />
+         <PrintSelectionModal
+            isOpen={showPrintModal}
+            onClose={() => setShowPrintModal(false)}
+            onConfirm={(selected) => {
+               alert(`Gerando documentos: ${selected.join(', ')}`);
+               setShowPrintModal(false);
+            }}
+         />
+         <TemplatesModal
+            isOpen={showTemplatesModal}
+            onClose={() => setShowTemplatesModal(false)}
+            onSelect={(text) => setAnamnesisText(prev => prev + (prev ? '\n\n' : '') + text)}
+         />
+      </div>
    );
 }

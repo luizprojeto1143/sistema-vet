@@ -220,7 +220,7 @@ export default function NewTutorModal({ isOpen, onClose, onSuccess }: NewTutorMo
 
                         <div className="space-y-4">
                             {pets.map((pet, idx) => (
-                                <div key={idx} className="bg-gray-50 p-4 rounded-xl border border-gray-200 relative group">
+                                <div key={idx} className="bg-gray-50 p-4 rounded-xl border border-gray-200 relative group animate-in slide-in-from-bottom-2">
                                     {pets.length > 1 && (
                                         <button
                                             type="button"
@@ -230,48 +230,74 @@ export default function NewTutorModal({ isOpen, onClose, onSuccess }: NewTutorMo
                                             <Trash size={16} />
                                         </button>
                                     )}
-                                    <div className="grid grid-cols-2 gap-4">
-                                        <div className="col-span-2">
-                                            <label className="block text-xs font-bold text-gray-500 mb-1">Nome do Pet *</label>
-                                            <input
-                                                required
-                                                className="w-full p-2 border rounded-lg focus:ring-2 focus:ring-teal-500 outline-none text-sm"
-                                                value={pet.name}
-                                                onChange={e => handlePetChange(idx, 'name', e.target.value)}
-                                                placeholder="Ex: Rex"
-                                            />
+
+                                    <div className="grid grid-cols-12 gap-3">
+                                        {/* Row 1 */}
+                                        <div className="col-span-12 md:col-span-4">
+                                            <label className="block text-[10px] font-bold text-gray-400 uppercase mb-1">Nome do Pet *</label>
+                                            <input required className="w-full p-2 border rounded-lg text-sm outline-none focus:ring-2 focus:ring-teal-500"
+                                                value={pet.name} onChange={e => handlePetChange(idx, 'name', e.target.value)} placeholder="Ex: Rex" />
                                         </div>
-                                        <div>
-                                            <label className="block text-xs font-bold text-gray-500 mb-1">Espécie</label>
-                                            <select
-                                                className="w-full p-2 border rounded-lg focus:ring-2 focus:ring-teal-500 outline-none text-sm bg-white"
-                                                value={pet.species}
-                                                onChange={e => handlePetChange(idx, 'species', e.target.value)}
-                                            >
-                                                <option value="DOG">Cachorro 🐶</option>
-                                                <option value="CAT">Gato 🐱</option>
-                                                <option value="BIRD">Ave/Exótico 🦜</option>
+                                        <div className="col-span-6 md:col-span-2">
+                                            <label className="block text-[10px] font-bold text-gray-400 uppercase mb-1">Espécie</label>
+                                            <select className="w-full p-2 border rounded-lg text-sm bg-white outline-none focus:ring-2 focus:ring-teal-500"
+                                                value={pet.species} onChange={e => handlePetChange(idx, 'species', e.target.value)}>
+                                                <option value="DOG">Cachorro</option>
+                                                <option value="CAT">Gato</option>
+                                                <option value="BIRD">Ave</option>
+                                                <option value="EXOTIC">Exótico</option>
                                             </select>
                                         </div>
-                                        <div>
-                                            <label className="block text-xs font-bold text-gray-500 mb-1">Sexo</label>
-                                            <select
-                                                className="w-full p-2 border rounded-lg focus:ring-2 focus:ring-teal-500 outline-none text-sm bg-white"
-                                                value={pet.gender}
-                                                onChange={e => handlePetChange(idx, 'gender', e.target.value)}
-                                            >
+                                        <div className="col-span-6 md:col-span-3">
+                                            <label className="block text-[10px] font-bold text-gray-400 uppercase mb-1">Raça</label>
+                                            <input className="w-full p-2 border rounded-lg text-sm outline-none focus:ring-2 focus:ring-teal-500"
+                                                value={pet.breed} onChange={e => handlePetChange(idx, 'breed', e.target.value)} placeholder="Ex: Poodle" />
+                                        </div>
+                                        <div className="col-span-6 md:col-span-2">
+                                            <label className="block text-[10px] font-bold text-gray-400 uppercase mb-1">Sexo</label>
+                                            <select className="w-full p-2 border rounded-lg text-sm bg-white outline-none focus:ring-2 focus:ring-teal-500"
+                                                value={pet.gender} onChange={e => handlePetChange(idx, 'gender', e.target.value)}>
                                                 <option value="MACHO">Macho</option>
                                                 <option value="FEMEA">Fêmea</option>
                                             </select>
                                         </div>
-                                        <div className="col-span-2">
-                                            <label className="block text-xs font-bold text-gray-500 mb-1">Raça (Opcional)</label>
-                                            <input
-                                                className="w-full p-2 border rounded-lg focus:ring-2 focus:ring-teal-500 outline-none text-sm"
-                                                value={pet.breed}
-                                                onChange={e => handlePetChange(idx, 'breed', e.target.value)}
-                                                placeholder="Ex: Poodle, SRD..."
-                                            />
+                                        <div className="col-span-6 md:col-span-1 flex items-center pt-6">
+                                            <label className="flex items-center cursor-pointer gap-2">
+                                                <input type="checkbox" className="w-4 h-4 text-teal-600 rounded focus:ring-teal-500"
+                                                    checked={pet.isCastrated} onChange={e => handlePetChange(idx, 'isCastrated', e.target.checked)} />
+                                                <span className="text-xs text-gray-600 font-bold">Castrado?</span>
+                                            </label>
+                                        </div>
+
+                                        {/* Row 2: VET DATA */}
+                                        <div className="col-span-4 md:col-span-2">
+                                            <label className="block text-[10px] font-bold text-gray-400 uppercase mb-1">Nascimento</label>
+                                            <input type="date" className="w-full p-2 border rounded-lg text-xs outline-none focus:ring-2 focus:ring-teal-500"
+                                                value={pet.birthDate || ''} onChange={e => handlePetChange(idx, 'birthDate', e.target.value)} />
+                                        </div>
+                                        <div className="col-span-4 md:col-span-2">
+                                            <label className="block text-[10px] font-bold text-gray-400 uppercase mb-1">Peso (kg)</label>
+                                            <input type="number" step="0.1" className="w-full p-2 border rounded-lg text-sm outline-none focus:ring-2 focus:ring-teal-500"
+                                                value={pet.weight || ''} onChange={e => handlePetChange(idx, 'weight', parseFloat(e.target.value))} placeholder="0.0" />
+                                        </div>
+                                        <div className="col-span-4 md:col-span-3">
+                                            <label className="block text-[10px] font-bold text-gray-400 uppercase mb-1">Microchip</label>
+                                            <input className="w-full p-2 border rounded-lg text-sm outline-none focus:ring-2 focus:ring-teal-500"
+                                                value={pet.microchip || ''} onChange={e => handlePetChange(idx, 'microchip', e.target.value)} placeholder="Código" />
+                                        </div>
+                                        <div className="col-span-6 md:col-span-3">
+                                            <label className="block text-[10px] font-bold text-gray-400 uppercase mb-1">Pelagem</label>
+                                            <input className="w-full p-2 border rounded-lg text-sm outline-none focus:ring-2 focus:ring-teal-500"
+                                                value={pet.coatColor || ''} onChange={e => handlePetChange(idx, 'coatColor', e.target.value)} placeholder="Cor / Tipo" />
+                                        </div>
+                                        <div className="col-span-6 md:col-span-2">
+                                            <label className="block text-[10px] font-bold text-gray-400 uppercase mb-1">Temperamento</label>
+                                            <select className="w-full p-2 border rounded-lg text-sm bg-white outline-none focus:ring-2 focus:ring-teal-500"
+                                                value={pet.temperament || 'DOCILE'} onChange={e => handlePetChange(idx, 'temperament', e.target.value)}>
+                                                <option value="DOCILE">Dócil</option>
+                                                <option value="AGGRESSIVE">Bravo</option>
+                                                <option value="SCARED">Assustado</option>
+                                            </select>
                                         </div>
                                     </div>
                                 </div>

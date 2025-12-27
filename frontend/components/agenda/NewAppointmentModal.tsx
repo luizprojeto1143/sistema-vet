@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { X, Calendar, Clock, User, FileText, Dog, ChevronLeft, Check, Plus } from 'lucide-react';
 import Autocomplete from '../ui/Autocomplete';
+import NewTutorModal from '../admin/tutors/NewTutorModal'; // Import Full Modal
 
 interface NewAppointmentModalProps {
     isOpen: boolean;
@@ -21,10 +22,8 @@ export default function NewAppointmentModal({ isOpen, onClose, onSuccess, initia
     const [selectedTutor, setSelectedTutor] = useState<Tutor | null>(null);
     const [selectedPet, setSelectedPet] = useState<Pet | null>(null);
 
-    // Creation State (Inline)
-    const [isCreatingTutor, setIsCreatingTutor] = useState(false);
-    const [newTutorName, setNewTutorName] = useState('');
-    const [newTutorPhone, setNewTutorPhone] = useState('');
+    // Full Tutor Creation Modal
+    const [isFullTutorModalOpen, setIsFullTutorModalOpen] = useState(false);
 
     const [isCreatingPet, setIsCreatingPet] = useState(false);
     const [newPetName, setNewPetName] = useState('');
@@ -174,69 +173,42 @@ export default function NewAppointmentModal({ isOpen, onClose, onSuccess, initia
                     {/* STEP 1: TUTOR */}
                     {step === 1 && (
                         <div className="space-y-4 animate-in fade-in slide-in-from-right-4">
-                            {!isCreatingTutor ? (
-                                <>
-                                    <p className="text-sm text-gray-500">Busque pelo nome, CPF ou telefone do tutor.</p>
-                                    <Autocomplete
-                                        label="Buscar Tutor"
-                                        placeholder="Ex: Maria Silva"
-                                        onSearch={handleTutorSearch}
-                                        displayField={(item) => (
-                                            <div>
-                                                <div className="font-bold text-gray-800">{item.fullName}</div>
-                                                <div className="text-xs text-gray-400 flex gap-2">
-                                                    <span>CPF: {item.cpf || '---'}</span>
-                                                    <span>Tel: {item.phone || '---'}</span>
-                                                </div>
-                                                <div className="text-xs text-teal-600 mt-1">
-                                                    {item.pets?.length || 0} pets cadastrados
-                                                </div>
-                                            </div>
-                                        )}
-                                        onSelect={(tutor) => {
-                                            setSelectedTutor(tutor);
-                                            setStep(2);
-                                        }}
-                                        onCreateNew={(query) => {
-                                            setNewTutorName(query);
-                                            setIsCreatingTutor(true);
-                                        }}
-                                    />
-                                </>
-                            ) : (
-                                <div className="space-y-4 bg-gray-50 p-4 rounded-xl border border-gray-100">
-                                    <h4 className="font-bold text-gray-700 flex items-center gap-2">
-                                        <Plus size={16} className="text-teal-600" /> Novo Cadastro Rápido
-                                    </h4>
+                            <p className="text-sm text-gray-500">Busque pelo nome, CPF ou telefone do tutor.</p>
+                            <Autocomplete
+                                label="Buscar Tutor"
+                                placeholder="Ex: Maria Silva"
+                                onSearch={handleTutorSearch}
+                                displayField={(item) => (
                                     <div>
-                                        <label className="text-xs font-bold text-gray-500 uppercase">Nome Completo</label>
-                                        <input
-                                            value={newTutorName}
-                                            onChange={e => setNewTutorName(e.target.value)}
-                                            className="w-full p-2 border rounded-lg"
-                                        />
+                                        <div className="font-bold text-gray-800">{item.fullName}</div>
+                                        <div className="text-xs text-gray-400 flex gap-2">
+                                            <span>CPF: {item.cpf || '---'}</span>
+                                            <span>Tel: {item.phone || '---'}</span>
+                                        </div>
+                                        <div className="text-xs text-teal-600 mt-1">
+                                            {item.pets?.length || 0} pets cadastrados
+                                        </div>
                                     </div>
-                                    <div>
-                                        <label className="text-xs font-bold text-gray-500 uppercase">Telefone</label>
-                                        <input
-                                            value={newTutorPhone}
-                                            onChange={e => setNewTutorPhone(e.target.value)}
-                                            className="w-full p-2 border rounded-lg"
-                                            placeholder="(00) 00000-0000"
-                                        />
-                                    </div>
-                                    <div className="flex justify-end gap-2 mt-2">
-                                        <button onClick={() => setIsCreatingTutor(false)} className="text-sm text-gray-500 hover:underline">Cancelar</button>
-                                        <button
-                                            onClick={handleCreateTutor}
-                                            disabled={!newTutorName}
-                                            className="bg-teal-600 text-white px-3 py-1.5 rounded-lg text-sm font-bold shadow-sm disabled:opacity-50"
-                                        >
-                                            Continuar
-                                        </button>
-                                    </div>
-                                </div>
-                            )}
+                                )}
+                                onSelect={(tutor) => {
+                                    setSelectedTutor(tutor);
+                                    setStep(2);
+                                }}
+                                onCreateNew={() => setIsFullTutorModalOpen(true)}
+                            />
+
+                            {/* Full Tutor Modal Integration */}
+                            <NewTutorModal
+                                isOpen={isFullTutorModalOpen}
+                                onClose={() => setIsFullTutorModalOpen(false)}
+                                onSuccess={(createdTutor) => {
+                                    if (createdTutor) {
+                                        setSelectedTutor(createdTutor);
+                                        setStep(2); // Auto-advance
+                                    }
+                                    setIsFullTutorModalOpen(false);
+                                }}
+                            />
                         </div>
                     )}
 

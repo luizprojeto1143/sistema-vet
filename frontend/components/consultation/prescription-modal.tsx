@@ -6,9 +6,10 @@ import { printDocument } from '@/utils/print';
 interface PrescriptionModalProps {
     isOpen: boolean;
     onClose: () => void;
+    clinic?: { name: string; address?: string; logoUrl?: string };
 }
 
-export default function PrescriptionModal({ isOpen, onClose }: PrescriptionModalProps) {
+export default function PrescriptionModal({ isOpen, onClose, clinic }: PrescriptionModalProps) {
     const [medications, setMedications] = useState<any[]>([]);
     const [drugName, setDrugName] = useState('');
     const [dosage, setDosage] = useState('');
@@ -29,7 +30,10 @@ export default function PrescriptionModal({ isOpen, onClose }: PrescriptionModal
             `• ${m.drugName} (${m.dosage})\n  ${m.instructions}`
         ).join('\n\n');
 
-        printDocument('Receituário Médico Veterinário', content);
+        // Use provided clinic logo or fallback
+        const logo = clinic?.logoUrl;
+
+        printDocument('Receituário Médico Veterinário', content, logo);
         onClose();
     };
 

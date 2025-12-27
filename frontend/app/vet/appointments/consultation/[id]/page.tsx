@@ -625,6 +625,7 @@ export default function ConsultationPage() {
          <PrescriptionModal
             isOpen={showPrescriptionModal}
             onClose={() => setShowPrescriptionModal(false)}
+            clinic={appointment?.clinic}
          />
       </div>
    );

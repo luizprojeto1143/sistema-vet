@@ -50,20 +50,32 @@ export class AppointmentsService {
 
         // 4. Resolve Pet/Tutor (Handle Placeholder or Missing)
         let petId = data.petId;
-        if (!petId || petId === 'pet-1' || data.patientName) {
-            // Create "Jackpot" - New Tutor & Pet on the fly
-            // Check if we can find by name (optional, skipping for MVP simplicity - just create new to allow duplicates/homonyms)
 
-            if (clinicId) {
+        // If we don't have a valid existing Pet ID, we need to create one
+        if (!petId || petId === 'pet-1') {
+            // Case A: Existing Tutor, New Pet
+            if (data.tutorId) {
+                const newPet = await this.prisma.pet.create({
+                    data: {
+                        name: data.patientName || 'Pet Sem Nome',
+                        species: 'DOG',
+                        tutorId: data.tutorId,
+                        clinicId
+                    }
+                });
+                petId = newPet.id;
+            }
+            // Case B: New Tutor, New Pet
+            else {
                 const tutor = await this.prisma.tutor.create({
                     data: {
                         fullName: data.tutorName || 'Tutor Visitante',
-                        phone: '00000000000',
+                        phone: data.tutorPhone || '00000000000', // Add phone support if passed
                         clinicId,
                         pets: {
                             create: {
                                 name: data.patientName || 'Pet Visitante',
-                                species: 'DOG', // Default
+                                species: 'DOG',
                                 clinicId
                             }
                         }

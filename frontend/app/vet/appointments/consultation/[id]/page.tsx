@@ -198,70 +198,92 @@ export default function ConsultationPage() {
 
             {/* TAB NAVIGATION */}
             <div className="bg-white border-b border-gray-200 px-6 flex gap-6 print:hidden">
-               {['Anamnese & Exame', 'Histórico', 'Arquivos', 'Vacinas'].map((tab) => (
-                  <button
-                     key={tab}
-                     onClick={() => activeTab !== 'anamnesis' && alert("Aba em desenvolvimento. Fique na Anamnese por enquanto!")}
-                     className={`py-3 text-sm font-bold border-b-2 transition-colors ${tab === 'Anamnese & Exame' ? 'border-indigo-600 text-indigo-600' : 'border-transparent text-gray-400 hover:text-gray-600'}`}
-                  >
-                     {tab}
-                  </button>
-               ))}
+               <button
+                  onClick={() => setActiveTab('anamnesis')}
+                  className={`py-3 text-sm font-bold border-b-2 transition-colors ${activeTab === 'anamnesis' ? 'border-indigo-600 text-indigo-600' : 'border-transparent text-gray-400 hover:text-gray-600'}`}
+               >
+                  Anamnese & Exame
+               </button>
+               <button
+                  onClick={() => setActiveTab('history')}
+                  className={`py-3 text-sm font-bold border-b-2 transition-colors ${activeTab === 'history' ? 'border-indigo-600 text-indigo-600' : 'border-transparent text-gray-400 hover:text-gray-600'}`}
+               >
+                  Histórico
+               </button>
+               <button
+                  onClick={() => setActiveTab('files')}
+                  className={`py-3 text-sm font-bold border-b-2 transition-colors ${activeTab === 'files' ? 'border-indigo-600 text-indigo-600' : 'border-transparent text-gray-400 hover:text-gray-600'}`}
+               >
+                  Arquivos
+               </button>
+               <button
+                  onClick={() => setActiveTab('vaccines')}
+                  className={`py-3 text-sm font-bold border-b-2 transition-colors ${activeTab === 'vaccines' ? 'border-indigo-600 text-indigo-600' : 'border-transparent text-gray-400 hover:text-gray-600'}`}
+               >
+                  Vacinas
+               </button>
             </div>
 
             {/* SCROLLABLE WORKSPACE */}
             <div className="flex-1 overflow-y-auto p-6 bg-slate-50 space-y-4 print:p-0 print:bg-white">
 
-               {/* Editor Section */}
-               <div className="bg-white rounded-2xl shadow-sm border border-gray-200 overflow-hidden print:shadow-none print:border-none">
-                  <div className="bg-gray-50 px-4 py-2 border-b border-gray-100 flex justify-between items-center">
-                     <span className="text-xs font-bold text-gray-500 uppercase tracking-wider">Avaliação Clínica</span>
-                     <div className="flex gap-2">
-                        <button
-                           onClick={() => setAnamnesisText(prev => prev + (prev ? '\n\n' : '') + "**Queixa Principal:** \n\n**Histórico:** \n\n**Alimentação:** ")}
-                           className="text-xs font-bold text-indigo-600 bg-indigo-50 px-3 py-1 rounded-lg hover:bg-indigo-100 transition-colors"
-                        >
-                           + Incluir Cabeçalho
-                        </button>
+               {activeTab === 'anamnesis' ? (
+                  <div className="bg-white rounded-2xl shadow-sm border border-gray-200 overflow-hidden print:shadow-none print:border-none">
+                     <div className="bg-gray-50 px-4 py-2 border-b border-gray-100 flex justify-between items-center">
+                        <span className="text-xs font-bold text-gray-500 uppercase tracking-wider">Avaliação Clínica</span>
+                        <div className="flex gap-2">
+                           <button
+                              onClick={() => setAnamnesisText(prev => prev + (prev ? '\n\n' : '') + "**Queixa Principal:** \n\n**Histórico:** \n\n**Alimentação:** ")}
+                              className="text-xs font-bold text-indigo-600 bg-indigo-50 px-3 py-1 rounded-lg hover:bg-indigo-100 transition-colors"
+                           >
+                              + Incluir Cabeçalho
+                           </button>
+                        </div>
                      </div>
-                  </div>
-                  <div className="p-6 space-y-6">
-                     <div>
-                        <label className="block text-sm font-bold text-gray-700 mb-2">Queixa Principal / Anamnese</label>
-                        <textarea
-                           className="w-full h-32 p-4 bg-gray-50 border-0 rounded-xl text-gray-800 placeholder-gray-400 focus:ring-2 focus:ring-indigo-100 transition-all resize-none"
-                           placeholder="Descreva os sintomas relatados pelo tutor..."
-                           value={anamnesisText}
-                           onChange={e => setAnamnesisText(e.target.value)}
-                        ></textarea>
-                     </div>
+                     <div className="p-6 space-y-6">
+                        <div>
+                           <label className="block text-sm font-bold text-gray-700 mb-2">Queixa Principal / Anamnese</label>
+                           <textarea
+                              className="w-full h-32 p-4 bg-gray-50 border-0 rounded-xl text-gray-800 placeholder-gray-400 focus:ring-2 focus:ring-indigo-100 transition-all resize-none"
+                              placeholder="Descreva os sintomas relatados pelo tutor..."
+                              value={anamnesisText}
+                              onChange={e => setAnamnesisText(e.target.value)}
+                           ></textarea>
+                        </div>
 
-                     <div>
-                        <label className="block text-sm font-bold text-gray-700 mb-2">Exame Físico & Diagnóstico</label>
-                        <textarea
-                           className="w-full h-32 p-4 bg-gray-50 border-0 rounded-xl text-gray-800 placeholder-gray-400 focus:ring-2 focus:ring-indigo-100 transition-all resize-none"
-                           placeholder="Achados clínicos e hipóteses diagnósticas..."
-                           value={diagnosisText}
-                           onChange={e => setDiagnosisText(e.target.value)}
-                        ></textarea>
+                        <div>
+                           <label className="block text-sm font-bold text-gray-700 mb-2">Exame Físico & Diagnóstico</label>
+                           <textarea
+                              className="w-full h-32 p-4 bg-gray-50 border-0 rounded-xl text-gray-800 placeholder-gray-400 focus:ring-2 focus:ring-indigo-100 transition-all resize-none"
+                              placeholder="Achados clínicos e hipóteses diagnósticas..."
+                              value={diagnosisText}
+                              onChange={e => setDiagnosisText(e.target.value)}
+                           ></textarea>
+                        </div>
+                     </div>
+                     {/* Bottom Toolbar */}
+                     <div className="px-6 py-3 border-t border-gray-100 bg-gray-50/50 flex items-center justify-between">
+                        <div className="flex gap-2">
+                           {/* AI Button */}
+                           <button
+                              onClick={() => {
+                                 alert("Recurso de Gravação de Voz (IA) será ativado na próxima etapa!");
+                              }}
+                              className="flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-blue-600 to-indigo-600 text-white rounded-xl shadow-lg shadow-indigo-200 hover:scale-105 transition-transform font-bold text-xs"
+                           >
+                              <MicrophoneIcon className="w-4 h-4" /> Iniciar Gravação (IA)
+                           </button>
+                        </div>
+                        <span className="text-xs text-gray-400 italic">Rascunho salvo às 14:02</span>
                      </div>
                   </div>
-                  {/* Bottom Toolbar */}
-                  <div className="px-6 py-3 border-t border-gray-100 bg-gray-50/50 flex items-center justify-between">
-                     <div className="flex gap-2">
-                        {/* AI Button */}
-                        <button
-                           onClick={() => {
-                              alert("Recurso de Gravação de Voz (IA) será ativado na próxima etapa!");
-                           }}
-                           className="flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-blue-600 to-indigo-600 text-white rounded-xl shadow-lg shadow-indigo-200 hover:scale-105 transition-transform font-bold text-xs"
-                        >
-                           <MicrophoneIcon className="w-4 h-4" /> Iniciar Gravação (IA)
-                        </button>
-                     </div>
-                     <span className="text-xs text-gray-400 italic">Rascunho salvo às 14:02</span>
-                  </div>
-               </div>
+               ) : activeTab === 'history' ? (
+                  <MedicalHistoryTab petId={appointment?.pet?.id} />
+               ) : activeTab === 'files' ? (
+                  <FilesTab petId={appointment?.pet?.id} />
+               ) : (
+                  <VaccinesTab petId={appointment?.pet?.id} />
+               )}
 
             </div>
          </main>

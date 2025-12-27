@@ -1,3 +1,4 @@
+"use client";
 import React from 'react';
 import { Clock, User, Calendar, MoreVertical } from 'lucide-react';
 

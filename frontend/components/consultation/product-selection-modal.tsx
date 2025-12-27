@@ -25,7 +25,7 @@ export default function ProductSelectionModal({ isOpen, onClose, onConfirm }: Pr
 
     useEffect(() => {
         if (search) {
-            setFilteredProducts(products.filter(p => p.name.toLowerCase().includes(search.toLowerCase())));
+            setFilteredProducts(products.filter(p => p.name?.toLowerCase().includes(search.toLowerCase())));
         } else {
             setFilteredProducts(products);
         }

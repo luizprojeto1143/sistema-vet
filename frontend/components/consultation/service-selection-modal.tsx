@@ -23,7 +23,7 @@ export default function ServiceSelectionModal({ isOpen, onClose, onConfirm }: Se
 
     useEffect(() => {
         if (search) {
-            setFilteredServices(services.filter(s => s.name.toLowerCase().includes(search.toLowerCase())));
+            setFilteredServices(services.filter(s => s.name?.toLowerCase().includes(search.toLowerCase())));
         } else {
             setFilteredServices(services);
         }

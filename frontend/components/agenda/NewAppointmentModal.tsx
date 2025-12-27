@@ -100,7 +100,7 @@ export default function NewAppointmentModal({ isOpen, onClose, onSuccess, initia
 
             if (selectedTutor?.id === 'NEW') {
                 payload.tutorName = selectedTutor.fullName;
-                // If creating completely new structure, backend supports it
+                payload.tutorPhone = selectedTutor.phone;
             } else {
                 payload.tutorId = selectedTutor?.id;
             }

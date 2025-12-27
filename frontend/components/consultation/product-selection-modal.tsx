@@ -105,7 +105,7 @@ export default function ProductSelectionModal({ isOpen, onClose, onConfirm }: Pr
                 <div className="flex-1 overflow-y-auto p-2">
                     {loading ? (
                         <div className="text-center py-8 text-gray-400">Carregando estoque...</div>
-                    ) : filteredServices.length === 0 ? (
+                    ) : filteredProducts.length === 0 ? (
                         <div className="text-center py-8 text-gray-400">Nenhum produto encontrado.</div>
                     ) : (
                         <div className="space-y-1">

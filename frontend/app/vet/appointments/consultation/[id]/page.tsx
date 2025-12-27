@@ -14,7 +14,7 @@ import {
    MapPinIcon,
    TagIcon,
    CurrencyDollarIcon,
-   shoppingCartIcon,
+   ShoppingCartIcon,
    EllipsisVerticalIcon,
    ChevronDownIcon,
    PlayIcon,

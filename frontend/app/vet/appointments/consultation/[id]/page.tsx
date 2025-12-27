@@ -36,6 +36,10 @@ export default function ConsultationPage() {
    const [loading, setLoading] = useState(true);
    const [activeTab, setActiveTab] = useState<'anamnesis' | 'history' | 'files' | 'vaccines'>('anamnesis');
 
+   // AI Recording State
+   const [isRecording, setIsRecording] = useState(false);
+   const recognitionRef = React.useRef<any>(null);
+
    // Modals State
    const [showKitModal, setShowKitModal] = useState(false);
    const [showServiceModal, setShowServiceModal] = useState(false);
@@ -53,6 +57,39 @@ export default function ConsultationPage() {
       // ... existing fetch ...
    }, [params?.id]);
 
+
+   const toggleRecording = () => {
+      if (isRecording) {
+         recognitionRef.current?.stop();
+         setIsRecording(false);
+         return;
+      }
+
+      if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
+         const SpeechRecognition = (window as any).webkitSpeechRecognition || (window as any).SpeechRecognition;
+         const recognition = new SpeechRecognition();
+         recognition.continuous = true;
+         recognition.interimResults = true;
+         recognition.lang = 'pt-BR';
+
+         recognition.onresult = (event: any) => {
+            let interimTranscript = '';
+            for (let i = event.resultIndex; i < event.results.length; ++i) {
+               if (event.results[i].isFinal) {
+                  setAnamnesisText(prev => prev + ' ' + event.results[i][0].transcript);
+               } else {
+                  interimTranscript += event.results[i][0].transcript;
+               }
+            }
+         };
+
+         recognition.start();
+         recognitionRef.current = recognition;
+         setIsRecording(true);
+      } else {
+         alert("Seu navegador não suporta reconhecimento de voz.");
+      }
+   };
 
    const handleFinish = async () => {
       // Logic to save medical record and finish appointment
@@ -266,12 +303,14 @@ export default function ConsultationPage() {
                         <div className="flex gap-2">
                            {/* AI Button */}
                            <button
-                              onClick={() => {
-                                 alert("Recurso de Gravação de Voz (IA) será ativado na próxima etapa!");
-                              }}
-                              className="flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-blue-600 to-indigo-600 text-white rounded-xl shadow-lg shadow-indigo-200 hover:scale-105 transition-transform font-bold text-xs"
+                              onClick={toggleRecording}
+                              className={`flex items-center gap-2 px-4 py-2 rounded-xl shadow-lg transition-all font-bold text-xs ${isRecording
+                                    ? 'bg-red-50 text-red-600 border border-red-200 animate-pulse'
+                                    : 'bg-gradient-to-r from-blue-600 to-indigo-600 text-white shadow-indigo-200 hover:scale-105'
+                                 }`}
                            >
-                              <MicrophoneIcon className="w-4 h-4" /> Iniciar Gravação (IA)
+                              <MicrophoneIcon className={`w-4 h-4 ${isRecording ? 'animate-bounce' : ''}`} />
+                              {isRecording ? 'Parar Gravação' : 'Iniciar Gravação (IA)'}
                            </button>
                         </div>
                         <span className="text-xs text-gray-400 italic">Rascunho salvo às 14:02</span>

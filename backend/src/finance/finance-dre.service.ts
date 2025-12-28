@@ -8,7 +8,7 @@ export class FinanceDREService {
     async getDRE(clinicId: string, startDate: Date, endDate: Date) {
         // 1. Gross Revenue (Service + Product Sales)
         const income = await this.prisma.financialTransaction.aggregate({
-            where: { clinicId, type: 'INCOME', date: { gte: startDate, lte: endDate } },
+            where: { clinicId, type: 'INCOME', createdAt: { gte: startDate, lte: endDate } },
             _sum: { amount: true }
         });
 
@@ -16,7 +16,7 @@ export class FinanceDREService {
         // Mocking COGS as 40% of Product Sales for now
         // Ideally we sum 'EXPENSE' with category 'COST'
         const expenses = await this.prisma.financialTransaction.aggregate({
-            where: { clinicId, type: 'EXPENSE', date: { gte: startDate, lte: endDate } },
+            where: { clinicId, type: 'EXPENSE', createdAt: { gte: startDate, lte: endDate } },
             _sum: { amount: true }
         });
 

@@ -199,6 +199,7 @@ export default function ConsultationPage() {
       } else {
          setConsumedItems([...consumedItems, {
             id: item.id,
+            productId: item.id, // Critical for Stock Decrement
             name: item.name,
             price: item.price,
             quantity: 1,

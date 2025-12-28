@@ -14,63 +14,77 @@ export class UpsellService {
     constructor(private prisma: PrismaService) { }
 
     async getSuggestions(data: {
-        items: string[]; // List of names or IDs of currently added items
+        items: string[];
         species?: string;
         weight?: number;
     }): Promise<Suggestion[]> {
         const suggestions: Suggestion[] = [];
-        const { items, species } = data;
+        const { items } = data;
 
-        // --- HARDCODED RULES ENGINE (MVP) ---
-        // In the future, this would come from a database table 'SalesRules'
+        // Helper to find real product
+        const findProduct = async (keyword: string) => {
+            return this.prisma.product.findFirst({
+                where: {
+                    name: { contains: keyword, mode: 'insensitive' },
+                    currentStock: { gt: 0 } // Only suggest if in stock
+                }
+            });
+        };
 
         // 1. Vaccine Logic
         if (items.some(i => i.toLowerCase().includes('vacina') || i.toLowerCase().includes('v8') || i.toLowerCase().includes('v10'))) {
-            suggestions.push({
-                id: 'mock-vermifugo', // In real app, we'd fetch actual Product ID
-                name: 'Vermífugo Plus',
-                type: 'PRODUCT',
-                reason: 'Protocolo Vacinal: Requeiro vermifugação.',
-                price: 45.00
-            });
-            suggestions.push({
-                id: 'mock-antipulgas',
-                name: 'Antipulgas Spot-On',
-                type: 'PRODUCT',
-                reason: 'Proteção completa recomendada.',
-                price: 89.90
-            });
+
+            const vermifugo = await findProduct('Vermífugo');
+            if (vermifugo) {
+                suggestions.push({
+                    id: vermifugo.id,
+                    name: vermifugo.name,
+                    type: 'PRODUCT',
+                    reason: 'Protocolo Vacinal: Requeiro vermifugação.',
+                    price: Number(vermifugo.salePrice)
+                });
+            }
+
+            const antipulgas = await findProduct('Antipulgas');
+            if (antipulgas) {
+                suggestions.push({
+                    id: antipulgas.id,
+                    name: antipulgas.name,
+                    type: 'PRODUCT',
+                    reason: 'Proteção completa recomendada.',
+                    price: Number(antipulgas.salePrice)
+                });
+            }
         }
 
         // 2. Dermatology Logic
         if (items.some(i => i.toLowerCase().includes('otite') || i.toLowerCase().includes('pele') || i.toLowerCase().includes('coceira'))) {
-            suggestions.push({
-                id: 'mock-cytology',
-                name: 'Citologia de Ouvido',
-                type: 'SERVICE',
-                reason: 'Investigação padrão para otite/pele.',
-                price: 80.00
-            });
-            suggestions.push({
-                id: 'mock-shampoo',
-                name: 'Shampoo Hipoalergênico',
-                type: 'PRODUCT',
-                reason: 'Tratamento de suporte dermatológico.',
-                price: 120.00
-            });
+            // Service suggestion stays mock/hardcoded or fetching from Service table
+            const cytologia = await this.prisma.service.findFirst({ where: { name: { contains: 'Citologia', mode: 'insensitive' } } });
+            if (cytologia) {
+                suggestions.push({
+                    id: cytologia.id,
+                    name: cytologia.name,
+                    type: 'SERVICE',
+                    reason: 'Investigação padrão para otite/pele.',
+                    price: Number(cytologia.price)
+                });
+            }
+
+            const shampoo = await findProduct('Shampoo');
+            if (shampoo) {
+                suggestions.push({
+                    id: shampoo.id,
+                    name: shampoo.name,
+                    type: 'PRODUCT',
+                    reason: 'Tratamento de suporte dermatológico.',
+                    price: Number(shampoo.salePrice)
+                });
+            }
         }
 
-        // 3. Senior Care
-        // If we had age in context... let's assume specific service trigger
-        if (items.some(i => i.toLowerCase().includes('geriatria') || i.toLowerCase().includes('renal'))) {
-            suggestions.push({
-                id: 'mock-renal-food',
-                name: 'Ração Renal Care 2kg',
-                type: 'PRODUCT',
-                reason: 'Suporte nutricional para paciente renal.',
-                price: 210.00
-            });
-        }
+        return suggestions;
+    }
 
         // Fetch real prices/IDs if needed (Mocking for speed)
         // const realProducts = await this.prisma.product.findMany(...)

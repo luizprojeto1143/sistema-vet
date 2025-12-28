@@ -6,10 +6,13 @@ import { CommissionService } from './commission.service';
 import { LedgerService } from './ledger.service';
 import { StockModule } from '../stock/stock.module';
 
+import { FinanceDREController } from './finance-dre.controller';
+import { FinanceDREService } from './finance-dre.service';
+
 @Module({
     imports: [PrismaModule, StockModule],
-    controllers: [FinanceController],
-    providers: [FinanceService, CommissionService, LedgerService],
+    controllers: [FinanceController, FinanceDREController],
+    providers: [FinanceService, CommissionService, LedgerService, FinanceDREService],
     exports: [FinanceService, CommissionService, LedgerService]
 })
 export class FinanceModule { }

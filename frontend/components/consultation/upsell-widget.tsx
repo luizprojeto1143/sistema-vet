@@ -9,6 +9,7 @@ interface Suggestion {
     type: 'PRODUCT' | 'SERVICE';
     reason: string;
     price: number;
+    script?: string;
 }
 
 interface Props {

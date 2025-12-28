@@ -85,10 +85,4 @@ export class UpsellService {
 
         return suggestions;
     }
-
-        // Fetch real prices/IDs if needed (Mocking for speed)
-        // const realProducts = await this.prisma.product.findMany(...)
-
-        return suggestions;
-    }
 }

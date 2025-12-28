@@ -64,6 +64,12 @@ export default function FinanceDashboard() {
                         Relatórios
                     </button>
                     <button
+                        onClick={() => window.location.href = '/admin/finance/withdraw'}
+                        className="bg-white border border-slate-200 text-slate-600 px-4 py-2 rounded-lg font-bold hover:bg-slate-50 transition-colors"
+                    >
+                        Meus Saques
+                    </button>
+                    <button
                         onClick={() => alert('Abrir Modal de Despesa Rápida (Feature 13)')}
                         className="bg-brand-600 text-white px-4 py-2 rounded-lg font-bold hover:bg-brand-700 transition-colors flex items-center gap-2 shadow-lg shadow-brand-500/30"
                     >

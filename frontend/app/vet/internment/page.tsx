@@ -78,6 +78,13 @@ export default function InternmentDashboard() {
                             <UserIcon className="h-3 w-3" />
                             Passagem de Plantão
                         </button>
+                        <button
+                            onClick={() => window.open('/internment/tv', '_blank')}
+                            className="bg-gray-700 hover:bg-gray-600 text-white text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wider flex items-center gap-1 transition-colors border border-gray-600"
+                        >
+                            <VideoCameraIcon className="h-3 w-3" />
+                            Modo TV
+                        </button>
                     </div>
                 </div>
 

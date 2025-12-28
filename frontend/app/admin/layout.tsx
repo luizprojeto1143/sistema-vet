@@ -48,6 +48,19 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
                                 {item.name}
                             </Link>
                         ))}
+
+                        <div className="pt-4 mt-4 border-t border-gray-100">
+                            <p className="px-4 text-xs font-bold text-gray-400 uppercase tracking-wider mb-2">Apps Extras</p>
+                            <Link href="/petshop" className="block p-3 rounded-xl hover:bg-brand-50 text-gray-500 hover:text-brand-600 font-medium flex items-center gap-3 transition-all">
+                                <span>✂️</span> Petshop & Banho
+                            </Link>
+                            <Link href="/admin/cx" className="block p-3 rounded-xl hover:bg-brand-50 text-gray-500 hover:text-brand-600 font-medium flex items-center gap-3 transition-all">
+                                <span>💬</span> CX & Marketing
+                            </Link>
+                            <Link href="/admin/hr" className="block p-3 rounded-xl hover:bg-brand-50 text-gray-500 hover:text-brand-600 font-medium flex items-center gap-3 transition-all">
+                                <span>👥</span> RH & Escalas
+                            </Link>
+                        </div>
                     </nav>
                     <div className="p-6 bg-gray-50 border-t border-gray-100">
                         <Link href="/vet" className="flex items-center gap-2 text-sm font-bold text-gray-500 hover:text-brand-600 transition-colors mb-4 p-2 hover:bg-white rounded-xl">

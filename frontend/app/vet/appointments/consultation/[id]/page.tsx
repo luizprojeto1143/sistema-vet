@@ -504,6 +504,12 @@ export default function ConsultationPage() {
             {/* Lists */}
             <div className="flex-1 overflow-y-auto p-4 space-y-6">
 
+               {/* SMART SALES WIDGET */}
+               <UpsellWidget
+                  items={allCurrentItems}
+                  onAddItem={handleUpsellAdd}
+               />
+
                {/* Services Section */}
                <div>
                   <div className="flex justify-between items-center mb-3">

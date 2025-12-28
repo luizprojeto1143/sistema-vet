@@ -192,6 +192,28 @@ export default function ConsultationPage() {
    if (loading) return <div className="h-screen flex items-center justify-center bg-gray-50 text-indigo-600 font-bold animate-pulse">Carregando Ambiente Clínico...</div>;
    if (!appointment) return <div>Erro ao carregar dados.</div>;
 
+   // Upsell handling
+   const handleUpsellAdd = (item: any) => {
+      if (item.type === 'SERVICE') {
+         setServices([...services, item]);
+      } else {
+         setConsumedItems([...consumedItems, {
+            id: item.id,
+            name: item.name,
+            price: item.price,
+            quantity: 1,
+            type: 'PRODUCT'
+         }]);
+      }
+   };
+
+   // Combine all items for the upsell widget to analyze
+   const allCurrentItems = [
+      ...(appointment?.service ? [appointment.service.name] : []),
+      ...services.map(s => s.name),
+      ...consumedItems.map(p => p.name)
+   ];
+
    return (
       <div className="h-screen flex bg-gray-100 font-sans overflow-hidden">
          {/* ... (rest of layout) ... */}

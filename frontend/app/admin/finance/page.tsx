@@ -1,6 +1,9 @@
+```
 "use client";
 
 import React, { useState, useEffect } from 'react';
+import FinanceDREWidget from '@/components/finance/finance-dre-widget';
+import Link from 'next/link';
 import {
     BanknotesIcon,
     ArrowTrendingUpIcon,
@@ -61,7 +64,12 @@ export default function FinanceDashboard() {
             <h1 className="text-2xl font-bold text-slate-800 mb-6">Painel Financeiro</h1>
 
             {/* KPI Cards */}
-            <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+            {/* DRE Widget (New) */}
+            <div className="mb-8">
+                <FinanceDREWidget />
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
                 <div className="bg-white p-6 rounded-2xl shadow-sm border border-slate-100">
                     <div className="flex items-center gap-4 mb-2">
                         <div className="p-3 bg-green-100 text-green-600 rounded-lg">
@@ -125,7 +133,7 @@ export default function FinanceDashboard() {
                         <BarChart data={chartData}>
                             <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#E2E8F0" />
                             <XAxis dataKey="date" stroke="#94A3B8" fontSize={12} tickLine={false} axisLine={false} />
-                            <YAxis stroke="#94A3B8" fontSize={12} tickLine={false} axisLine={false} tickFormatter={(val) => `R$${val}`} />
+                            <YAxis stroke="#94A3B8" fontSize={12} tickLine={false} axisLine={false} tickFormatter={(val) => `R$${ val } `} />
                             <Tooltip
                                 contentStyle={{ backgroundColor: '#fff', borderRadius: '12px', border: '1px solid #e2e8f0', boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)' }}
                                 itemStyle={{ color: '#1e293b' }}
@@ -142,7 +150,7 @@ export default function FinanceDashboard() {
                         {recentTransactions.map((tx: any) => (
                             <div key={tx.id} className="flex items-center justify-between p-4 bg-slate-50 rounded-xl border border-slate-100">
                                 <div className="flex items-center gap-4">
-                                    <div className={`h-10 w-10 rounded-full flex items-center justify-center ${tx.type === 'INCOME' ? 'bg-green-100 text-green-600' : 'bg-red-100 text-red-600'}`}>
+                                    <div className={`h - 10 w - 10 rounded - full flex items - center justify - center ${ tx.type === 'INCOME' ? 'bg-green-100 text-green-600' : 'bg-red-100 text-red-600' } `}>
                                         {tx.type === 'INCOME' ? <ArrowTrendingUpIcon className="h-5 w-5" /> : <ArrowTrendingDownIcon className="h-5 w-5" />}
                                     </div>
                                     <div>
@@ -150,7 +158,7 @@ export default function FinanceDashboard() {
                                         <div className="text-xs text-slate-400">{tx.date} • {tx.status}</div>
                                     </div>
                                 </div>
-                                <div className={`font-bold ${tx.type === 'INCOME' ? 'text-green-600' : 'text-red-600'}`}>
+                                <div className={`font - bold ${ tx.type === 'INCOME' ? 'text-green-600' : 'text-red-600' } `}>
                                     {tx.type === 'INCOME' ? '+' : '-'} R$ {tx.amount.toFixed(2)}
                                 </div>
                             </div>

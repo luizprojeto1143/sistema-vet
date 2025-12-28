@@ -12,6 +12,7 @@ import FilesTab from '@/components/consultation/tabs/files-tab';
 import TemplatesModal from '@/components/consultation/templates-modal';
 import VitalsModal from '@/components/consultation/vitals-modal';
 import PrescriptionModal from '@/components/consultation/prescription-modal';
+import UpsellWidget from '@/components/consultation/upsell-widget';
 import {
    HeartIcon,
    MicrophoneIcon,

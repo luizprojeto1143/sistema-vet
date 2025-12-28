@@ -80,10 +80,10 @@ export default function ClinicSettingsPage() {
                         </div>
                     </div>
                     <button
-                        onClick={() => router.push('/admin/settings/audit')}
+                        onClick={() => router.push('/admin/security')}
                         className="bg-amber-500 text-white px-4 py-2 rounded-lg font-bold text-sm hover:bg-amber-600 transition-colors flex items-center gap-2"
                     >
-                        Ver Logs
+                        Ver Painel de Segurança
                         <ChevronRightIcon className="w-4 h-4" />
                     </button>
                 </div>

@@ -64,10 +64,22 @@ export default function FinanceDashboard() {
                         Relatórios
                     </button>
                     <button
+                        onClick={() => window.location.href = '/finance/pos'}
+                        className="bg-indigo-600 text-white border border-indigo-600 px-4 py-2 rounded-lg font-bold hover:bg-indigo-700 transition-colors shadow-md"
+                    >
+                        Abrir Caixa (PDV)
+                    </button>
+                    <button
                         onClick={() => window.location.href = '/admin/finance/withdraw'}
                         className="bg-white border border-slate-200 text-slate-600 px-4 py-2 rounded-lg font-bold hover:bg-slate-50 transition-colors"
                     >
                         Meus Saques
+                    </button>
+                    <button
+                        onClick={() => window.location.href = '/finance/pos'}
+                        className="bg-indigo-600 text-white border border-indigo-600 px-4 py-2 rounded-lg font-bold hover:bg-indigo-700 transition-colors shadow-md"
+                    >
+                        Abrir Caixa (PDV)
                     </button>
                     <button
                         onClick={() => alert('Abrir Modal de Despesa Rápida (Feature 13)')}

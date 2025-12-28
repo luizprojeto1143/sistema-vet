@@ -253,9 +253,14 @@ export default function ReceptionDashboard() {
             <div className="bg-white rounded-xl shadow-lg border border-gray-100 overflow-hidden">
                 <div className="p-4 bg-gray-50 border-b flex justify-between items-center">
                     <h2 className="text-xl font-bold text-gray-700">Fluxo de Pacientes</h2>
-                    <button onClick={() => router.push('/vet/appointments')} className="bg-blue-600 text-white px-4 py-2 rounded-lg font-bold hover:bg-blue-700 text-sm">
-                        + Novo (Agenda)
-                    </button>
+                    <div className="flex gap-2">
+                        <button onClick={() => window.open('/tutor/checkin', '_blank')} className="bg-white border border-gray-300 text-gray-700 px-4 py-2 rounded-lg font-bold hover:bg-gray-50 text-sm flex items-center gap-2">
+                            📱 Totem
+                        </button>
+                        <button onClick={() => router.push('/vet/appointments')} className="bg-blue-600 text-white px-4 py-2 rounded-lg font-bold hover:bg-blue-700 text-sm">
+                            + Novo (Agenda)
+                        </button>
+                    </div>
                 </div>
 
                 <div className="divide-y divide-gray-100">

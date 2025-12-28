@@ -51,6 +51,28 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
 
                         <div className="pt-4 mt-4 border-t border-gray-100">
                             <p className="px-4 text-xs font-bold text-gray-400 uppercase tracking-wider mb-2">Apps Extras</p>
+                            <Link href="/reception" className="block p-3 rounded-xl hover:bg-brand-50 text-gray-500 hover:text-brand-600 font-medium flex items-center gap-3 transition-all">
+                                <span>🛎️</span> Recepção
+                            </Link>
+                            <Link href="/petshop" className="block p-3 rounded-xl hover:bg-brand-50 text-gray-500 hover:text-brand-600 font-medium flex items-center gap-3 transition-all">
+                                <span>✂️</span> Petshop
+                            </Link>
+                            <Link href="/admin/cx" className="block p-3 rounded-xl hover:bg-brand-50 text-gray-500 hover:text-brand-600 font-medium flex items-center gap-3 transition-all">
+                                <span>💬</span> CX (NPS)
+                            </Link>
+                            <Link href="/admin/marketing" className="block p-3 rounded-xl hover:bg-brand-50 text-gray-500 hover:text-brand-600 font-medium flex items-center gap-3 transition-all">
+                                <span>📣</span> Marketing
+                            </Link>
+                            <Link href="/admin/hr" className="block p-3 rounded-xl hover:bg-brand-50 text-gray-500 hover:text-brand-600 font-medium flex items-center gap-3 transition-all">
+                                <span>👥</span> RH
+                            </Link>
+                        </div>
+
+                        <div className="pt-4 mt-4 border-t border-gray-100">
+                            <p className="px-4 text-xs font-bold text-gray-400 uppercase tracking-wider mb-2">Apps Extras</p>
+                            <Link href="/reception" className="block p-3 rounded-xl hover:bg-brand-50 text-gray-500 hover:text-brand-600 font-medium flex items-center gap-3 transition-all">
+                                <span>🛎️</span> Recepção & Triagem
+                            </Link>
                             <Link href="/petshop" className="block p-3 rounded-xl hover:bg-brand-50 text-gray-500 hover:text-brand-600 font-medium flex items-center gap-3 transition-all">
                                 <span>✂️</span> Petshop & Banho
                             </Link>

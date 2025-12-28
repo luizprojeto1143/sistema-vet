@@ -36,11 +36,11 @@ export default function SettingsPage() {
             path: '/settings/notifications'
         },
         {
-            title: 'Segurança',
-            description: 'Alterar senha e logs de acesso.',
+            title: 'Segurança & Auditoria',
+            description: 'Logs de acesso e trilha de auditoria (LGPD).',
             icon: Shield,
             color: 'bg-red-100 text-red-600',
-            path: '/settings/security'
+            path: '/admin/settings/audit'
         },
         {
             title: 'Backup e Dados',

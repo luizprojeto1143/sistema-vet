@@ -98,7 +98,7 @@ model Clinic {
   referredBy     Clinic?  @relation("ClinicReferral", fields: [referredById], references: [id])
   referrals      Clinic[] @relation("ClinicReferral")
   cashierSessions CashierSession[]
-  auditLogs     AuditLog[]
+  auditLogs       AuditLog[]
   wards         Ward[]
 }
 
@@ -683,27 +683,7 @@ model SignedDocument {
   medicalRecord   MedicalRecord? @relation(fields: [medicalRecordId], references: [id])
 }
 
-// ------------------------------------------------------
-// 9. AUDIT
-// ------------------------------------------------------
 
-model AuditLog {
-  id            String   @id @default(uuid())
-  action        String
-  entityType    String?
-  entityId      String?
-  beforeJson    String?
-  afterJson     String?
-  details       String?
-  
-  userId        String
-  user          User     @relation(fields: [userId], references: [id])
-  
-  clinicId      String?
-  clinic        Clinic?  @relation(fields: [clinicId], references: [id])
-  
-  createdAt     DateTime @default(now())
-}
 
 model StockMovement {
   id            String   @id @default(uuid())
@@ -1028,3 +1008,30 @@ model InvoiceItem {
 }
 
 
+
+
+
+// ------------------------------------------------------
+// 8. AUDIT & LEGAL COMPLIANCE
+// ------------------------------------------------------
+
+model AuditLog {
+  id        String   @id @default(uuid())
+  clinicId  String
+  userId    String?  // Nullable if system action
+  action    String   // CREATE, UPDATE, DELETE, VIEW
+  entity    String   // Service, MedicalRecord, User, etc.
+  entityId  String   // ID of the modified entity
+  oldValue  String?  @db.Text // JSON String
+  newValue  String?  @db.Text // JSON String
+  ipAddress String?
+  userAgent String?
+  timestamp DateTime @default(now())
+
+  clinic    Clinic   @relation(fields: [clinicId], references: [id])
+  user      User?    @relation(fields: [userId], references: [id])
+
+  @@index([clinicId])
+  @@index([entity])
+  @@index([entityId])
+}

@@ -1,8 +1,6 @@
 import { Module } from '@nestjs/common';
 import { ServeStaticModule } from '@nestjs/serve-static';
 import { join } from 'path';
-import { APP_INTERCEPTOR } from '@nestjs/core';
-import { AuditInterceptor } from './common/audit.interceptor';
 import { PrismaModule } from './prisma/prisma.module';
 import { AuthModule } from './auth/auth.module';
 import { ClinicModule } from './clinic/clinic.module';
@@ -26,8 +24,7 @@ import { TelemedicineModule } from './telemedicine/telemedicine.module';
 import { EventsModule } from './events/events.module';
 import { FiscalModule } from './fiscal/fiscal.module';
 import { NotificationsModule } from './notifications/notifications.module';
-
-import { AuditController } from './common/audit.controller';
+import { AuditModule } from './audit/audit.module';
 
 import { AppController } from './app.controller';
 
@@ -54,14 +51,10 @@ import { AppController } from './app.controller';
         TelemedicineModule,
         EventsModule,
         FiscalModule,
-        NotificationsModule
+        NotificationsModule,
+        AuditModule
     ],
-    controllers: [AppController, UploadController, AuditController],
-    providers: [
-        {
-            provide: APP_INTERCEPTOR,
-            useClass: AuditInterceptor,
-        },
-    ],
+    controllers: [AppController, UploadController],
+    providers: [],
 })
 export class AppModule { }

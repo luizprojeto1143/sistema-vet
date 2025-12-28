@@ -12,7 +12,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
         { name: '👥 Usuários & Acesso', path: '/admin/users' },
         { name: '🩺 Serviços & Preços', path: '/admin/services' },
         { name: '⚙️ Configurações & Regras', path: '/admin/settings' },
-        { name: '📄 Documentos & Templates', path: '/admin/templates' },
+        { name: '📄 Documentos & Templates', path: '/admin/settings/documents' },
         { name: '📦 Produtos (Estoque)', path: '/admin/products' }, // existing
         { name: '🏥 Internação (Config)', path: '/admin/settings/internment' },
         // Finance moved to sub-menu in real app or kept here

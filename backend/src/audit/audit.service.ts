@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
+import { Prisma } from '@prisma/client';
 
 @Injectable()
 export class AuditService {
@@ -19,9 +20,15 @@ export class AuditService {
         try {
             await this.prisma.auditLog.create({
                 data: {
-                    ...data,
-                    oldValue: data.oldValue ? JSON.stringify(data.oldValue) : null,
-                    newValue: data.newValue ? JSON.stringify(data.newValue) : null,
+                    clinicId: data.clinicId,
+                    userId: data.userId,
+                    action: data.action,
+                    entity: data.entity,
+                    entityId: data.entityId,
+                    oldValue: data.oldValue ?? Prisma.JsonNull,
+                    newValue: data.newValue ?? Prisma.JsonNull,
+                    ipAddress: data.ipAddress,
+                    userAgent: data.userAgent
                 },
             });
         } catch (error) {
@@ -37,7 +44,7 @@ export class AuditService {
             take: limit,
             include: {
                 user: {
-                    select: { name: true, email: true }
+                    select: { fullName: true, email: true }
                 }
             }
         });

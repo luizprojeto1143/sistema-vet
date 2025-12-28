@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 
-interface Suggestion {
+export interface Suggestion {
     id: string; // Product or Service ID
     name: string;
     type: 'PRODUCT' | 'SERVICE';

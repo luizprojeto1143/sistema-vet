@@ -1,6 +1,7 @@
 import { Controller, Get, Post, Put, Body, Param, UseGuards, Request } from '@nestjs/common';
 import { MedicalRecordsService } from './medical-records.service';
 import { AuthGuard } from '@nestjs/passport';
+import { ImmutableRecordGuard } from '../common/guards/immutable-record.guard';
 
 @Controller('medical-records')
 @UseGuards(AuthGuard('jwt'))
@@ -19,6 +20,7 @@ export class MedicalRecordsController {
     }
 
     @Put(':id')
+    @UseGuards(ImmutableRecordGuard)
     update(@Param('id') id: string, @Body() body: any) {
         return this.recordsService.update(id, body);
     }

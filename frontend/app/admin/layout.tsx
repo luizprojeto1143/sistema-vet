@@ -1,6 +1,10 @@
 "use client";
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
+import Sidebar from "@/components/admin/sidebar";
+import Header from "@/components/admin/header";
+import CommandPalette from "@/components/ui/command-palette";
+import RagChatWidget from "@/components/ai/rag-chat-widget";
 
 import AuthGuard from '@/components/auth-guard';
 
@@ -13,15 +17,20 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
         { name: '🩺 Serviços & Preços', path: '/admin/services' },
         { name: '⚙️ Configurações & Regras', path: '/admin/settings' },
         { name: '📄 Documentos & Templates', path: '/admin/settings/documents' },
-        { name: '📦 Produtos (Estoque)', path: '/admin/products' }, // existing
+        { name: '📦 Produtos (Estoque)', path: '/admin/products' },
         { name: '🏥 Internação (Config)', path: '/admin/settings/internment' },
-        // Finance moved to sub-menu in real app or kept here
-        { name: '💰 Financeiro', path: '/admin/finance/commissions' }, // Shortcut
+        { name: '💰 Financeiro', path: '/admin/finance/commissions' },
     ];
 
     return (
         <AuthGuard allowedRoles={['ADMIN', 'MASTER', 'VET', 'RECEPTION']}>
             <div className="flex min-h-screen bg-brand-50 font-sans">
+                {/* Global Command Palette */}
+                <CommandPalette />
+
+                {/* Global AI Chat */}
+                <RagChatWidget />
+
                 {/* Sidebar */}
                 <aside className="w-72 bg-white text-gray-600 flex flex-col shadow-2xl rounded-r-[2.5rem] z-20 my-4 ml-4 h-[calc(100vh-2rem)] sticky top-4 overflow-hidden border border-brand-100">
                     <div className="p-8 text-3xl font-extrabold text-brand-600 bg-brand-50/50 border-b border-brand-100 flex items-center gap-3">

@@ -25,6 +25,7 @@ import { EventsModule } from './events/events.module';
 import { FiscalModule } from './fiscal/fiscal.module';
 import { NotificationsModule } from './notifications/notifications.module';
 import { AuditModule } from './audit/audit.module';
+import { SalesModule } from './sales/sales.module';
 
 import { AppController } from './app.controller';
 
@@ -52,7 +53,8 @@ import { AppController } from './app.controller';
         EventsModule,
         FiscalModule,
         NotificationsModule,
-        AuditModule
+        AuditModule,
+        SalesModule
     ],
     controllers: [AppController, UploadController],
     providers: [],

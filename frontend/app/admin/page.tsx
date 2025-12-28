@@ -2,6 +2,7 @@
 
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
+import GamifiedGoalsWidget from '@/components/dashboard/gamified-goals-widget';
 
 export default function AdminDashboard() {
     const [stats, setStats] = useState({
@@ -38,6 +39,10 @@ export default function AdminDashboard() {
                 <h1 className="text-4xl font-extrabold text-gray-800 tracking-tight">Painel Administrativo</h1>
                 <p className="text-gray-500 mt-2 font-medium">Visão geral da sua clínica.</p>
             </header>
+
+            <div className="mb-8">
+                <GamifiedGoalsWidget />
+            </div>
 
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
                 {/* Card 1 */}

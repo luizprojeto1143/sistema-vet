@@ -13,13 +13,12 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
 
     const menu = [
         { name: '📊 Dashboard', path: '/admin' },
-        { name: '👥 Usuários & Acesso', path: '/admin/users' },
-        { name: '🩺 Serviços & Preços', path: '/admin/services' },
-        { name: '⚙️ Configurações & Regras', path: '/admin/settings' },
-        { name: '📄 Documentos & Templates', path: '/admin/settings/documents' },
-        { name: '📦 Produtos (Estoque)', path: '/admin/products' },
-        { name: '🏥 Internação (Config)', path: '/admin/settings/internment' },
-        { name: '💰 Financeiro', path: '/admin/finance/commissions' },
+        { name: '🏥 Pulse (Hospital)', path: '/admin/pulse' }, // New
+        { name: '💰 Financeiro', path: '/admin/finance' }, // Fixed
+        { name: '📦 Estoque', path: '/admin/products' },
+        { name: '👥 Usuários', path: '/admin/users' },
+        { name: '🩺 Serviços', path: '/admin/services' },
+        { name: '⚙️ Ajustes', path: '/admin/settings' },
     ];
 
     return (

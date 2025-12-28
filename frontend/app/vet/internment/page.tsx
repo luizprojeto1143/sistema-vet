@@ -69,7 +69,16 @@ export default function InternmentDashboard() {
                         <HeartIcon className="h-10 w-10 text-red-500 animate-pulse" />
                         Painel de Internação
                     </h1>
-                    <p className="text-gray-400 mt-1">Monitoramento em Tempo Real • Setor Geral</p>
+                    <div className="flex items-center gap-4 mt-1">
+                        <p className="text-gray-400">Monitoramento em Tempo Real</p>
+                        <button
+                            onClick={() => alert('Abrir Modal de Passagem de Plantão (TODO)')}
+                            className="bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wider flex items-center gap-1 transition-colors"
+                        >
+                            <UserIcon className="h-3 w-3" />
+                            Passagem de Plantão
+                        </button>
+                    </div>
                 </div>
 
                 <div className="text-right">
@@ -91,10 +100,10 @@ export default function InternmentDashboard() {
                         <div
                             key={bed.id}
                             className={`relative rounded-2xl p-6 border-l-8 shadow-lg transition-transform hover:scale-[1.02] cursor-pointer group ${bed.status === 'AVAILABLE'
-                                    ? 'bg-gray-800 border-gray-600 opacity-60 hover:opacity-100'
-                                    : bed.internment?.reason.toLowerCase().includes('parvo') || bed.internment?.reason.toLowerCase().includes('contágio')
-                                        ? 'bg-red-900/20 border-red-500' // Isolation style
-                                        : 'bg-gray-800 border-emerald-500'
+                                ? 'bg-gray-800 border-gray-600 opacity-60 hover:opacity-100'
+                                : bed.internment?.reason.toLowerCase().includes('parvo') || bed.internment?.reason.toLowerCase().includes('contágio')
+                                    ? 'bg-red-900/20 border-red-500' // Isolation style
+                                    : 'bg-gray-800 border-emerald-500'
                                 }`}
                             onClick={() => {
                                 if (bed.status === 'OCCUPIED' && bed.internment) {

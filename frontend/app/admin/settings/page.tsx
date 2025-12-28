@@ -67,6 +67,28 @@ export default function ClinicSettingsPage() {
                 </div>
             </div>
 
+            {/* NEW: Audit Section */}
+            <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden mb-8">
+                <div className="p-6 flex items-center justify-between">
+                    <div className="flex items-center gap-4">
+                        <div className="bg-amber-100 p-3 rounded-lg text-amber-600">
+                            <CheckCircleIcon className="w-6 h-6" />
+                        </div>
+                        <div>
+                            <h3 className="font-bold text-gray-900">Auditoria & Segurança</h3>
+                            <p className="text-sm text-gray-500">Visualize logs de acesso e alterações críticas no sistema.</p>
+                        </div>
+                    </div>
+                    <button
+                        onClick={() => router.push('/admin/settings/audit')}
+                        className="bg-amber-500 text-white px-4 py-2 rounded-lg font-bold text-sm hover:bg-amber-600 transition-colors flex items-center gap-2"
+                    >
+                        Ver Logs
+                        <ChevronRightIcon className="w-4 h-4" />
+                    </button>
+                </div>
+            </div>
+
             <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
                 <div className="p-6 bg-indigo-50 border-b border-indigo-100 flex items-center gap-3">
                     <div className="h-10 w-10 bg-indigo-100 text-indigo-600 rounded-lg flex items-center justify-center">

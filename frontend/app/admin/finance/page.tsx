@@ -57,7 +57,21 @@ export default function FinanceDashboard() {
 
     return (
         <div className="min-h-screen bg-slate-50 p-8 font-sans">
-            <h1 className="text-2xl font-bold text-slate-800 mb-6">Painel Financeiro</h1>
+            <div className="flex justify-between items-center mb-6">
+                <h1 className="text-2xl font-bold text-slate-800">Painel Financeiro</h1>
+                <div className="flex gap-2">
+                    <button className="bg-white border border-slate-200 text-slate-600 px-4 py-2 rounded-lg font-bold hover:bg-slate-50 transition-colors">
+                        Relatórios
+                    </button>
+                    <button
+                        onClick={() => alert('Abrir Modal de Despesa Rápida (Feature 13)')}
+                        className="bg-brand-600 text-white px-4 py-2 rounded-lg font-bold hover:bg-brand-700 transition-colors flex items-center gap-2 shadow-lg shadow-brand-500/30"
+                    >
+                        <BanknotesIcon className="h-5 w-5" />
+                        Lançar Despesa
+                    </button>
+                </div>
+            </div>
 
             {/* DRE Widget (New) */}
             <div className="mb-8">

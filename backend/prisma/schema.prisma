@@ -99,6 +99,8 @@ model Clinic {
   referrals      Clinic[] @relation("ClinicReferral")
   cashierSessions CashierSession[]
   auditLogs       AuditLog[]
+  salesGoals      SalesGoal[]
+
   wards         Ward[]
 }
 
@@ -1034,4 +1036,21 @@ model AuditLog {
   @@index([clinicId])
   @@index([entity])
   @@index([entityId])
+}
+
+// ------------------------------------------------------
+// 12. GROWTH & GAMIFICATION
+// ------------------------------------------------------
+
+model SalesGoal {
+  id        String   @id @default(uuid())
+  clinicId  String
+  type      String   // MONTHLY, DAILY
+  target    Decimal  // Value in R$
+  period    DateTime // First day of the month/day 
+  
+  // Real-time progress is calculated, not stored, or cached here
+  current   Decimal  @default(0)
+
+  clinic    Clinic   @relation(fields: [clinicId], references: [id])
 }

@@ -5,5 +5,18 @@
             "src": "frontend/package.json",
             "use": "@vercel/next"
         }
+    ],
+    "routes": [
+        {
+            "src": "/_next/(.*)",
+            "dest": "/frontend/_next/$1"
+        },
+        {
+            "handle": "filesystem"
+        },
+        {
+            "src": "/(.*)",
+            "dest": "/frontend/$1"
+        }
     ]
 }

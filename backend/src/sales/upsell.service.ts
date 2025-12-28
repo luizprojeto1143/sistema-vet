@@ -5,8 +5,9 @@ interface Suggestion {
     id: string; // Product or Service ID
     name: string;
     type: 'PRODUCT' | 'SERVICE';
-    reason: string; // "Because you added Vaccine X"
+    reason: string;
     price: number;
+    script?: string;
 }
 
 @Injectable()
@@ -41,7 +42,8 @@ export class UpsellService {
                     name: vermifugo.name,
                     type: 'PRODUCT',
                     reason: 'Protocolo Vacinal: Requeiro vermifugação.',
-                    price: Number(vermifugo.salePrice)
+                    price: Number(vermifugo.salePrice),
+                    script: "Doutor, lembre de mencionar que este vermífugo é de amplo espectro e protege contra o verme do coração."
                 });
             }
 
@@ -52,7 +54,8 @@ export class UpsellService {
                     name: antipulgas.name,
                     type: 'PRODUCT',
                     reason: 'Proteção completa recomendada.',
-                    price: Number(antipulgas.salePrice)
+                    price: Number(antipulgas.salePrice),
+                    script: "Sugira o combo trimestral para garantir proteção contínua com desconto."
                 });
             }
         }

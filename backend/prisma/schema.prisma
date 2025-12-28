@@ -100,6 +100,7 @@ model Clinic {
   cashierSessions CashierSession[]
   auditLogs       AuditLog[]
   salesGoals      SalesGoal[]
+  consentTemplates ConsentTemplate[]
 
   wards         Ward[]
 }
@@ -208,10 +209,11 @@ model Tutor {
 
   // Growth / Referrals (B2C)
   referralCode  String?  @unique
-  
   referredById  String?
   referredBy    Tutor?   @relation("TutorReferral", fields: [referredById], references: [id])
   referrals     Tutor[]  @relation("TutorReferral")
+
+  signedConsents SignedConsent[]
 }
 
 model Pet {
@@ -1053,4 +1055,45 @@ model SalesGoal {
   current   Decimal  @default(0)
 
   clinic    Clinic   @relation(fields: [clinicId], references: [id])
+}
+
+// ------------------------------------------------------
+// 13. LEGAL & COMPLIANCE (The Lawyer)
+// ------------------------------------------------------
+
+model ConsentTemplate {
+  id        String   @id @default(uuid())
+  title     String   // "Termo de Cirurgia", "Termo de Internação"
+  content   String   // Markdown/HTML content
+  version   Int      @default(1)
+  
+  clinicId  String
+  clinic    Clinic   @relation(fields: [clinicId], references: [id])
+  
+  active    Boolean  @default(true)
+  createdAt DateTime @default(now())
+
+  signedConsents SignedConsent[]
+}
+
+model SignedConsent {
+  id        String   @id @default(uuid())
+  
+  templateId String
+  template   ConsentTemplate @relation(fields: [templateId], references: [id])
+  
+  // Who signed?
+  tutorId   String
+  tutor     Tutor    @relation(fields: [tutorId], references: [id])
+  
+  // Context
+  appointmentId String?
+  internmentId  String?
+  
+  // Proof
+  signatureUrl String? // Image of signature or digital hash
+  ipAddress    String?
+  userAgent    String?
+  
+  signedAt     DateTime @default(now())
 }

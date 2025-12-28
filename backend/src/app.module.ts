@@ -25,6 +25,7 @@ import { EventsModule } from './events/events.module';
 import { FiscalModule } from './fiscal/fiscal.module';
 import { NotificationsModule } from './notifications/notifications.module';
 import { AuditModule } from './audit/audit.module';
+import { LegalModule } from './legal/legal.module';
 import { SalesModule } from './sales/sales.module';
 import { TimelineModule } from './timeline/timeline.module';
 
@@ -56,7 +57,8 @@ import { AppController } from './app.controller';
         NotificationsModule,
         AuditModule,
         SalesModule,
-        TimelineModule
+        TimelineModule,
+        LegalModule
     ],
     controllers: [AppController, UploadController],
     providers: [],

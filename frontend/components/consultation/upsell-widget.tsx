@@ -74,7 +74,14 @@ export default function UpsellWidget({ items, onAddItem }: Props) {
                     <div key={s.id} className="flex items-center justify-between bg-white/60 p-2 rounded-lg border border-amber-100/50 hover:bg-white transition-colors">
                         <div className="flex flex-col">
                             <span className="text-sm font-bold text-gray-800">{s.name}</span>
-                            <span className="text-xs text-gray-500 italic">"{s.reason}"</span>
+                            <p className="text-xs text-gray-500 mt-1">{s.reason}</p>
+
+                            {/* Sales Script (The "Script" Context) */}
+                            {s.script && (
+                                <div className="mt-2 bg-yellow-50 p-2 rounded border border-yellow-100 text-[10px] text-yellow-800 italic">
+                                    <span className="font-bold not-italic">💬 Fale:</span> "{s.script}"
+                                </div>
+                            )}
                         </div>
                         <div className="flex items-center gap-3">
                             <span className="text-xs font-bold text-gray-600">R$ {s.price.toFixed(2)}</span>

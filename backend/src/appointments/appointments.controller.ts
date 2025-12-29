@@ -40,16 +40,17 @@ export class AppointmentsController {
     }
 
     @Get(':id')
-    findOne(@Param('id') id: string) {
-        return this.appointmentsService.findOne(id);
+    findOne(@Param('id') id: string, @Request() req: any) {
+        return this.appointmentsService.findOne(id, req.user.clinicId);
     }
 
     @Patch(':id/status')
-    updateStatus(@Param('id') id: string, @Body('status') status: string) {
-        return this.appointmentsService.updateStatus(id, status);
+    updateStatus(@Param('id') id: string, @Body('status') status: string, @Request() req: any) {
+        return this.appointmentsService.updateStatus(id, status, req.user.clinicId);
     }
+
     @Patch(':id/details')
-    updateDetails(@Param('id') id: string, @Body() body: any) {
-        return this.appointmentsService.update(id, body);
+    updateDetails(@Param('id') id: string, @Body() body: any, @Request() req: any) {
+        return this.appointmentsService.update(id, body, req.user.clinicId);
     }
 }

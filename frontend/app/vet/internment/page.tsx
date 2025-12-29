@@ -8,7 +8,8 @@ import {
     UserIcon,
     ExclamationCircleIcon,
     PlusIcon,
-    ArrowRightOnRectangleIcon
+    ArrowRightOnRectangleIcon,
+    VideoCameraIcon
 } from '@heroicons/react/24/outline';
 
 // Define static bed structure for the clinic (could be dynamic later)

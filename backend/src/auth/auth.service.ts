@@ -20,7 +20,39 @@ export class AuthService {
     }
 
     async login(user: any) {
-        const payload = { email: user.email, sub: user.id, role: user.role, clinicId: user.clinicId };
+        // Resolve Permissions
+        let permissions: string[] = [];
+
+        // 1. User Specific Permissions (Override)
+        if (user.permissions) {
+            try {
+                permissions = JSON.parse(user.permissions);
+            } catch (e) {
+                console.error("Failed to parse user permissions", e);
+            }
+        }
+        // 2. Role Permissions (Fallback if no user specific overrides)
+        else if (user.roleId) { // Prefer Relation
+            const role = await this.prisma.role.findUnique({ where: { id: user.roleId } });
+            if (role && role.permissions) {
+                try {
+                    permissions = JSON.parse(role.permissions);
+                } catch (e) { console.error("Failed to parse role permissions", e); }
+            }
+        }
+        // 3. Simple Legacy Role Fallback (Hardcoded defaults for old system)
+        else if (user.role === 'ADMIN') {
+            permissions = ['*'];
+        }
+
+        const payload = {
+            email: user.email,
+            sub: user.id,
+            role: user.role, // Legacy keep
+            clinicId: user.clinicId,
+            permissions // New RBAC
+        };
+
         return {
             access_token: this.jwtService.sign(payload),
             user: {
@@ -28,7 +60,8 @@ export class AuthService {
                 name: user.fullName,
                 email: user.email,
                 role: user.role,
-                clinicId: user.clinicId
+                clinicId: user.clinicId,
+                permissions
             }
         };
     }

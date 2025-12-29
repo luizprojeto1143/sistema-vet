@@ -109,7 +109,7 @@ export default function ProductForm({ onClose, onSuccess }: ProductFormProps) {
                                 type="number"
                                 className="w-full px-4 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-indigo-500 outline-none"
                                 value={formData.minStock}
-                                onChange={(e) => setFormData({ ...formData, minStock: e.target.value })}
+                                onChange={(e) => setFormData({ ...formData, minStock: Number(e.target.value) })}
                             />
                         </div>
                         <div>
@@ -118,7 +118,7 @@ export default function ProductForm({ onClose, onSuccess }: ProductFormProps) {
                                 type="number"
                                 className="w-full px-4 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-indigo-500 outline-none"
                                 value={formData.costPrice}
-                                onChange={(e) => setFormData({ ...formData, costPrice: e.target.value })}
+                                onChange={(e) => setFormData({ ...formData, costPrice: Number(e.target.value) })}
                             />
                         </div>
                         <div>
@@ -127,7 +127,7 @@ export default function ProductForm({ onClose, onSuccess }: ProductFormProps) {
                                 type="number"
                                 className="w-full px-4 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-indigo-500 outline-none"
                                 value={formData.salePrice}
-                                onChange={(e) => setFormData({ ...formData, salePrice: e.target.value })}
+                                onChange={(e) => setFormData({ ...formData, salePrice: Number(e.target.value) })}
                             />
                         </div>
                     </div>

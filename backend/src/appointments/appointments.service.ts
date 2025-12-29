@@ -11,113 +11,41 @@ export class AppointmentsService {
     ) { }
 
     async create(data: any) {
-        // 1. Resolve Clinic (Fallback to first found)
-        let clinicId = data.clinicId;
-        if (!clinicId || clinicId === 'clinic-1') {
-            const clinic = await this.prisma.clinic.findFirst();
-            if (clinic) clinicId = clinic.id;
-        }
+        const clinicId = data.clinicId;
+        if (!clinicId) throw new Error('Clinic ID is required for Appointments');
 
-        // 2. Resolve Vet (Fallback to first found)
+        // 2. Resolve Vet (Fallback to first found IN CLINIC)
         let vetId = data.vetId;
-        if (!vetId || vetId === 'user-1') {
-            const vet = await this.prisma.user.findFirst({ where: { clinicId } });
+        if (!vetId) {
+            // Optional: Logic to assign a default vet if needed, or leave null if schema allows
+            const vet = await this.prisma.user.findFirst({ where: { clinicId, role: 'VET' } });
             if (vet) vetId = vet.id;
         }
 
-        // 3. Resolve Service (Fallback to first found or Create Default)
+        // 3. Resolve Service (Specific to Clinic)
         let serviceId = data.serviceId;
-        if (!serviceId || serviceId === 'service-1') {
+        if (!serviceId) {
             const service = await this.prisma.service.findFirst({ where: { clinicId } });
             if (service) {
                 serviceId = service.id;
             } else {
-                // Create Default Service
-                if (clinicId) {
-                    const newService = await this.prisma.service.create({
-                        data: {
-                            name: 'Consulta Geral',
-                            price: 150.00,
-                            durationMin: 30,
-                            type: 'CONSULTATION',
-                            clinicId
-                        }
-                    });
-                    serviceId = newService.id;
-                }
+                // Auto-create basic service if completely empty
+                const newService = await this.prisma.service.create({
+                    data: { name: 'Consulta Geral', price: 150.00, durationMin: 30, type: 'CONSULTATION', clinicId }
+                });
+                serviceId = newService.id;
             }
         }
 
-        // 4. Resolve Pet/Tutor (Handle Placeholder or Missing)
+        // 4. Resolve Pet/Tutor
         let petId = data.petId;
+        if (!petId) throw new Error('Pet ID is required');
 
-        // If we don't have a valid existing Pet ID, we need to create one
-        if (!petId || petId === 'pet-1') {
-            // Case A: Existing Tutor, New Pet
-            if (data.tutorId) {
-                const newPet = await this.prisma.pet.create({
-                    data: {
-                        name: data.patientName || 'Pet Sem Nome',
-                        species: 'DOG',
-                        tutorId: data.tutorId,
-                        clinicId
-                    }
-                });
-                petId = newPet.id;
-            }
-            // Case B: New Tutor, New Pet
-            else {
-                const tutor = await this.prisma.tutor.create({
-                    data: {
-                        fullName: data.tutorName || 'Tutor Visitante',
-                        phone: data.tutorPhone || '00000000000', // Add phone support if passed
-                        clinicId,
-                        pets: {
-                            create: {
-                                name: data.patientName || 'Pet Visitante',
-                                species: 'DOG',
-                                clinicId
-                            }
-                        }
-                    },
-                    include: { pets: true }
-                });
-                petId = tutor.pets[0].id;
-            }
-        }
+        // Verify Pet belongs to Clinic
+        const pet = await this.prisma.pet.findFirst({ where: { id: petId, clinicId } });
+        if (!pet) throw new Error('Pet not found in this clinic');
 
-        // Validate Critical IDs
-        if (!clinicId || !petId) {
-            throw new Error(`Failed to resolve Clinic (${clinicId}) or Pet (${petId}). Ensure system is initialized.`);
-        }
-
-        // Handle Recurrence (Simple: Weekly for N weeks)
-        // data.recurrence = { frequency: 'WEEKLY', times: 4 }
-
-        if (data.recurrence && data.recurrence.times > 1) {
-            const appointments = [];
-            let currentDate = new Date(data.dateTime);
-
-            for (let i = 0; i < data.recurrence.times; i++) {
-                appointments.push(this.prisma.appointment.create({
-                    data: {
-                        date: new Date(currentDate),
-                        type: data.type,
-                        status: 'SCHEDULED',
-                        notes: i > 0 ? `${data.notes} (Recorrência ${i + 1}/${data.recurrence.times})` : data.notes,
-                        petId,
-                        vetId,
-                        clinicId,
-                        serviceId
-                    }
-                }));
-                // Add 7 days
-                currentDate.setDate(currentDate.getDate() + 7);
-            }
-            return Promise.all(appointments);
-        }
-
-        // Single Appointment
+        // Create Appointment
         const appointment = await this.prisma.appointment.create({
             data: {
                 date: new Date(data.dateTime),
@@ -127,7 +55,7 @@ export class AppointmentsService {
                 petId,
                 vetId,
                 clinicId,
-                serviceId // Can be optional in schema? Schema says optional `serviceId String?`
+                serviceId
             },
             include: {
                 pet: { include: { tutor: true } },
@@ -137,13 +65,12 @@ export class AppointmentsService {
 
         // Trigger Notification (Async)
         this.notifications.sendAppointmentConfirmation(appointment).catch(err => console.error("Notification Error", err));
-
         return appointment;
     }
 
-    async findOne(id: string) {
-        return this.prisma.appointment.findUnique({
-            where: { id },
+    async findOne(id: string, clinicId: string) {
+        const appointment = await this.prisma.appointment.findFirst({
+            where: { id, clinicId },
             include: {
                 pet: { include: { tutor: true } },
                 vet: true,
@@ -151,6 +78,8 @@ export class AppointmentsService {
                 medicalRecord: true
             }
         });
+        if (!appointment) throw new Error('Appointment not found or access denied');
+        return appointment;
     }
 
     async findAll(clinicId: string) {
@@ -160,24 +89,26 @@ export class AppointmentsService {
                 pet: { include: { tutor: true } },
                 vet: true,
                 service: true,
-                medicalRecord: {
-                    include: {
-                        // consumedItems: true // Scalar field, included by default
-                    }
-                }
+                medicalRecord: true // Removed heavy includes
             },
             orderBy: { date: 'asc' }
         });
     }
 
-    async update(id: string, data: any) {
+    async update(id: string, data: any, clinicId: string) {
+        const appointment = await this.prisma.appointment.findFirst({ where: { id, clinicId } });
+        if (!appointment) throw new Error('Appointment not found or access denied');
+
         return this.prisma.appointment.update({
             where: { id },
             data
         });
     }
 
-    async updateStatus(id: string, status: string) {
+    async updateStatus(id: string, status: string, clinicId: string) {
+        const appointment = await this.prisma.appointment.findFirst({ where: { id, clinicId } });
+        if (!appointment) throw new Error('Appointment not found or access denied');
+
         return this.prisma.appointment.update({
             where: { id },
             data: { status }

@@ -12,24 +12,27 @@ export class TutorsService {
         return this.prisma.tutor.create({ data });
     }
 
-    async findAll() {
+    async findAll(clinicId: string) {
         return this.prisma.tutor.findMany({
+            where: { clinicId },
             include: { pets: true }
         });
     }
 
     async findByEmail(email: string) {
+        // Safe because Email is Unique globally or we can enforce clinicId if users are scoped
         return this.prisma.tutor.findFirst({
             where: { email },
             include: { pets: true }
         });
     }
 
-    async search(query: string) {
+    async search(query: string, clinicId?: string) {
         if (!query || query.length < 2) return [];
 
         return this.prisma.tutor.findMany({
             where: {
+                clinicId: clinicId, // Enforce clinic scope if provided
                 OR: [
                     // @ts-ignore
                     { fullName: { contains: query, mode: 'insensitive' } },
@@ -38,7 +41,7 @@ export class TutorsService {
                 ]
             },
             include: { pets: true },
-            take: 10 // Limit results
+            take: 10
         });
     }
 }

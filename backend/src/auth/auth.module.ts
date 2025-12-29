@@ -10,9 +10,20 @@ import { JwtStrategy } from './jwt.strategy';
   imports: [
     PrismaModule,
     PassportModule,
-    JwtModule.register({
-      secret: process.env.JWT_SECRET || 'super-secure-secret-key-change-in-production',
-      signOptions: { expiresIn: '1d' },
+    JwtModule.registerAsync({
+      useFactory: async () => {
+        if (!process.env.JWT_SECRET) {
+          if (process.env.NODE_ENV === 'production') {
+            throw new Error('JWT_SECRET is not defined in production environment!');
+          } else {
+            console.warn('WARNING: JWT_SECRET is missing. Using unsafe dev secret.');
+          }
+        }
+        return {
+          secret: process.env.JWT_SECRET || 'dev-secret-do-not-use-in-prod',
+          signOptions: { expiresIn: '1d' },
+        };
+      },
     }),
   ],
   controllers: [AuthController],

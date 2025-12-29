@@ -127,8 +127,11 @@ export class StockService {
     }
 
     // 3. Manual / Ad-hoc Consumption
-    async manualConsume(data: { clinicId: string; productId: string; quantity: number; reason: string; userId: string }) {
-        return this.prisma.$transaction(async (tx) => {
+    async manualConsume(data: { clinicId: string; productId: string; quantity: number; reason: string; userId: string }, externalTx?: any) { // using any for Prisma.TransactionClient to avoid circular deps or complex imports for now, or import Prisma
+
+        const db = externalTx || this.prisma;
+
+        const execute = async (tx: any) => {
             let qtyToDeduct = data.quantity;
 
             const batches = await tx.productBatch.findMany({
@@ -155,7 +158,6 @@ export class StockService {
                         type: 'OUT_CONSUME',
                         quantity: take,
                         reason: `${data.reason} (Batch ${batch.batchNumber})`,
-                        // createdBy: data.userId, // REMOVED
                         batchId: batch.id
                     }
                 }));
@@ -171,7 +173,6 @@ export class StockService {
                         type: 'OUT_CONSUME',
                         quantity: qtyToDeduct,
                         reason: `${data.reason} (No Batch)`,
-                        // createdBy: data.userId, // REMOVED
                     }
                 }));
             }
@@ -182,7 +183,13 @@ export class StockService {
             });
 
             return movements;
-        });
+        };
+
+        if (externalTx) {
+            return execute(externalTx);
+        } else {
+            return this.prisma.$transaction(execute);
+        }
     }
 
     async getProductMovements(productId: string) {

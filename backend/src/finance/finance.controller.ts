@@ -2,9 +2,11 @@ import { Controller, Get, Post, Body, UseGuards, Request, Query, Param, Delete }
 import { FinanceService } from './finance.service';
 import { CommissionService } from './commission.service';
 import { AuthGuard } from '@nestjs/passport';
+import { PermissionsGuard } from '../common/guards/permissions.guard';
+import { Permissions } from '../common/decorators/permissions.decorator';
 
 @Controller('finance')
-@UseGuards(AuthGuard('jwt'))
+@UseGuards(AuthGuard('jwt'), PermissionsGuard)
 export class FinanceController {
     constructor(
         private readonly financeService: FinanceService,
@@ -12,6 +14,7 @@ export class FinanceController {
     ) { }
 
     @Post()
+    @Permissions('finance.create')
     create(@Body() body: any, @Request() req: any) {
         const data = { ...body, clinicId: req.user.clinicId };
         return this.financeService.create(data);
@@ -19,12 +22,14 @@ export class FinanceController {
 
     // COMMISSION ENGINE
     @Post('commission/simulate')
+    @Permissions('finance.commission')
     async simulateSplit(@Body() body: any, @Request() req: any) {
         // Body: { items: [{ type: 'SERVICE', price: 100, providerId: '...', serviceId: '...' }] }
         return this.commissionService.simulateTransactionSplit(req.user.clinicId, body.items);
     }
 
     @Get('commission/dashboard')
+    @Permissions('finance.view')
     async getCommissionDashboard(@Query('month') month: string, @Request() req: any) {
         const date = month ? new Date(month) : new Date();
         return this.commissionService.getCommissionReport(req.user.clinicId, date);
@@ -39,11 +44,13 @@ export class FinanceController {
     }
 
     @Get()
+    @Permissions('finance.view')
     findAll(@Query() query: any, @Request() req: any) {
         return this.financeService.findAll(req.user.clinicId, query);
     }
 
     @Get('dashboard')
+    @Permissions('finance.view')
     getDashboard(@Query() query: any, @Request() req: any) {
         const clinicId = req.user.clinicId;
         // Parse dates if provided
@@ -53,11 +60,13 @@ export class FinanceController {
     }
 
     @Get('summary')
+    @Permissions('finance.view')
     getSummary(@Request() req: any) {
         return this.financeService.getSummary(req.user.clinicId);
     }
 
     @Get('dre')
+    @Permissions('finance.view')
     getDRE(@Query() query: any, @Request() req: any) {
         return this.financeService.getDRE(req.user.clinicId, query.startDate, query.endDate);
     }
@@ -83,7 +92,7 @@ export class FinanceController {
 
     @Delete(':id')
     cancelTransaction(@Param('id') id: string, @Request() req: any) {
-        return this.financeService.cancelTransaction(id, req.user.id);
+        return this.financeService.cancelTransaction(id, req.user.id, req.user.clinicId);
     }
 
     // PROVIDER RULES
@@ -98,7 +107,7 @@ export class FinanceController {
     }
 
     @Delete('rules/:id')
-    deleteRule(@Param('id') id: string) {
-        return this.financeService.deleteCommissionRule(id);
+    deleteRule(@Param('id') id: string, @Request() req: any) {
+        return this.financeService.deleteCommissionRule(id, req.user.clinicId);
     }
 }

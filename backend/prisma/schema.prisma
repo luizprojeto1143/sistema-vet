@@ -77,6 +77,7 @@ model Clinic {
   commissionRules     CommissionRule[] 
   productKits         ProductKit[] // Kit relation
   notifications       Notification[] 
+  consultationTemplates ConsultationTemplate[] 
   
   // Ledger
   // Ledger
@@ -175,9 +176,13 @@ model User {
   medicalRecords MedicalRecord[] // As Vet associated with record
   medicationExecutions MedicationExecution[]
   cashierSessions CashierSession[]
+  consultationTemplates ConsultationTemplate[]
 
   createdAt     DateTime @default(now())
   updatedAt     DateTime @updatedAt
+  
+  @@index([clinicId])
+  @@index([roleId])
 }
 
 // ------------------------------------------------------
@@ -214,6 +219,9 @@ model Tutor {
   referrals     Tutor[]  @relation("TutorReferral")
 
   signedConsents SignedConsent[]
+  
+  @@index([clinicId])
+  @@index([userId])
 }
 
 model Pet {
@@ -249,6 +257,9 @@ model Pet {
 
   createdAt     DateTime @default(now())
   updatedAt     DateTime @updatedAt
+
+  @@index([clinicId])
+  @@index([tutorId])
 }
 
 
@@ -351,10 +362,17 @@ model Appointment {
 
   preConsultation String? // Syntons, evolution from Tutor App
 
+  // Clinical Summary Snapshot (For historical accuracy)
+  patientSummarySnapshot String? // JSON: { weight, lastDiagnosis, chronicConditions }
+
   // Link to generated Medical Record
   medicalRecord MedicalRecord?
 
   createdAt     DateTime @default(now())
+
+  @@index([clinicId])
+  @@index([petId])
+  @@index([date])
 }
 
 // ------------------------------------------------------
@@ -369,11 +387,23 @@ model MedicalRecord {
   // Physical Exam Structured
   physicalExam  String? // General notes
   temperature   Float?
-  mucosa        String?
-  painLevel     String? // LOW, MEDIUM, HIGH
-  
+  mucosa        String? // "Normocorada", "Hipocorada", "Ictérica", "Cianótica"
+  tpc           String? // "1s", "2s", ">2s"
+  pulse         Int?    // BPM
+  respiratoryRate Int? // MPM
+  weight        Float?  // kg
+  hydration     String? // "Normal", "Leve", "Moderada", "Grave"
+  lymphNodes    String? // "Normais", "Reativos"
+  abdominalPalpation String? 
+
+  mainComplaint String? // Queixa principal
   diagnosis     String?
+  differentialDiagnosis String? // Hipóteses
   treatment     String?
+  prognosis     String?
+
+  // Status Workflow
+  status        String   @default("IN_PROGRESS") // IN_PROGRESS, AWAITING_EXAMS, FINALIZED
 
   // Links
   appointmentId String? @unique
@@ -387,6 +417,7 @@ model MedicalRecord {
   vet           User     @relation(fields: [vetId], references: [id])
   
   exams         Exam[]
+  examRequests  ExamRequest[] // [NEW] Link to requests
   prescriptions Prescription[]
   documents     SignedDocument[]
 
@@ -399,6 +430,27 @@ model MedicalRecord {
   locked        Boolean  @default(false)
   lockedAt      DateTime?
   amendments    RecordAmendment[]
+}
+
+model ConsultationTemplate {
+  id            String   @id @default(uuid())
+  name          String   // "Dermatite Atópica", "Gastroenterite"
+  category      String?  // "Dermato", "Geral", "Cardio"
+  species       String?  // DOG, CAT, BOTH
+  
+  // JSON Content to pre-fill
+  content       String   // { anamnesis, items: [], prescriptions: [] }
+  
+  shared        Boolean  @default(false) // If true, accessible by whole clinic
+  
+  ownerId       String
+  owner         User     @relation(fields: [ownerId], references: [id])
+  
+  clinicId      String
+  clinic        Clinic   @relation(fields: [clinicId], references: [id])
+
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
 }
 
 model RecordAmendment {
@@ -437,9 +489,10 @@ model Prescription {
   product         Product?  @relation(fields: [productId], references: [id])
 
   // Detailed Prescription Fields
-  route           String?   // Oral, IV, IM, SC
-  doseAmount      Decimal?
-  doseUnit        String?   // mg, ml, cp
+  route           String?   // PO, IV, SC, IM, TOPICAL, OPHTHALMIC, OTIC
+  doseAmount      String?   // "250" (String to allow "1/2")
+  doseUnit        String?   // mg, ml, cp, g
+  totalQuantity   String?   // "1 cx", "10 cp"
   
   executions      MedicationExecution[]
 }
@@ -470,6 +523,23 @@ model Exam {
 
   medicalRecordId String
   medicalRecord   MedicalRecord @relation(fields: [medicalRecordId], references: [id])
+}
+
+model ExamRequest {
+  id            String   @id @default(uuid())
+  status        String   @default("REQUESTED") // REQUESTED, COLLECTED, COMPLETED, CANCELED
+  priority      String   @default("ROUTINE")   // ROUTINE, URGENT
+  
+  // JSON Array of requested exams: [{ code: "HEM", name: "Hemograma", price: 50.00 }]
+  requestedExams String 
+  
+  clinicalIndication String?
+
+  medicalRecordId String
+  medicalRecord   MedicalRecord @relation(fields: [medicalRecordId], references: [id])
+  
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
 }
 
 // ------------------------------------------------------
@@ -663,6 +733,10 @@ model FinancialTransaction {
   invoice       Invoice?
   
   createdAt     DateTime @default(now())
+
+  @@index([clinicId])
+  @@index([createdAt])
+  @@index([type])
 }
 
 model DocumentTemplate {

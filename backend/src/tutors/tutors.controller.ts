@@ -16,13 +16,13 @@ export class TutorsController {
     }
 
     @Get()
-    findAll() {
-        return this.tutorsService.findAll();
+    findAll(@Request() req: any) {
+        return this.tutorsService.findAll(req.user.clinicId);
     }
 
     @Get('search')
-    search(@Query('q') q: string) {
-        return this.tutorsService.search(q);
+    search(@Query('q') q: string, @Request() req: any) {
+        return this.tutorsService.search(q, req.user.clinicId);
     }
 
     @Get('me')

@@ -10,9 +10,12 @@ import { AppointmentsModule } from '../appointments/appointments.module';
 
 import { StockModule } from '../stock/stock.module';
 
+import { ClinicalSummaryService } from './clinical-summary.service';
+
 @Module({
     imports: [PrismaModule, ProductsModule, FinanceModule, AppointmentsModule, StockModule],
     controllers: [MedicalRecordsController],
-    providers: [MedicalRecordsService, AutoLockService],
+    providers: [MedicalRecordsService, AutoLockService, ClinicalSummaryService],
+    exports: [MedicalRecordsService, ClinicalSummaryService],
 })
 export class MedicalRecordsModule { }

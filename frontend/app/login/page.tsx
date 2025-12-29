@@ -1,26 +1,18 @@
 "use client";
 
-import React, { useState } from 'react';
+import { API_URL } from '@/utils/config';
+import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Image from 'next/image';
-import {
-    EnvelopeIcon,
-    LockClosedIcon,
-    EyeIcon,
-    EyeSlashIcon,
-    ArrowRightIcon
-} from '@heroicons/react/24/outline';
+// Assuming HeroIcons are used based on classNames/Icon names in original code. If not, this might need adjustment, but standard for this stack.
+import { EnvelopeIcon, LockClosedIcon, EyeIcon, EyeSlashIcon, ArrowRightIcon } from '@heroicons/react/24/outline';
 
 export default function LoginPage() {
     const router = useRouter();
+    const [formData, setFormData] = useState({ email: '', password: '' }); // Initialize state
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState('');
     const [showPassword, setShowPassword] = useState(false);
-
-    const [formData, setFormData] = useState({
-        email: '',
-        password: ''
-    });
 
     const handleLogin = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -28,9 +20,6 @@ export default function LoginPage() {
         setError('');
 
         try {
-            // Use environment variable in production
-            const API_URL = (process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000') + '';
-
             const res = await fetch(`${API_URL}/auth/login`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
@@ -49,8 +38,12 @@ export default function LoginPage() {
                     router.push('/tutor/home');
                 } else if (data.user.role === 'MASTER') {
                     router.push('/saas');
+                } else if (data.user.role === 'VET') {
+                    router.push('/vet');
+                } else if (data.user.role === 'RECEPTION') {
+                    router.push('/reception');
                 } else {
-                    router.push('/admin'); // Default for Vets/Admin
+                    router.push('/admin'); // Default for ADMIN
                 }
             } else {
                 const errData = await res.json().catch(() => ({}));

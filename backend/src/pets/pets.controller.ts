@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Param, UseGuards } from '@nestjs/common';
+import { Controller, Get, Post, Body, Param, UseGuards, Req, UnauthorizedException } from '@nestjs/common';
 import { PetsService } from './pets.service';
 import { AuthGuard } from '@nestjs/passport';
 
@@ -8,17 +8,21 @@ export class PetsController {
     constructor(private readonly petsService: PetsService) { }
 
     @Post()
-    create(@Body() data: any) {
-        return this.petsService.create(data);
+    create(@Body() data: any, @Req() req: any) {
+        if (!req.user || !req.user.clinicId) throw new UnauthorizedException('Clinic ID missing');
+        // Force Injection of Clinic ID
+        return this.petsService.create({ ...data, clinicId: req.user.clinicId });
     }
 
     @Get()
-    findAll() {
-        return this.petsService.findAll();
+    findAll(@Req() req: any) {
+        if (!req.user || !req.user.clinicId) throw new UnauthorizedException('Clinic ID missing');
+        return this.petsService.findAll(req.user.clinicId);
     }
 
     @Get(':id')
-    findOne(@Param('id') id: string) {
-        return this.petsService.findOne(id);
+    findOne(@Param('id') id: string, @Req() req: any) {
+        if (!req.user || !req.user.clinicId) throw new UnauthorizedException('Clinic ID missing');
+        return this.petsService.findOne(id, req.user.clinicId);
     }
 }

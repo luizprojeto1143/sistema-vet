@@ -218,13 +218,14 @@ export class FinanceService {
         });
     }
 
-    async cancelTransaction(id: string, userId: string) {
-        // Find transaction
-        const tx = await this.prisma.financialTransaction.findUnique({ where: { id } });
-        if (!tx) throw new Error('Transaction not found');
-        if (tx.status === 'CANCELED') throw new Error('Already canceled');
+    async cancelTransaction(id: string, userId: string, clinicId: string) {
+        // Find transaction scoped to clinic
+        const tx = await this.prisma.financialTransaction.findFirst({
+            where: { id, clinicId }
+        });
 
-        // Check if cashier is closed? Ideally yes, but let's allow admin override.
+        if (!tx) throw new Error('Transaction not found or access denied');
+        if (tx.status === 'CANCELED') throw new Error('Already canceled');
 
         return this.prisma.financialTransaction.update({
             where: { id },
@@ -328,7 +329,11 @@ export class FinanceService {
         });
     }
 
-    async deleteCommissionRule(id: string) {
+    async deleteCommissionRule(id: string, clinicId?: string) {
+        if (clinicId) {
+            const rule = await this.prisma.commissionRule.findFirst({ where: { id, clinicId } });
+            if (!rule) throw new Error('Rule not found or access denied');
+        }
         return this.prisma.commissionRule.delete({ where: { id } });
     }
 

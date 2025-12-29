@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { X, ArchiveBoxIcon, Truck } from 'lucide-react';
+import { X, Archive, Truck } from 'lucide-react';
 
 interface AddBatchModalProps {
     isOpen: boolean;

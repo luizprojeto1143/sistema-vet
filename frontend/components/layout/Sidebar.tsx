@@ -1,41 +1,20 @@
 "use client";
 
-import React from 'react';
+import React, { useState } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import {
-    LayoutDashboard,
-    Stethoscope,
-    Calendar,
-    DollarSign,
-    Settings,
-    LogOut,
-    Package,
-    Users,
-    Activity,
-    ChevronLeft,
-    ChevronRight,
-    Menu
-} from 'lucide-react';
+import { MAIN_MENU_ITEMS } from '@/utils/routes';
+import { ChevronRight, ChevronLeft, LogOut } from 'lucide-react';
 
-interface SidebarProps {
-    isCollapsed?: boolean;
-    toggle?: () => void;
-}
-
-export default function Sidebar({ isCollapsed = false, toggle }: SidebarProps) {
+export default function Sidebar({ isCollapsed: controlledCollapsed, toggle: controlledToggle }: { isCollapsed?: boolean; toggle?: () => void }) {
     const pathname = usePathname();
+    const [localCollapsed, setLocalCollapsed] = useState(false);
 
-    const menuItems = [
-        { href: '/', label: 'Dashboard', icon: LayoutDashboard },
-        { href: '/vet', label: 'Atendimento', icon: Stethoscope },
-        { href: '/agenda', label: 'Agenda', icon: Calendar },
-        { href: '/finance', label: 'Financeiro', icon: DollarSign },
-        { href: '/stock', label: 'Estoque', icon: Package },
-        { href: '/admin/tutors', label: 'Tutores', icon: Users },
-        { href: '/analisavet', label: 'AnalisaVet AI', icon: Activity },
-        { href: '/settings', label: 'Configurações', icon: Settings },
-    ];
+    // Determine effective state (controlled takes precedence if provided)
+    const isCollapsed = controlledCollapsed !== undefined ? controlledCollapsed : localCollapsed;
+    const toggle = controlledToggle || (() => setLocalCollapsed(!isCollapsed));
+
+    const menuItems = MAIN_MENU_ITEMS;
 
     return (
         <aside
